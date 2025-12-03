@@ -1,0 +1,137 @@
+
+
+/* ---------- FORM CONTAINER ---------- */
+/* .form-wrapper {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  animation: fadeIn 0.4s ease;
+} */
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- FORM SPACING ---------- */
+.form-section {
+  margin-bottom: 24px;
+}
+
+/* ---------- LABEL ---------- */
+.form-label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+/* ---------- INPUTS & TEXTAREAS ---------- */
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  background: #fafafa;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: #4f8df5;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(79, 141, 245, 0.25);
+}
+
+/* ---------- TEXTAREA ---------- */
+.form-textarea {
+  height: 120px;
+  resize: none;
+}
+
+/* ---------- SMALL HELP TEXT ---------- */
+.small-text {
+  font-size: 13px;
+  color: #777;
+  margin-top: 4px;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn-blue,
+.btn-green {
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-blue {
+  background: #2563eb;
+  color: white;
+}
+.btn-blue:hover {
+  background: #1d4ed8;
+}
+
+.btn-green {
+  background: #22c55e;
+  color: #fff;
+}
+.btn-green:hover {
+  background: #16a34a;
+}
+
+/* ---------- GRID SYSTEM ---------- */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* ---------- PHONE INPUT GROUP ---------- */
+.phone-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.phone-box span svg {
+  cursor: pointer;
+  margin-left: 4px;
+  font-size: 22px;
+  color: #4b5563;
+  transition: 0.2s;
+}
+
+.phone-box span svg:hover {
+  color: #111;
+  transform: scale(1.08);
+}
+
+/* ---------- RESPONSIVE DESIGN ---------- */
+@media (max-width: 768px) {
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-wrapper {
+    padding: 22px;
+  }
+}

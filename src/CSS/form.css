@@ -1,0 +1,107 @@
+/* Container */
+/* .form-wrapper {
+  padding: 24px;
+  max-width: 900px;
+  margin: 20px auto;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+} */
+
+/* Form spacing */
+.form-section {
+  margin-bottom: 24px;
+}
+
+/* Label */
+.form-label {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Inputs */
+.form-input, .form-textarea, .form-select {
+  border: 1px solid #d1d1d1;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 15px;
+  width: 100%;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+}
+
+/* Grid Layout */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Buttons */
+.btn-blue {
+  background: #3b82f6;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-blue:hover {
+  background: #2563eb;
+}
+
+.btn-green {
+  background: #22c55e;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-green:hover {
+  background: #16a34a;
+}
+
+/* Extra small text */
+.small-text {
+  font-size: 13px;
+  color: gray;
+  margin-top: 4px;
+}
+
+/* Add children button container */
+.children-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* Multi phone input area */
+.phone-box {
+  display: flex;
+  gap: 8px;
+}
+
+/* Textarea height */
+.form-textarea {
+  resize: none;
+  height: 100px;
+}
