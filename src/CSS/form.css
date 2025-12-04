@@ -84,7 +84,7 @@
 
 
 .btn-red{
-  background: rgb(255, 118, 118);
+  background: rgb(255, 41, 41);
   color: white;
   padding: 8px 14px;
   border-radius: 6px;
@@ -93,8 +93,8 @@
   transition: 0.2s ease;
 }
 
-.btn-green:hover {
-  background: rgb(255, 121, 121);
+.btn-red:hover {
+  background: rgb(255, 135, 135);
 }
 
 

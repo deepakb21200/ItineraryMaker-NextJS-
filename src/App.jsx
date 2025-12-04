@@ -28,26 +28,11 @@ function App() {
 
  
  
-{/* 
-         <Route path="/trips" element={<Dashboard/>}>
-
- 
-   
-          <Route path="new-query" element={<NewQuery />} />
-          <Route path="in-progress" element={<InProgress />} />
-          <Route path="converted" element={<Converted />} />
-          <Route path="on-trip" element={<OnTrip />} />
-          <Route path="past-trips" element={<PastTrips />} />
-          <Route path="cancelled" element={<Cancelled/>} />
-          <Route path="dropped" element={<Dropped />} />
-          <Route path="all" element={<All/>} />
-
-        </Route> */}
 
 
 
         <Route path="/trips" element={<Dashboard/>}>
-  <Route index element={<NewQuery />} />  {/* Default content */}
+  <Route index element={<NewQuery />} />   
   <Route path="new-query" element={<NewQuery />} />
   <Route path="in-progress" element={<InProgress />} />
   <Route path="converted" element={<Converted />} />

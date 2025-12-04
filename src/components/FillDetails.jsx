@@ -3,9 +3,10 @@ import { CiCirclePlus } from "react-icons/ci";
 import "../CSS/form.css";
 import { supabase } from '../supabase-client'
 import { useNavigate } from "react-router-dom";
-
+ 
 
 function FillDetails() {
+      let navigate = useNavigate()
           const [details, setDetails] = useState({
         querysource:"",
         referenceid:"",
@@ -17,7 +18,7 @@ function FillDetails() {
         userNumber:"",
         Comments:""
     })
-    let navigate = useNavigate()
+ 
 
 function formFill(e) {
     setDetails({
@@ -34,8 +35,12 @@ const DataSubmit = async(e)=>{
   let {data,error} = await supabase.from("form_1").insert({
       ...details,   
     }).select().single()
+navigate("/trips")
 
-  console.log(data);
+
+ 
+
+ 
   
 }
   return (

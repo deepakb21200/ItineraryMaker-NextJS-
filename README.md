@@ -1,16 +1,25 @@
-# React + Vite
+# My React Trips Dashboard  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Description**  
+A React + Tailwind + React‑Router based dashboard to manage trips and queries.  
 
-Currently, two official plugins are available:
+## Features  
+- Navigation using React Router with nested routes   and Naviagate
+- Dashboard layout with sidebar and dynamic content  
+- Add New Query page  
+- Pages: New Query, In Progress, Converted, On Trip, Past Trips, Cancelled, Dropped, All
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack  
+React, React Router, Tailwind CSS,
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Backend / Data storage
+
+This project uses Supabase as backend:
+
+- On the “New Query” page — user data is saved to Supabase.  
+- The app fetches and displays saved data (e.g. in “In Progress”, “Converted”, etc.) from Supabase database.  
+
+

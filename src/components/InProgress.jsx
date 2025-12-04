@@ -221,6 +221,7 @@ import "../CSS/inprogress.css";
 function InProgress() {
   const [rows, setRows] = useState([]);
   let [flag, setFlag] = useState(false)
+ 
 
   async function getData() {
     const { data, error } = await supabase.from("form_1").select("*");
@@ -244,32 +245,39 @@ function InProgress() {
 
 
   return(
-      <div className="inprogress-wrapper">
-      <h2>In Progress Tasks</h2>
-      <table className="inprogress-table" name="form_1">
-        <thead>
-          <tr>
-            <th>Reference ID</th>
-            <th>Contact</th>
-            <th>Destination</th>
-            <th>Comments</th>
+  
+
+    <div className="inprogress-wrapper">
+  <h2>In Progress Tasks</h2>
+  {rows.length > 0 ? (
+    <table className="inprogress-table" name="form_1">
+      <thead>
+        <tr>
+          <th>Reference ID</th>
+          <th>Contact</th>
+          <th>Destination</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row, i) => (
+          <tr key={i}>
+            <td>{row.referenceid}</td>
+            <td>
+              {row.userName}<br />
+              {row.userNumber}
+            </td>
+            <td>{row.destination}</td>
+            <td>{row.Comments}</td>
           </tr>
-        </thead>
-        <tbody>
-          {rows.map((row,i) => (
-            <tr key={i}>
-              <td>{row.referenceid}</td>
-              <td>
-                {row.userName}<br />
-                {row.userNumber}
-              </td>
-              <td>{row.destination}</td>
-              <td>{row.Comments}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
+  ) : (
+    <p>Currently no data</p>
+  )}
+</div>
+
   )
 }
 
