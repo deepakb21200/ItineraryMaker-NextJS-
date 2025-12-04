@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { CiCirclePlus } from "react-icons/ci";
 import "../CSS/form.css";
 import { supabase } from '../supabase-client'
-
+import { useNavigate } from "react-router-dom";
 
 
 function FillDetails() {
@@ -17,6 +17,7 @@ function FillDetails() {
         userNumber:"",
         Comments:""
     })
+    let navigate = useNavigate()
 
 function formFill(e) {
     setDetails({
@@ -199,9 +200,7 @@ const DataSubmit = async(e)=>{
     </div>
 
     <button type="submit" className="btn-green">Save</button>
-     <button onClick={()=>{
-      
-     }} className="btn-red">Cancel</button>
+     <button  onClick={() => navigate("/trips/")}className="btn-red ml-2">Cancel</button>
   </form>
 </div>
 
