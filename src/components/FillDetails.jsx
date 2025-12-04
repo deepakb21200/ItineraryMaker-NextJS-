@@ -4,6 +4,7 @@ import "../CSS/form.css";
 import { supabase } from '../supabase-client'
 
 
+
 function FillDetails() {
           const [details, setDetails] = useState({
         querysource:"",
@@ -30,15 +31,15 @@ const DataSubmit = async(e)=>{
     console.log("form", details);
     
   let {data,error} = await supabase.from("form_1").insert({
-      ...details,     // ⭐ IMPORTANT FIX
+      ...details,   
     }).select().single()
 
   console.log(data);
   
- 
 }
   return (
 <div className="form-wrapper">
+
   <form onSubmit={DataSubmit}>
 
     {/* Query Source */}
@@ -152,7 +153,6 @@ const DataSubmit = async(e)=>{
       <div>
         <label className="form-label">Phone</label>
     
-         
 
         <div className="phone-box">
 
@@ -199,7 +199,9 @@ const DataSubmit = async(e)=>{
     </div>
 
     <button type="submit" className="btn-green">Save</button>
-
+     <button onClick={()=>{
+      
+     }} className="btn-red">Cancel</button>
   </form>
 </div>
 

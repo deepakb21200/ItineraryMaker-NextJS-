@@ -1,8 +1,8 @@
 .inprogress-wrapper {
-  padding: 20px;
+  /* padding: 20px; */
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  min-height: 100vh;
+  /* background-color: #f4f4f4;
+  min-height: 100vh; */
 }
 
 .inprogress-wrapper h2 {

@@ -220,6 +220,7 @@ import "../CSS/inprogress.css";
 
 function InProgress() {
   const [rows, setRows] = useState([]);
+  let [flag, setFlag] = useState(false)
 
   async function getData() {
     const { data, error } = await supabase.from("form_1").select("*");
@@ -227,6 +228,7 @@ function InProgress() {
       console.error("Error fetching data:", error);
     } else {
       setRows(data);
+      setFlag(true)
       console.log("Fetched data:", data);
     }
   }
@@ -235,8 +237,14 @@ function InProgress() {
     getData();
   }, []);
 
-  return (
-    <div className="inprogress-wrapper">
+  if(!flag){
+    return <h1>Loading......</h1>
+  }
+
+
+
+  return(
+      <div className="inprogress-wrapper">
       <h2>In Progress Tasks</h2>
       <table className="inprogress-table" name="form_1">
         <thead>
@@ -262,7 +270,7 @@ function InProgress() {
         </tbody>
       </table>
     </div>
-  );
+  )
 }
 
 export default InProgress;

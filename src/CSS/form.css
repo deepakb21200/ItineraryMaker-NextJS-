@@ -1,16 +1,17 @@
 /* Container */
-/* .form-wrapper {
+.form-wrapper {
   padding: 24px;
   max-width: 900px;
   margin: 20px auto;
   background: #ffffff;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   border-radius: 8px;
-} */
+}
 
 /* Form spacing */
 .form-section {
   margin-bottom: 24px;
+
 }
 
 /* Label */
@@ -79,6 +80,26 @@
 .btn-green:hover {
   background: #16a34a;
 }
+
+
+
+.btn-red{
+  background: rgb(255, 118, 118);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-green:hover {
+  background: rgb(255, 121, 121);
+}
+
+
+
+
 
 /* Extra small text */
 .small-text {
