@@ -214,15 +214,15 @@
 
 
 
-import React, { useState, useEffect } from "react";
-import { supabase } from "../supabase-client";  // ensure path sahi ho
+import React, { useState, useEffect, useContext } from "react";
+import { supabase } from "../supabase-client";  
 import "../CSS/inprogress.css";
+ 
 
 function InProgress() {
   const [rows, setRows] = useState([]);
   let [flag, setFlag] = useState(false)
  
-
   async function getData() {
     const { data, error } = await supabase.from("form_1").select("*");
     if (error) {
@@ -279,6 +279,10 @@ function InProgress() {
 </div>
 
   )
+
+
+ 
+
 }
 
 export default InProgress;

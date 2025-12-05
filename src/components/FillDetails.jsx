@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { CiCirclePlus } from "react-icons/ci";
 import "../CSS/form.css";
 import { supabase } from '../supabase-client'
 import { useNavigate } from "react-router-dom";
+import { context } from '../context/LoginContext';
  
 
 function FillDetails() {
       let navigate = useNavigate()
+        const { userSession, logoutHandler } = useContext(context);
           const [details, setDetails] = useState({
         querysource:"",
         referenceid:"",
@@ -27,22 +29,48 @@ function formFill(e) {
 }
 
 
-const DataSubmit = async(e)=>{
-    e.preventDefault()
+ 
 
+
+
+const DataSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
     console.log("form", details);
+
+    const { data, error } = await supabase
+      .from("form_1")
+      .insert({ ...details,}).select().single();
+
+    if (data) {
+ 
+    navigate("/trips");
+      
     
-  let {data,error} = await supabase.from("form_1").insert({
-      ...details,   
-    }).select().single()
-navigate("/trips")
+    }else{
+      console.log(  error.message);
+    }
 
+   
+
+  } catch (err) {
+    console.log("Unexpected Error:", err.message);
+  }
+};
 
  
 
- 
-  
-}
+
+  if (!userSession) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <h2 className="text-2xl font-semibold text-gray-600">
+          Please login first...
+        </h2>
+      </div>
+    );
+  }
   return (
 <div className="form-wrapper">
 
@@ -205,7 +233,16 @@ navigate("/trips")
     </div>
 
     <button type="submit" className="btn-green">Save</button>
-     <button  onClick={() => navigate("/trips/")}className="btn-red ml-2">Cancel</button>
+     {/* <button  onClick={() => navigate("/trips/")} className="btn-red ml-2">Cancel</button> */}
+
+     <button
+  type="button"
+  onClick={() => navigate("/trips/")}
+  className="btn-red ml-2"
+>
+  Cancel
+</button>
+
   </form>
 </div>
 

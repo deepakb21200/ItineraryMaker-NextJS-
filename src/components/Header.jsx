@@ -9,7 +9,7 @@ import { Link, useLocation } from "react-router-dom";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 
 
-function Navbar() {
+function Header() {
   const location = useLocation();
 
   // Static Navbar Links
@@ -20,12 +20,9 @@ function Navbar() {
     { path: "/shop/kids", label: "Kids" },
   ];
 
-  // No state → Menu always closed
-  const menuOpen = false;
-  const userName = "";
 
   return (
-    <nav className="sticky top-0 z-50 bg-white backdrop-blur-lg shadow-md border-b border-gray-100 transition-all duration-300 h-[7vh]">
+    <nav className="sticky top-0 z-50 bg-white backdrop-blur-lg shadow-md border-b border-gray-100 transition-all duration-300  ">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
         {/* Logo */}
@@ -82,9 +79,9 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Since menuOpen = false → Mobile menu never appears */}
+
     </nav>
   );
 }
 
-export default Navbar;
+export default Header;

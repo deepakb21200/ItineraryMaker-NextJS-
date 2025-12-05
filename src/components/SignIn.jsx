@@ -1,49 +1,44 @@
 import React, { useState } from 'react'
- 
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase-client"; 
  
  
 function SignIn() {
-     let navigate = useNavigate()
-     const [userSession, setUserSession] = useState(null);
+  let navigate = useNavigate()
+
 const [formData, setFormData] = useState({
   email: "",
   emailPass: ""
 });
 
-  async function  submitForm(e){
-    e.preventDefault()
+async function submitForm(e) {
+  e.preventDefault();
 
-const { data, error } = await supabase.auth.signInWithPassword({
-  email: formData.email,
-  password: formData.emailPass
-});
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.emailPass
+    });
 
-console.log("lets");
-navigate("/trips/new")
-console.log("ok");
+    if (data) {
+       navigate("/trips")
+     
+    }else{
+       console.log(error.message);
+    }
 
-if (error) {
-  console.log(error.message);
-}
+
+  } catch (err) {
+ 
+    console.log("Something went wrong:", err.message);
   }
+}
+
 
 
 
   
-const fetchUserSession = async () => {
-  const currentSession = await supabase.auth.getSession();
-  console.log(currentSession.data);
-  console.log(currentSession.data.session);
-  setUserSession(currentSession.data.session);
-};
-
-
-const logoutHandler = async () => {
-  await supabase.auth.signOut();
-}
-
+ 
 
 
   function changeHandler(e){
@@ -56,7 +51,8 @@ const logoutHandler = async () => {
 
 
   return (
-    <form className="max-w-sm mx-auto mt-10 p-6 bg-white shadow-md rounded-lg" onSubmit={submitForm}>
+    <form className="max-w-sm mx-auto mt-10 p-6 bg-white shadow-md rounded-lg
+    border-4" onSubmit={submitForm} autoComplete="off">
       
       <div className="mb-6 text-center">
         <h2 className="text-2xl font-bold text-gray-800">Sign In</h2>
