@@ -14,6 +14,7 @@ import NewQuery from './components/dashboard/NewQuery';
 import Converted from './components/dashboard/Converted';
 import OnTrip from './components/dashboard/OnTrip';
 import PastTrips from './components/dashboard/PastTrips';
+import SignIn from './components/SignIn';
 
 function App() {
   return (
@@ -26,14 +27,11 @@ function App() {
 
         <Route  />
 
- 
- 
-
-
+           <Route path="/logins" element={<SignIn/>} />
 
         <Route path="/trips" element={<Dashboard/>}>
   <Route index element={<NewQuery />} />   
-  <Route path="new-query" element={<NewQuery />} />
+  {/* <Route path="new-query" element={<NewQuery />} /> */}
   <Route path="in-progress" element={<InProgress />} />
   <Route path="converted" element={<Converted />} />
   <Route path="on-trip" element={<OnTrip />} />

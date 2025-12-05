@@ -66,7 +66,7 @@ function Navbar() {
 
           {/* Profile */}
           <Link
-            to="/login"
+            to="/logins"
             className="flex items-center gap-1 hover:scale-110 transition-transform duration-300"
           >
             <CgProfile className="text-2xl text-gray-800 hover:text-blue-600 transition-colors" />
