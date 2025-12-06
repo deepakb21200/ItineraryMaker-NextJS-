@@ -16,12 +16,47 @@ import OnTrip from './components/dashboard/OnTrip';
 import PastTrips from './components/dashboard/PastTrips';
 import SignIn from './components/SignIn';
 import Header from './components/Header';
+import Mypage from './components/Mypage';
+
+
+
+import {PDFDownloadLink, PDFViewer} from "@react-pdf/renderer"
+import Example from './components/Example';
+import DownlaodPDF from './components/dashboard/DownlaodPDF';
+import CustomerDetails from './components/dashboard/CustomerDetails';
+ 
 
 function App() {
+const [showPreview, setShowPreview] = useState(false)
 
+ const myDoc =   <Mypage/>;
   return (
     <div className='main  '>
 <Header  />
+{/* <PDFViewer style={{width:"100%", height:"100vh"}}>
+  <Mypage/>
+  <Example/>
+</PDFViewer> */}
+      {/* <button onClick={()=>{
+        setShowPreview(true)
+      }}>Click to Preview PDF</button>
+
+ {showPreview && (
+        <div style={{ marginTop: 20 }}>
+          <PDFViewer width="100%" height="500">
+            {myDoc}
+          </PDFViewer>
+          </div>)} */}
+
+
+{showPreview ? 
+<PDFViewer width="100%" height="1000px">{myDoc}</PDFViewer>
+ : <button onClick={()=>{setShowPreview(true)}}>Click to Preview PDF</button>}
+
+
+
+
+
 
       <Routes>
         <Route path="/" element={<Home/>} />
@@ -41,7 +76,12 @@ function App() {
 </Route>
  <Route path="/trips/new" element={<FillDetails />} />
 
+
+ 
+
    <Route path ="/inprogress" element={<InProgress/>}/>
+  <Route path="/trips/new/:id" element={<CustomerDetails />} />
+
 
       </Routes>
     </div>

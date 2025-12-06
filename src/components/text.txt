@@ -1,0 +1,30 @@
+break
+
+how to add header and footer?
+ fixed
+
+
+ How to add style in documents?
+dee
+
+
+
+Query Related Information
+
+   query Source
+   reference Id
+
+Travel Information
+
+  Destination
+  Start Date
+  No of Nights
+  No of Adults
+
+User Contact Details
+   User Name
+   Phone number
+
+
+Additional Details
+ Comments

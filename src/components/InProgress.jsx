@@ -217,6 +217,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { supabase } from "../supabase-client";  
 import "../CSS/inprogress.css";
+import { Link} from "react-router-dom";
  
 
 function InProgress() {
@@ -264,7 +265,8 @@ function InProgress() {
           <tr key={i}>
             <td>{row.referenceid}</td>
             <td>
-              {row.userName}<br />
+           <Link to={`/trips/new/${row.id}`}> {row.userName}</Link>
+              <br />
               {row.userNumber}
             </td>
             <td>{row.destination}</td>
