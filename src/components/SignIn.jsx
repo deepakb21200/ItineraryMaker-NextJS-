@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase-client"; 
- 
- 
+
+
 function SignIn() {
   let navigate = useNavigate()
 
@@ -28,18 +28,10 @@ async function submitForm(e) {
     }
 
 
-  } catch (err) {
- 
+  } catch (err) { 
     console.log("Something went wrong:", err.message);
   }
 }
-
-
-
-
-  
- 
-
 
   function changeHandler(e){
       setFormData({
