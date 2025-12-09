@@ -64,6 +64,7 @@ const [showPreview, setShowPreview] = useState(false)
         <Route  />
         <Route path="/logins" element={<SignIn/>} />
         <Route path="/trips" element={<Dashboard/>}>
+        
          <Route index element={<NewQuery />} />  
          <Route path="in-progress" element={<InProgress />} />
          <Route path="converted" element={<Converted />} />
@@ -81,6 +82,8 @@ const [showPreview, setShowPreview] = useState(false)
 
    <Route path ="/inprogress" element={<InProgress/>}/>
   <Route path="/trips/new/:id" element={<CustomerDetails />} />
+
+    <Route path="/trips/:id" element={<CustomerDetails />} />
 
 
       </Routes>
