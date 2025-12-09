@@ -31,7 +31,7 @@ function TripDetails() {
         </ul>
 
         <div>
-          <div></div>
+          <div>{userDetails.formNo}</div>
           <div></div>
         </div>
       </div>

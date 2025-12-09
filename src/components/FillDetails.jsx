@@ -44,10 +44,12 @@ function FillDetails() {
         destination:"",
         startDate:"",
         noOfNights:1,
+        noOfDays:2,
         noOFAdults:1,
         userName:"",
         userNumber:"",
         Comments:"",
+
         // formNo:""
     })
  
@@ -61,7 +63,8 @@ function formFill(e) {
       let a = Number(e.target.value)
 
        setDetails(prev => ({
-       ...prev, noOfNights: a }))
+       ...prev, noOfNights: a ,
+        noOfDays:++a}))
       }
 
       else if(e.target.name === "noOFAdults"){
@@ -233,7 +236,13 @@ let [flag, setFlag] = useState(false)
           type="date"
           name="startDate"
           className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500   "
-          value={details.startDate}
+         value={details.startDate}
+  //         value={
+  // details.startDate && new Date(details.startDate).toLocaleDateString("en-US", {
+  //   month: "long",
+  //   day: "numeric",
+  //   year: "numeric",
+  // })}
           onChange={formFill}
             required
         />
@@ -252,7 +261,10 @@ let [flag, setFlag] = useState(false)
             required
         />
         <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          {details.noOfNights} Nights, {details.noOfNights + 1} Days
+          {details.noOfNights} Nights, {details.noOfDays} Days
+
+
+         
         </span>
       </div>
     </div>
