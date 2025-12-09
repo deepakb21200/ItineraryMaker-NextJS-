@@ -364,3 +364,33 @@ adult with extra bed and child with extra bed
 
 
 
+
+
+
+
+
+
+// 1. Pehle night dates array calculate karo
+const details = { startDate: "2025-12-25", noOfNights: 3 };
+const start = new Date(details.startDate);
+const nightDates = [];
+
+for (let i = 0; i < details.noOfNights; i++) {
+  const d = new Date(start);
+  d.setDate(start.getDate() + i);
+  nightDates.push(d.toISOString().split("T")[0]);
+}
+
+// 2. Supabase me insert karo
+const { data, error } = await supabase
+  .from("your_table_name")
+  .insert([
+    {
+      // ... baki fields ...
+      nightDates: nightDates  // e.g. ["2025-12-25","2025-12-26","2025-12-27"]
+    }
+  ]);
+
+
+
+

@@ -37,12 +37,13 @@ function FillDetails() {
 
 
       let navigate = useNavigate()
+      let [  startDate, setStartdate] =useState("")
         const { userSession, logoutHandler } = useContext(context);
           const [details, setDetails] = useState({
         querysource:"",
         referenceid:"",
         destination:"",
-        startDate:"",
+        // startDate:"",
         noOfNights:1,
         noOfDays:2,
         noOFAdults:1,
@@ -53,6 +54,10 @@ function FillDetails() {
         // formNo:""
     })
  
+useEffect(()=>{
+console.log(startDate);
+
+},[startDate])
 
 function formFill(e) {
     setDetails({
@@ -79,37 +84,47 @@ function formFill(e) {
 
 
 
-const DataSubmit = async (e) => {
-  e.preventDefault();
-  let formNo= Math.floor(1000000 + Math.random() * 9000000).toString();
+  const DataSubmit = async (e) => {
+    e.preventDefault();
+    let formNo= Math.floor(1000000 + Math.random() * 9000000).toString();
 
-  try {
-    console.log("form", details);
+    try {
+      console.log("form", details);
 
+      const start = new Date(startDate);
+  const nightDates = [];
 
-
-
-
-    const { data, error } = await supabase
-      .from("form_1")
-      .insert({ ...details, formNo}).select().single();
-
-    if (data) {
- setFlag(false)
-    navigate("/trips");
-    
-      
-    
-    }else{
-      console.log(  error.message);
-    }
-
-   
-
-  } catch (err) {
-    console.log("Unexpected Error:", err.message);
+  for (let i = 0; i < Number(details.noOfNights); i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    nightDates.push(d.toISOString().split("T")[0]);
   }
-};
+  console.log("night",nightDates);
+  
+      const { data, error } = await supabase
+        .from("form_1")
+        .insert({ ...details, formNo, nightDates}).select().single();
+
+      if (data) {
+        console.log("datasa",data);
+        
+  setFlag(false)
+
+
+      navigate("/trips");
+      
+        
+      
+      }else{
+        console.log(  error.message);
+      }
+
+    
+
+    } catch (err) {
+      console.log("Unexpected Error:", err.message);
+    }
+  };
 
 let [flag, setFlag] = useState(false)
 
@@ -152,6 +167,7 @@ let [flag, setFlag] = useState(false)
       <input
         type="text"
         name="querysource"
+         autoComplete='off'
         placeholder="Type to Search..."
         className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500  "
         value={details.querysource}
@@ -219,6 +235,7 @@ let [flag, setFlag] = useState(false)
           placeholder="Type to search..."
           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500  "
           value={details.destination}
+           autoComplete='off'
           onChange={formFill}
           onBlur={() =>  setDropdownOpen2(false)}
         onFocus={() =>  {
@@ -237,13 +254,14 @@ let [flag, setFlag] = useState(false)
           name="startDate"
           className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500   "
          value={details.startDate}
+        
   //         value={
   // details.startDate && new Date(details.startDate).toLocaleDateString("en-US", {
   //   month: "long",
   //   day: "numeric",
   //   year: "numeric",
   // })}
-          onChange={formFill}
+          onChange={(e)=>setStartdate(e.target.value)}
             required
         />
       </div>
