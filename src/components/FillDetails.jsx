@@ -10,35 +10,30 @@ function FillDetails() {
 
   const [query, setquery] = useState([]);
     const [query2, setquery2] = useState([]);
-  let [value, setValue] = useState("") 
-    let [value2, setValue2] = useState("") 
+  // let [value, setValue] = useState("") 
+  //   let [value2, setValue2] = useState("") 
    const [dropdownOpen, setDropdownOpen] = useState(false);
     const [dropdownOpen2, setDropdownOpen2] = useState(false);
 
 
-  useEffect(()=>{
-   async function queryData(){
 
+
+ async function queryData(){
     const { data, error } = await supabase.from("QuerySource").select("*")
     console.log(data)
     setquery(data)
    }
 
-   queryData()
-  },[])
-
-
-    useEffect(()=>{
-   async function queryData(){
+      async function queryData2(){
 
     const { data, error } = await supabase.from("TourDestination").select("*")
     console.log(data)
     setquery2(data)
    }
 
-   queryData()
-  },[])
+ 
 
+ 
 
 
       let navigate = useNavigate()
@@ -53,7 +48,7 @@ function FillDetails() {
         userName:"",
         userNumber:"",
         Comments:"",
-        formNo:""
+        // formNo:""
     })
  
 
@@ -83,11 +78,7 @@ function formFill(e) {
 
 const DataSubmit = async (e) => {
   e.preventDefault();
-  let unique= Math.floor(1000000 + Math.random() * 9000000).toString();
-
-   setDetails(prev => ({
-       ...prev, formNo: unique }))
- 
+  let formNo= Math.floor(1000000 + Math.random() * 9000000).toString();
 
   try {
     console.log("form", details);
@@ -98,11 +89,11 @@ const DataSubmit = async (e) => {
 
     const { data, error } = await supabase
       .from("form_1")
-      .insert({ ...details,}).select().single();
+      .insert({ ...details, formNo}).select().single();
 
     if (data) {
  setFlag(false)
-    // navigate("/trips");
+    navigate("/trips");
     
       
     
@@ -129,7 +120,7 @@ let [flag, setFlag] = useState(false)
     );
   }
   return (
-    <div className="max-w-4xl mx-auto p-6   dark:bg-[#111217] rounded-2xl shadow-lg">
+    <div className="max-w-4xl mx-auto p-6     rounded-2xl shadow-lg">
   <form onSubmit={DataSubmit} className="space-y-6">
 
     {/* Query Source */}
@@ -144,48 +135,45 @@ let [flag, setFlag] = useState(false)
         {query.length > 0 && dropdownOpen && (
           query.map((item, index) => (
              
-              <div className="flex flex-col px-3 py-2 cursor-pointer border-b-2 border-grey" key={index}
-              onClick={()=>setFlag}>
-        
-                {item.ListOfQueries}
-             
-        
+              <div className="flex flex-col px-3 py-2 cursor-pointer border-b-2 border-grey " key={index}
+                onMouseDown={() => {   // IMPORTANT: blur se bachne ke liye
+        setDetails({ ...details, querysource: item.ListOfQueries });
+        setDropdownOpen(false);
+      }} >  {item.ListOfQueries}   </div>)))}
               </div>
-               )) 
-               
-               
-               
-               )}
-
-      
-      </div>
 
 
 
 
-      <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">Query Source</label>
+      <label className="text-gray-700  font-medium mb-2">Query Source</label>
       <input
         type="text"
         name="querysource"
         placeholder="Type to Search..."
-        className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+        className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500  "
         value={details.querysource}
         onChange={formFill}
-        onFocus={() =>  setDropdownOpen(true)}
+        onFocus={() =>  {
+          setDropdownOpen(true)
+          queryData()
+
+        }}
   onBlur={() =>  setDropdownOpen(false)}
+  required
       />
     </div>
 
     {/* Reference ID */}
     <div className="flex flex-col">
-      <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">Reference ID</label>
+      <label className="text-gray-700  font-medium mb-2">Reference ID</label>
       <input
         type="text"
         name="referenceid"
         placeholder="1231231"
-        className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+        className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500   "
         value={details.referenceid}
         onChange={formFill}
+          required
       />
       <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
         A custom id for your reference regarding the query
@@ -207,56 +195,61 @@ let [flag, setFlag] = useState(false)
           query2.map((item, index) => (
              
               <div className="flex flex-col px-3 py-2 cursor-pointer border-b-2 border-grey" key={index}
-              onClick={()=>setFlag}>
+                         onMouseDown={() => {   // IMPORTANT: blur se bachne ke liye
+        setDetails({ ...details, destination: item.NameOfDestination });
+        setDropdownOpen2(false);
+      }}>
         
                 {item.NameOfDestination}
              
-        
               </div>
                )) 
-               
-               
                
                )}
 
       
       </div>
-        <label className="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Destination</label>
+        <label className="text-gray-700  font-medium mb-2 block">Destination</label>
         <input
           type="text"
           name="destination"
           placeholder="Type to search..."
-          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500  "
           value={details.destination}
           onChange={formFill}
-                 onFocus={() =>  setDropdownOpen2(true)}
-  onBlur={() =>  setDropdownOpen2(false)}
+          onBlur={() =>  setDropdownOpen2(false)}
+        onFocus={() =>  {
+          setDropdownOpen2(true)
+          queryData2()
+        }} required
         />
    
       </div>
 
       {/* Start Date */}
       <div className="flex flex-col">
-        <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">Start Date</label>
+        <label className="text-gray-700  font-medium mb-2">Start Date</label>
         <input
           type="date"
           name="startDate"
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500   "
           value={details.startDate}
           onChange={formFill}
+            required
         />
       </div>
 
       {/* No. of Nights */}
       <div className="flex flex-col">
-        <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">No. of Nights</label>
+        <label className="text-gray-700  font-medium mb-2">No. of Nights</label>
         <input
           type="number"
           min="1"
           name="noOfNights"
           value={details.noOfNights}
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500   "
           onChange={formFill}
+            required
         />
         <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {details.noOfNights} Nights, {details.noOfNights + 1} Days
@@ -267,19 +260,20 @@ let [flag, setFlag] = useState(false)
     {/* Adults & Children */}
     <div className="grid md:grid-cols-2 gap-6">
       <div className="flex flex-col">
-        <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">No. of Adults</label>
+        <label className="text-gray-700  font-medium mb-2">No. of Adults</label>
         <input
           type="number"
           name="noOFAdults"
           min="1"
           value={details.noOFAdults}
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500   "
           onChange={formFill}
+            required
         />
       </div>
 
       <div className="flex flex-col">
-        <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">Add children and their ages</label>
+        <label className="text-gray-700  font-medium mb-2">Add children and their ages</label>
         <button className="btn-green flex items-center justify-center gap-2 py-2 px-4 rounded-lg hover:bg-green-600 transition">
           <CiCirclePlus /> Add Child
         </button>
@@ -289,23 +283,23 @@ let [flag, setFlag] = useState(false)
     {/* Name & Phone */}
     <div className="grid md:grid-cols-2 gap-6">
       <div className="flex flex-col">
-        <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">Name</label>
+        <label className="text-gray-700  font-medium mb-2">Name</label>
         <input
           type="text"
           name="userName"
           placeholder="Anoop Rai"
           value={details.userName}
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500  "
           onChange={formFill}
         />
       </div>
 
       <div className="flex flex-col">
-        <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">Phone</label>
+        <label className="text-gray-700  font-medium mb-2">Phone</label>
         <div className="flex gap-2">
           <select
             name="countryCode"
-            className="w-24 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+            className="w-24 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500  "
             onChange={formFill}
           >
             <option value="91">+91 IN</option>
@@ -320,7 +314,7 @@ let [flag, setFlag] = useState(false)
             value={details.userNumber}
          
             placeholder="1234567890"
-            className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+            className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500  "
             onChange={formFill}
           />
         </div>
@@ -329,12 +323,12 @@ let [flag, setFlag] = useState(false)
 
     {/* Comments */}
     <div className="flex flex-col">
-      <label className="text-gray-700 dark:text-gray-300 font-medium mb-2">Comments</label>
+      <label className="text-gray-700  font-medium mb-2">Comments</label>
       <textarea
         name="Comments"
         placeholder="Only 5 star hotels"
         value={details.Comments}
-        className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-[#1a1b22] dark:text-white"
+        className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500  "
         onChange={formFill}
       ></textarea>
     </div>

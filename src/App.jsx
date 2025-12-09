@@ -24,6 +24,7 @@ import {PDFDownloadLink, PDFViewer} from "@react-pdf/renderer"
 import Example from './components/Example';
 import DownlaodPDF from './components/dashboard/DownlaodPDF';
 import CustomerDetails from './components/dashboard/CustomerDetails';
+import TripDetails from './components/userQuote/TripDetails';
  
 
 function App() {
@@ -81,9 +82,11 @@ const [showPreview, setShowPreview] = useState(false)
  
 
    <Route path ="/inprogress" element={<InProgress/>}/>
-  <Route path="/trips/new/:id" element={<CustomerDetails />} />
+  {/* <Route path="/trips/new/:id" element={<CustomerDetails />} /> */}
 
-    <Route path="/trips/:id" element={<CustomerDetails />} />
+    <Route path="/trips/:id" element={<TripDetails/>} />
+
+    
 
 
       </Routes>
