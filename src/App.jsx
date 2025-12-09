@@ -25,6 +25,7 @@ import Example from './components/Example';
 import DownlaodPDF from './components/dashboard/DownlaodPDF';
 import CustomerDetails from './components/dashboard/CustomerDetails';
 import TripDetails from './components/userQuote/TripDetails';
+import NewQuote from './components/userQuote/NewQuote';
  
 
 function App() {
@@ -50,9 +51,9 @@ const [showPreview, setShowPreview] = useState(false)
           </div>)} */}
 
 
-{showPreview ? 
+{/* {showPreview ? 
 <PDFViewer width="100%" height="1000px">{myDoc}</PDFViewer>
- : <button onClick={()=>{setShowPreview(true)}}>Click to Preview PDF</button>}
+ : <button onClick={()=>{setShowPreview(true)}}>Click to Preview PDF</button>} */}
 
 
 
@@ -82,9 +83,11 @@ const [showPreview, setShowPreview] = useState(false)
  
 
    <Route path ="/inprogress" element={<InProgress/>}/>
-  {/* <Route path="/trips/new/:id" element={<CustomerDetails />} /> */}
+  <Route path="/trips/:id" element={<TripDetails />} />
 
-    <Route path="/trips/:id" element={<TripDetails/>} />
+    <Route path ="/trips/:id/newQuote" element={<NewQuote/>}/>
+
+    
 
     
 
