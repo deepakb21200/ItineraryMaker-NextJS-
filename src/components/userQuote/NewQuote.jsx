@@ -1,37 +1,57 @@
 import React, { useEffect, useState } from 'react'
 import { FaArrowLeft } from "react-icons/fa";
 import { supabase } from '../../supabase-client'
+import { useParams } from 'react-router-dom';
+
+
 function NewQuote() {
-
-
+  const [showPopup, setShowPopup] = useState(false);
 let [userData, setUserData] = useState(null)
-let [stayNights,setStayNights] = useState([])
+ 
 let [stayHotel, setStayHotel] = useState([])
+ 
+const [showDropdown, setShowDropdown] = useState(false);
+const [showDropdown2, setShowDropdown2] = useState(false);
+const [showDropdown3, setShowDropdown3] = useState(false);
+const [showDropdown4, setShowDropdown4] = useState(false);
+const [inputValue, setInputValue] = useState(""); // user ka input
+const [inputValue2, setInputValue2] = useState(""); // meal ka input
+const [inputValue3, setInputValue3] = useState(""); // meal ka input
+let [meal, setMeal] = useState([])
+let [mealSearch, setMealSearch]= useState("")
+let [room, setRoom] = useState([])
+let [roomSearch, setRoomSearch] = useState("")
+let [stayNights, setStayNights] = useState([])
+const [selectedNights, setSelectedNights] = useState([]);
+let [hotelDisplay, setHotelDisplay] = useState(false)
+let [toggle1, setToggle1] = useState(false)
+let {id} = useParams()
+let [adultWithExtraBed, setAdultWithExtraBed]= useState("")
+let [childWithExtraBed, setChildWithExtraBed]= useState("")
+let [childNoBed, setChildNoBed]= useState("")
+
+
+let [showModal, setShowModal] = useState(false)
+let [carData,]
+
+ 
+
+
+
 
       useEffect(()=>{
           async function userData(){
-             const { data, error } = await supabase.from("form_1").select("*").single();
+             const { data, error } = await supabase.from("form_1").select("*").eq("formNo",id).single();
              console.log(data)    
-
              setUserData(data)
              setStayNights(data.nightDates)
-             setStayHotel()
-             
-    
+            //  setSelectedNights(data.nightDates)
             }
-            
+
             userData()
+      },[])
     
-      },[])
-
-
-      useEffect(()=>{
-         function getData()
-      },[])
-
-
-
-//   return (
+      //   return (
 //      userData ? 
 //      <div className='px-4 border-2 py-3'>
 //         <div className='flex items-center gap-2'>
@@ -70,18 +90,44 @@ let [stayHotel, setStayHotel] = useState([])
 //             </div>
 //         </div>
 
-//      </div> : <h1></h1>
-//   )
+//      </div> : <h1></h1>//   )
 
 
-      async function getData(){
+      async function getData2(){
           const { data, error } = await supabase.from("Hotels").select("*");
              console.log(data)    
-
+             setStayHotel(data)
+           
       }
+
+
+  
+// checkbox change handler
+
+const handleCheckboxChange = (e) => {
+  const { value, checked } = e.target;
+
+  if (checked) {
+    setSelectedNights([...selectedNights, value]);
+  } else {
+    setSelectedNights(selectedNights.filter((n) => n !== value));
+  }
+};
+
+
+
 
  return (
     <>
+
+  {/* <div className='fixed  top-0 right-0 bottom-0 left-0 z-[1000] transition-all duration-[600ms] hidden lg:block' 
+     style={{opacity: toggle1? 1 : 0, visibility: toggle1 ? "visible": "hidden", 
+     backgroundColor: "rgba(2, 6, 12, 0.75)"}} onClick={()=>setToggle1(false)}>
+      </div> */}
+
+
+
+
       {userData ? (
         <div className="px-4 py-4 border-2 rounded-lg  mx-auto space-y-6 bg-blue-100">
           
@@ -138,35 +184,26 @@ let [stayHotel, setStayHotel] = useState([])
 
           <div className='bg-white p-2 text-black font-semibold'>Package Types / Categories: 1 Option</div>
 
-          <div>
-            <h2>Hotels</h2>
+          <div className='border-4 border-red-500 '>
+            <h2 className='font-bold text-black text-2xl'>Hotels</h2>
             <p>Please add hotels details</p>
 
  
-<button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300">
+<button className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300 ${hotelDisplay ? "hidden": "block"}`}
+onClick={()=>setHotelDisplay(true)}>
   Add Hotel
 </button>
 
+<div className={`border-4 border-yellow-400  flex  ${hotelDisplay ? "border-4 border-yellow-400 ": "hidden"}`}>
+
 <div>
-  <h2 className='font-bold'>Any special inclusions in hotels</h2>
-  <p>Add any extra services for hotels e.g, special dinner, honeymoon cake etc.</p>
-  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300">
-  Add services
-</button>
-
-<div className="flex space-x-6 items-end">
-  {/* <!-- Stay Nights --> */}
+  
+<div className="flex space-x-6 items-start border-2 border-blue-500">
+ 
   <div className="flex flex-col relative">
-    <label htmlFor="stay-nights" className="text-gray-700 font-medium">Stay Nights</label>
-    <input type="text" id="stay-nights" placeholder="Enter nights" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    onChange={()=>{
-console.log(stayNights);
-
-    }}/>
-
-
-    <div className='absolute  top-full left-0 w-full max-h-[15vh] overflow-y-auto  text-black  border      z-1000 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'>
-{stayNights.length > 0 &&
+     {/* <div className='absolute  top-full left-0 w-full max-h-[15vh] overflow-y-auto  text-black  border z-1000 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'>
+{
+stayNights.length > 0 &&
   stayNights.map((date, index) => (
     <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
       <input
@@ -181,34 +218,296 @@ console.log(stayNights);
   ))
 }
 
+    </div> */}
+
+
+
+
+
+
+
+    
+    <label htmlFor="stay-nights" className="text-gray-700 font-medium">Stay Nights</label>
+ <div className='relative'>
+     <input type="text" id="stay-nights" placeholder="Enter nights" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    onChange={()=>{
+// console.log(stayNights);
+
+    }}
+    onFocus={()=>setShowDropdown4(true)}
+    onBlur={()=>setShowDropdown4(false)}/>
+
+
+
+
+
+        {showDropdown4 && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
+    >
+
+     {
+stayNights.length > 0 &&
+  stayNights.map((date, index) => (
+    <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
+      <input
+        type="checkbox"
+        id={`night-${index}`}
+        name="selectedNights"
+        value={date}
+           checked={selectedNights.includes(date)}
+            onChange={handleCheckboxChange}
+        className="mr-2"
+
+      />
+      <label htmlFor={`night-${index}`}>{date}</label>
+    </div>
+  ))
+}
 
     </div>
+  )}
+ </div>
+
+   {/* Selected nights display */}
+{/* <div className="mt-2 border p-2">
+  {selectedNights.length > 0 && (
+    selectedNights.map((night, index) => (
+      <div key={index} className="flex items-center px-3 py-1 border-b border-gray-200">
+        <input type="checkbox" checked={true} readOnly className="mr-2" onClick={() => handleCheckboxChange()} />
+        <span>{night}</span>
+      </div>
+    ))
+  ) }
+</div> */}
+
+<div className="mt-2 border p-2">
+  {selectedNights.length > 0 &&
+    selectedNights.map((night, index) => (
+      <div key={index} className="flex items-center px-3 py-1 border-b border-gray-200">
+
+        <input
+          type="checkbox"
+          value={night}
+          checked={true}
+          className="mr-2"
+          onChange={handleCheckboxChange}
+        />
+
+        <span>{night}</span>
+      </div>
+    ))
+  }
+</div>
+
+
+
+   
   </div>
+
+
+
+
+
+
+
+
+
+
+  
 
   {/* <!-- Hotel --> */}
-  <div className="flex flex-col">
-    <label htmlFor="hotel" className="text-gray-700 font-medium">Hotel</label>
-    <input type="text" id="hotel" placeholder="Hotel name" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    onChange={()=>{
+<div className="relative flex flex-col">
+  <label htmlFor="hotel" className="text-gray-700 font-medium">Hotel</label>
+  <input
+    type="text"
+    id="hotel"
+    placeholder="Hotel name"
+    className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    value={inputValue}
+    autoComplete='off'
+    onFocus={() => {
+      setShowDropdown(true);
+      getData2();
+    }}
+    onChange={(e) => setInputValue(e.target.value)}
+    onBlur={() => setTimeout(() => setShowDropdown(false), 150)} // small delay
+  />
 
-      getData()
-    }}/>
-  </div>
+  {showDropdown && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
+    >
+      {inputValue === "" && <div className="px-3 py-2 text-gray-500">Type to search</div>}
+      {inputValue !== "" && stayHotel.length > 0 &&
+        stayHotel.map((val, index) => (
+          <label
+            key={index}
+            className='flex items-center px-[12px] py-[8px] border-b border-gray-200 cursor-pointer'
+          >
+            <input
+              type="radio"
+              name="selectedHotel"
+              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+              onClick={() => {
+                setInputValue(val.hotel_name);
+                setMeal(val.meal_plan);
+                setMealSearch(val.meal_plan[0]);
+                setRoom(val.room);
+       console.log("val.room",val.room);
+       
+                setRoomSearch(val.room[0])
+                setShowDropdown(false);
+              }}
+            />
+            {val.hotel_name}
+          </label>
+        ))
+      }
+    </div>
+  )}
+</div>
+
 
   {/* <!-- Meal Plan --> */}
-  <div className="flex flex-col">
+  <div className="flex flex-col relative">
+
+
+      {showDropdown2 && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+ onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
+>
+      {meal.length > 0 &&
+        meal.map((val, index) => (
+          <label   key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'  >
+            <input type="radio" name="selectedHotel" value={val} className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+              onClick={(e) => {
+                setInputValue2(val.hotel_name)
+                // setMeal(val.meal_plan)   
+                console.log("e",e.target.value);
+                
+                setMealSearch(e.target.value)
+                setShowDropdown2(false); // click ke baad dropdown hide
+              }}/>
+            {val}
+          </label>
+        ))
+      }
+
+
+
+
+</div>)}
+
+
+
     <label htmlFor="meal-plan" className="text-gray-700 font-medium">Meal Plan</label>
-    <input type="text" id="meal-plan" placeholder="Meal plan" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+    <input type="text" id="meal-plan" placeholder="Meal plan" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+  
+
+value={mealSearch}
+    onChange={(e)=>{
+      setMealSearch(e.target.value)
+    }}
+
+        onFocus={() => {
+      setShowDropdown2(true);
+      console.log("focus")   
+    }}
+
+    onBlur={()=>setShowDropdown2(false)}
+
+    />
   </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   {/* <!-- Room Type --> */}
-  <div className="flex flex-col">
+  <div className="flex flex-col relative">   
+      {showDropdown3 && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+  onMouseDown={(e) => e.preventDefault()}   // <-- prevent blur while clicking
+>
+      {room.length > 0 &&
+        room.map((val, index) => (
+          <label   key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'  >
+            <input type="radio" name="selectedHotel" value={val} className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+            autoComplete='off'
+              onClick={(e) => {
+                setInputValue3(val.room)
+                // setMeal(val.meal_plan)   
+                // console.log("e",e.target.value);
+                console.log("checking");
+                
+                setRoomSearch(e.target.value)
+                setShowDropdown3(false); // click ke baad dropdown hide
+              }}
+              
+            />
+            {val}
+          </label>
+        ))
+      }
+</div>)}
+
+
+
     <label htmlFor="room-type" className="text-gray-700 font-medium">Room Type</label>
-    <input type="text" id="room-type" placeholder="Room type" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+    <input type="text" id="room-type" placeholder="Room type" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+ 
+
+
+
+
+
+
+    value={roomSearch}
+    onChange={(e)=>{
+ 
+      setRoomSearch(e.target.value)
+    }}
+
+        onFocus={() => {
+      setShowDropdown3(true);
+      console.log("focus")   
+    }}
+
+    onBlur={()=>setShowDropdown3(false)}
+
+    
+    
+    
+    />
   </div>
 </div>
 
-<div className="flex space-x-6 items-end">
+<div className="flex space-x-6 items-end border-2 border-green-400">
   {/* <!-- Pax/Room --> */}
   <div className="flex flex-col">
     <label htmlFor="pax-room" className="text-gray-700 font-medium">Pax/Room</label>
@@ -246,13 +545,235 @@ console.log(stayNights);
   </div>
 </div>
 
+</div>
+
+
+
+<div className="p-4 bg-white rounded shadow-md border-black border-4 w-full">
+
+
+   {/* Static Popup Modal */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg relative">
+            <h2 className="text-xl font-bold mb-4">Duplicate Table</h2>
+
+            {/* Table with static values */}
+           <div>
+            <h2>Given Price- {stayNights[0]}</h2>
+             <table className="border border-gray-300 text-left w-full">
+              <thead className="bg-gray-100">
+                <tr>
+                   <th className="px-4 py-2 border-b border-gray-300"></th>
+                  <th className="px-4 py-2 border-b   text-center"  >Price (INR)</th>
+                  <th className="px-4 py-2 border-b border-gray-300">Quantity</th>
+                  <th className="px-4 py-2 border-b border-gray-300">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="px-4 py-2 border-b border-gray-300">/Room (2P)</td>
+                  <td className="px-4 py-2 border-b border-gray-300">
+                    <input type="number" className='border-black border-2 px-2'/>
+                  </td>
+                  <td className="px-4 py-2 border-b border-gray-300">tes</td>
+                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 border-b border-gray-300">/AWEB</td>
+                  <td className="px-4 py-2 border-b border-gray-300">INR 1200</td>
+                  <td className="px-4 py-2 border-b border-gray-300">No</td>
+                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 border-b border-gray-300">/CWEB</td>
+                  <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
+                  <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+
+                 <tr>
+                  <td className="px-4 py-2 border-b border-gray-300">/CNB</td>
+                  <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
+                  <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+              </tbody>
+            </table>
+
+
+            <div>
+              <div>
+                <input type="checkbox" name="" id="" />
+                <span className='font-bold text-lg'>Keep same prices for other nights:17 Dec</span>
+              </div>
+              <button className='p-3 text-white bg-blue-500 rounded-sm mr-3'>Save</button>
+              <button className='p-3 text-white bg-red-500 rounded-sm'>Cancel</button>
+            </div>
+           </div>
+
+            {/* Close button */}
+            <button  onClick={() => setShowPopup(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg" >✕
+</button>
+          </div>
+        </div>
+      )}
+
+
+
+
+
+
+
+  <h3 className="font-bold text-2xl text-black mb-2">Prices</h3>
+  <p className="mb-4 text-gray-600">Please fill all required fields</p>
+
+  {
+    selectedNights.length > 0 &&
+    <table className=" border border-gray-300 text-left w-full">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="px-4 py-2 border-b border-gray-300">Date</th>
+        <th className="px-4 py-2 border-b border-gray-300">Rate</th>
+        <th className="px-4 py-2 border-b border-gray-300">Given</th>
+      </tr>
+    </thead>
+    <tbody>
+
+{
+  selectedNights.map((val,index)=>(
+       <tr className='' key={index}>
+        <td>{val}</td>
+         <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
+        <td className="px-4 py-2 border-b border-gray-300">Null</td>
+      </tr>
+
+  ))
+}
+   
+
+
+      
+      {/* <tr className="hover:bg-gray-50">
+        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
+        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
+        <td className="px-4 py-2 border-b border-gray-300">Null</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
+        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
+        <td className="px-4 py-2 border-b border-gray-300">Null</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
+        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
+        <td className="px-4 py-2 border-b border-gray-300">Null</td>
+      </tr> */}
+    </tbody>
+  </table>
+  }
+
+  <div className="mt-4 flex gap-2">
+    <button className="px-4 py-2 text-blue-600 border border-gray-500 rounded hover:bg-gray-100" onClick={()=>setShowPopup(true)}>Duplicate</button>
+    <button className="px-4 py-2 text-blue-600 border border-gray-500 rounded hover:bg-gray-100">Remove</button>
+  </div>
+</div>
+{/* deepak */}
+
+
+
 
 
 
 </div>
 
+<div>
+    <h2 className='font-bold'>Any special inclusions in hotels</h2>
+  <p>Add any extra services for hotels e.g, special dinner, honeymoon cake etc.</p>
+  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300">
+  Add services
+</button>
+</div>
+
           </div>
 
+    
+    
+    
+
+
+    {/* Transport and Activities */}
+
+      <div className="p-4">
+      {/* Trigger Div */}
+      <div
+        className="cursor-pointer"
+        onClick={() => {
+          setShowModal(true)
+        }}
+      >
+        <h2 className="font-bold text-2xl text-black">Transports and Activities</h2>
+        <div className="p-2 bg-green-300 flex gap-2 items-center relative">
+          <input type="checkbox" />
+          <span>Same Cab Type for All</span>
+        </div>
+      </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg w-1/2 p-6 relative">
+            {/* Close Button */}
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              onClick={() => setShowModal(false)}
+            >
+              ✕
+            </button>
+
+            <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
+
+            {/* Table */}
+            <table className="w-full border border-gray-300">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
+                  <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border-b border-gray-300 px-4 py-2">
+                    <input type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full" />
+                  </td>
+                  <td className="border-b border-gray-300 px-4 py-2">
+                    <input type="number" placeholder="0" className="border border-gray-400 rounded px-2 py-1 w-full" />
+                  </td>
+                </tr>
+           
+              </tbody>
+            </table>
+
+            {/* Save / Close buttons */}
+            <div className="mt-4 flex  gap-2">
+
+              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Select Cab Types
+              </button>
+
+                            <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+    
         </div>
       ) : (
         <h1 className="text-center text-gray-400 py-10">Loading...</h1>
@@ -262,3 +783,13 @@ console.log(stayNights);
 }
 
 export default NewQuote
+
+
+
+
+
+
+
+
+
+  

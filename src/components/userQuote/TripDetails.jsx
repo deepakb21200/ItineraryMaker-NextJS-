@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FaCalendar, FaMoon, FaUsers, FaUser, FaPhone } from "react-icons/fa";
-import { supabase } from '../../supabase-client'
+import { supabase } from "../../supabase-client"
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Link, useParams } from 'react-router-dom';
 
@@ -10,12 +10,17 @@ function TripDetails() {
    let {id} = useParams()
  
    
+   
   useEffect(()=>{
       async function userData(){
-         const { data, error } = await supabase.from("form_1").select("*").single();
+        //  const { data, error } = await supabase.from("form_1").select("*").single();
+     
+        
+           const { data, error } = await supabase.from("form_1").select("*").eq("formNo", id).single()
+           console.log(data);
+           
          console.log(data)    
          setUserDetails(data)
-
         }
         
         userData()

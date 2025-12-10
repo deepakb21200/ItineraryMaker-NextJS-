@@ -153,7 +153,7 @@ let [flag, setFlag] = useState(false)
         {query.length > 0 && dropdownOpen && (
           query.map((item, index) => (
              
-              <div className="flex flex-col px-3 py-2 cursor-pointer border-b-2 border-grey " key={index}
+              <div className="flex flex-col px-3 py-2 cursor-pointer border-b-2 border-grey" key={index}
                 onMouseDown={() => {   // IMPORTANT: blur se bachne ke liye
         setDetails({ ...details, querysource: item.ListOfQueries });
         setDropdownOpen(false);
@@ -241,7 +241,8 @@ let [flag, setFlag] = useState(false)
         onFocus={() =>  {
           setDropdownOpen2(true)
           queryData2()
-        }} required
+        }}
+         required
         />
    
       </div>

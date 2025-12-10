@@ -1,2 +1,412 @@
 deepakbisht432@gmail.com
 password- deepkabisht4321
+
+
+
+
+{showDropdown && (
+  <>
+    {/* Separate absolute div for "Type to search" */}
+    {inputValue === "" && (
+      <div className='absolute top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'>
+        <div className='px-[12px] py-[8px] text-gray-500'>
+          Type to search
+        </div>
+      </div>
+    )}
+
+    {/* Separate absolute div for stayHotel list */}
+    {inputValue !== "" && stayHotel.length > 0 && (
+      <div className='absolute top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'>
+        {stayHotel.map((val, index) => (
+          <label key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'>
+            <input
+              type="radio"
+              name="selectedHotel"
+              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+            />
+            {val.hotel_name}
+          </label>
+        ))}
+      </div>
+    )}
+  </>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useState } from "react";
+
+export default function HotelMeal() {
+  const [stayHotel, setStayHotel] = useState([
+    { hotel_name: "Hotel A", meal_plan: ["Breakfast", "Lunch", "Dinner"] },
+    { hotel_name: "Hotel B", meal_plan: ["Breakfast", "Dinner"] },
+    { hotel_name: "Hotel C", meal_plan: ["Lunch", "Dinner"] },
+  ]);
+
+  const [inputValue2, setInputValue2] = useState(""); // Selected hotel
+  const [meal, setMeal] = useState([]);               // Meal array
+  const [mealSearch, setMealSearch] = useState("");   // Temporary meal input
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown2, setShowDropdown2] = useState(false);
+
+  return (
+    <div className="flex flex-col w-80 p-4">
+      
+      {/* Hotel Input */}
+      <label className="text-gray-700 font-medium">Hotel</label>
+      <input
+        type="text"
+        placeholder="Hotel name"
+        value={inputValue2}
+        className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        onFocus={() => setShowDropdown(true)}
+        onChange={(e) => setInputValue2(e.target.value)}
+      />
+
+      {/* Hotel Dropdown */}
+      {showDropdown && stayHotel.length > 0 && (
+        <div
+          className="absolute mt-1 w-80 max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow animate-fadeIn"
+          onMouseDown={(e) => e.preventDefault()} // prevent blur
+        >
+          {stayHotel.map((val, index) => (
+            <label
+              key={index}
+              className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+            >
+              <input
+                type="radio"
+                name="selectedHotel"
+                className="mr-2 appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-transparent focus:outline-none"
+                onClick={() => {
+                  setInputValue2(val.hotel_name);
+                  setMeal(val.meal_plan || []);
+                  setMealSearch(val.meal_plan?.[0] || "");
+                  setShowDropdown(false);
+                  setShowDropdown2(false);
+                }}
+              />
+              {val.hotel_name}
+            </label>
+          ))}
+        </div>
+      )}
+
+      {/* Meal Plan Input */}
+      <div className="flex flex-col relative mt-4">
+        <label className="text-gray-700 font-medium">Meal Plan</label>
+        <input
+          type="text"
+          placeholder="Meal plan"
+          value={mealSearch}
+          className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onChange={(e) => setMealSearch(e.target.value)}
+          onFocus={() => { if (meal.length > 0) setShowDropdown2(true) }}
+        />
+
+        {/* Meal Dropdown */}
+        {showDropdown2 && meal.length > 0 && (
+          <div
+            className="absolute mt-1 w-80 max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow animate-fadeIn"
+            onMouseDown={(e) => e.preventDefault()} // prevent blur
+          >
+            {meal.map((m, idx) => (
+              <div
+                key={idx}
+                className="px-3 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+                onClick={() => {
+                  setMealSearch(m);
+                  setShowDropdown2(false);
+                }}
+              >
+                {m}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div className="relative flex flex-col">
+  <label htmlFor="hotel" className="text-gray-700 font-medium">Hotel</label>
+  <input
+    type="text"
+    id="hotel"
+    placeholder="Hotel name"
+    className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    value={inputValue}
+    autoComplete="off"
+    onFocus={() => setShowDropdown(true)}
+    onChange={(e) => setInputValue(e.target.value)}
+  />
+
+  {showDropdown && (
+    <div
+      className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
+      onMouseDown={(e) => e.preventDefault()} // prevent blur while clicking
+    >
+      {stayHotel.length > 0 &&
+        stayHotel.map((val, index) => (
+          <label
+            key={index}
+            className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+          >
+            <input
+              type="radio"
+              name="selectedHotel"
+              className="mr-2 appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-transparent focus:outline-none"
+              onClick={() => {
+                setInputValue(val.hotel_name);        // Hotel select
+                setMeal(val.meal_plan || []);         // Meal array set
+                setMealSearch(val.meal_plan?.[0] || ""); // Meal input first item
+                setShowDropdown(false);
+              }}
+            />
+            {val.hotel_name}
+          </label>
+        ))}
+    </div>
+  )}
+</div>
+
+
+
+
+<div className="flex flex-col relative mt-4">
+  <label htmlFor="meal-plan" className="text-gray-700 font-medium">Meal Plan</label>
+  <input
+    type="text"
+    id="meal-plan"
+    placeholder="Meal plan"
+    className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    value={mealSearch} 
+    onChange={(e) => setMealSearch(e.target.value)} // User editable
+    onFocus={() => { if (meal.length > 0) setShowDropdown2(true) }}
+  />
+
+  {showDropdown2 && meal.length > 0 && (
+    <div
+      className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
+      onMouseDown={(e) => e.preventDefault()} // prevent blur
+    >
+      {meal.map((m, idx) => (
+        <div
+          key={idx}
+          className="px-3 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+          onClick={() => {
+            setMealSearch(m);       // Meal input update
+            setShowDropdown2(false); // hide dropdown
+          }}
+        >
+          {m}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
