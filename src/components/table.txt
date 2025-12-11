@@ -1,0 +1,45 @@
+   <table className="border border-gray-300 text-left w-full">
+              <thead className="bg-gray-100">
+                <tr>
+                   <th className="px-4 py-2 border-b border-gray-300"></th>
+                  <th className="px-4 py-2 border-b   text-center"  >Price (INR)</th>
+                  <th className="px-4 py-2 border-b border-gray-300">Quantity</th>
+                  <th className="px-4 py-2 border-b border-gray-300">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="px-4 py-2 border-b border-gray-300">/Room (2P)</td>
+                  <td className="px-4 py-2 border-b border-gray-300">
+                    <input type="number" className='border-black border-2 px-2'/>
+                  </td>
+                  <td className="px-4 py-2 border-b border-gray-300">tes</td>
+                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 border-b border-gray-300">/AWEB</td>
+                  <td className="px-4 py-2 border-b border-gray-300">INR 1200</td>
+                  <td className="px-4 py-2 border-b border-gray-300">No</td>
+                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 border-b border-gray-300">/CWEB</td>
+                  <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
+                  <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+
+                 <tr>
+                  <td className="px-4 py-2 border-b border-gray-300">/CNB</td>
+                  <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
+                  <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+
+
+                <tr>
+                  <td>Total</td>
+                  <td><sup>Inr</sup></td>
+                </tr>
+              </tbody>
+            </table>

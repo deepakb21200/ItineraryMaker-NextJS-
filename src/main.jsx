@@ -4,12 +4,14 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import LoginContext from './context/LoginContext.jsx'
+import App2 from './App2.jsx'
 
 createRoot(document.getElementById('root')).render(
  
   <BrowserRouter>
   <LoginContext> 
-    <App />
+    {/* <App /> */}
+    <App2/>
   </LoginContext>
      </BrowserRouter>
 

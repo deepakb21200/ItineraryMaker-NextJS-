@@ -394,3 +394,93 @@ const { data, error } = await supabase
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <table className="w-full border border-gray-300">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
+                  <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border-b border-gray-300 px-4 py-2 relative">
+                    <input type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full"  value={carSearch}
+                     onFocus={async() => {
+                     await CarsData()
+                     setShowDropdown5(true)
+
+
+                    }} 
+                    
+                    onBlur={() => setTimeout(() => setShowDropdown5(false), 150)} // small delay
+
+                     onChange={(e)=>setCarSearch(e.target.value)}
+                    />
+
+
+
+                    {
+                      showDropdown5 &&
+                      <div className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()}  >
+
+      {/* {inputValue === "" && <div className="px-3 py-2 text-gray-500">Type to search</div>} */}
+
+      { allCars.length > 0 &&
+        allCars.map((val, index) => (
+
+          <label
+            key={index}
+            className='flex items-center px-[12px] py-[8px] border-b border-gray-200 cursor-pointer' >
+            <input
+              type="radio"
+              name="selectedHotel"
+              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+              onClick={() => {
+                setCarSearch(val.car_name)
+                setShowDropdown5(false);
+              }}/>
+            {val.car_name}
+          </label>
+   
+        ))
+      }
+    </div>
+                    }
+  
+                  </td>
+                  <td className="border-b border-gray-300 px-4 py-2">
+                    <input type="number" placeholder="0" className="border border-gray-400 rounded px-2 py-1 w-full" />
+                  </td>
+                </tr>
+           
+              </tbody>
+            </table>

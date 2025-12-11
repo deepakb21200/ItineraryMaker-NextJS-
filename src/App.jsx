@@ -26,6 +26,7 @@ import DownlaodPDF from './components/dashboard/DownlaodPDF';
 import CustomerDetails from './components/dashboard/CustomerDetails';
 import TripDetails from './components/userQuote/TripDetails';
 import NewQuote from './components/userQuote/NewQuote';
+import Try from './components/userQuote/Try';
  
 
 function App() {
@@ -60,9 +61,24 @@ const [showPreview, setShowPreview] = useState(false)
 
 
 
+
+     <div>
+
+
+     </div>
+
+
+
+
+
+
       <Routes>
         <Route path="/" element={<Home/>} />
+
+           {/* <Route path="/" element={<Try/>} /> */}
+
   {/* <Route path="new-query" element={<NewQuery />} /> */}
+
         <Route  />
         <Route path="/logins" element={<SignIn/>} />
         <Route path="/trips" element={<Dashboard/>}>

@@ -14,6 +14,8 @@ const [showDropdown, setShowDropdown] = useState(false);
 const [showDropdown2, setShowDropdown2] = useState(false);
 const [showDropdown3, setShowDropdown3] = useState(false);
 const [showDropdown4, setShowDropdown4] = useState(false);
+const [showDropdown5, setShowDropdown5] = useState(false);
+let [carSearch, setCarSearch] = useState("")
 const [inputValue, setInputValue] = useState(""); // user ka input
 const [inputValue2, setInputValue2] = useState(""); // meal ka input
 const [inputValue3, setInputValue3] = useState(""); // meal ka input
@@ -28,17 +30,55 @@ let [toggle1, setToggle1] = useState(false)
 let {id} = useParams()
  
 let [showModal, setShowModal] = useState(false)
+let [allCars, setAllcars] = useState([])
 
 
+
+const [additionalCars, setAdditionalCars] = useState([""]); // dynamic inputs
+
+
+
+ const [inputs, setInputs] = useState([""]); 
+
+function handleAddInput(){
+
+  setAdditionalCars([...HandleAddInput, ""])
+}
+
+
+function handleRemove(){
+  setAdditionalCars()
+}
+
+ 
+
+
+
+
+// const [roomDetails, setRoomDetails] = useState({
+//   adultWithExtraBed: "",
+//   childWithExtraBed: "",
+//   childNoBed: "",
+//   noOfRooms: "",
+//   paxRoom: "",
+//   form_no:id
+// });
 
 const [roomDetails, setRoomDetails] = useState({
+  paxRoom: "",
+  noOfRooms: "",
   adultWithExtraBed: "",
   childWithExtraBed: "",
   childNoBed: "",
-  noOfRooms: "",
-  paxRoom: "",
-  form_no:""
+
+  roomPrice: "",     // ← new
+  awebPrice: "",     // ← new
+  cwebPrice: "",     // ← new
+  cnbPrice: "",      // ← new
+
+  form_no:id
 });
+
 
 
 // input change handler
@@ -52,7 +92,12 @@ const RoomHandler = (e) => {
 };
 
 
-
+useEffect(()=>{
+  // console.log(mealSearch);
+  console.log("inputValue", inputValue);
+  
+  
+},[mealSearch])
 
       useEffect(()=>{
           async function userData(){
@@ -116,6 +161,20 @@ const RoomHandler = (e) => {
       }
 
 
+
+       async function CarsData(){
+          const { data, error } = await supabase.from("cars").select("*");
+             console.log(data)    
+            setAllcars(data)
+           
+      }
+
+
+
+
+
+
+
   
 // checkbox change handler
 
@@ -130,6 +189,132 @@ const handleCheckboxChange = (e) => {
 };
 
 
+
+
+
+
+
+
+
+
+
+const saveRoomDetails = async () => {
+  console.log("done");
+
+  const { data, error } = await supabase
+    .from("hotel_pricing")
+    .upsert(
+      {
+        form_no: roomDetails.form_no,
+        pax_room: Number(roomDetails.paxRoom) || 0,
+        no_of_rooms: Number(roomDetails.noOfRooms) || 0,
+        adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
+        child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
+        child_no_bed: Number(roomDetails.childNoBed) || 0,
+        room_price: Number(roomDetails.roomPrice) || 0,
+        aweb_price: Number(roomDetails.awebPrice) || 0,
+        cweb_price: Number(roomDetails.cwebPrice) || 0,
+        cnb_price: Number(roomDetails.cnbPrice) || 0,
+
+
+        hotel_name:inputValue,
+        meal_plan:mealSearch,
+        room_type:roomSearch
+      },
+      {
+        onConflict: 'form_no'  // ← ye ensure kare ki same form_no update ho, insert na ho
+      }
+    )
+    .select(); // inserted/updated row ka data return kare
+    setShowPopup(false)
+
+  if (error) {
+    console.log("Save/Update Error:", error);
+  } else {
+    console.log("Saved/Updated Successfully:", data);
+  }
+};
+
+
+
+
+
+
+
+
+
+const fetchRoomDetails = async () => {
+  const { data, error } = await supabase
+    .from("hotel_pricing")
+    .select("*")
+    .eq("form_no", id) // use the same form_no
+    .single(); // we expect only 1 record per form_no
+
+
+    console.log(data);
+    
+  if (error) {
+    console.log("Fetch Error:", error);
+  } else if (data) {
+    console.log(data);
+    
+    setRoomDetails({
+      paxRoom: data.pax_room.toString(),
+      noOfRooms: data.no_of_rooms.toString(),
+      adultWithExtraBed: data.adult_with_extra_bed.toString(),
+      childWithExtraBed: data.child_with_extra_bed.toString(),
+      childNoBed: data.child_no_bed.toString(),
+      roomPrice: data.room_price.toString(),
+      awebPrice: data.aweb_price.toString(),
+      cwebPrice: data.cweb_price.toString(),
+      cnbPrice: data.cnb_price.toString(),
+      form_no: data.form_no
+  
+    });
+
+    setInputValue(data.hotel_name || "")
+    setMealSearch(data.meal_plan || "")
+    setRoomSearch(data.room_type || "")
+  }
+};
+
+
+
+
+
+useEffect(() => {
+  fetchRoomDetails();
+}, []);
+
+
+
+
+function grandTotal(){
+
+          const roomTotal =
+            roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
+              ? roomDetails.noOfRooms * roomDetails.roomPrice
+              : 0;
+
+          const awebTotal =
+            roomDetails.adultWithExtraBed && roomDetails.awebPrice
+              ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
+              : 0;
+
+          const cwebTotal =
+            roomDetails.childWithExtraBed && roomDetails.cwebPrice
+              ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
+              : 0;
+
+          const cnbTotal =
+            roomDetails.childNoBed && roomDetails.cnbPrice
+              ? roomDetails.childNoBed * roomDetails.cnbPrice
+              : 0;
+
+          return roomTotal + awebTotal + cwebTotal + cnbTotal; 
+    
+
+}
 
 
  return (
@@ -335,18 +520,21 @@ stayNights.length > 0 &&
   {/* <!-- Hotel --> */}
 <div className="relative flex flex-col">
   <label htmlFor="hotel" className="text-gray-700 font-medium">Hotel</label>
+{/* cpS */}
   <input
     type="text"
     id="hotel"
     placeholder="Hotel name"
     className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
     value={inputValue}
+  
     autoComplete='off'
     onFocus={() => {
       setShowDropdown(true);
       getData2();
     }}
     onChange={(e) => setInputValue(e.target.value)}
+ 
     onBlur={() => setTimeout(() => setShowDropdown(false), 150)} // small delay
   />
 
@@ -388,8 +576,6 @@ stayNights.length > 0 &&
 
   {/* <!-- Meal Plan --> */}
   <div className="flex flex-col relative">
-
-
       {showDropdown2 && (
     <div
       className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
@@ -443,25 +629,6 @@ value={mealSearch}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   {/* <!-- Room Type --> */}
   <div className="flex flex-col relative">   
       {showDropdown3 && (
@@ -496,12 +663,6 @@ value={mealSearch}
     <label htmlFor="room-type" className="text-gray-700 font-medium">Room Type</label>
     <input type="text" id="room-type" placeholder="Room type" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
  
-
-
-
-
-
-
     value={roomSearch}
     onChange={(e)=>{
  
@@ -536,7 +697,7 @@ value={mealSearch}
     <label htmlFor="no-of-rooms" className="text-gray-700 font-medium">No. of Rooms</label>
   
 
-    <input type="number" id="no-of-rooms" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"    value={roomDetails.noOfRooms} onChange={RoomHandler}/>
+    <input type="number" name="noOfRooms" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"    value={roomDetails.noOfRooms} onChange={RoomHandler}/>
   </div>
 
   {/* <!-- AWEB --> */}
@@ -577,51 +738,176 @@ value={mealSearch}
             {/* Table with static values */}
            <div>
             <h2>Given Price- {stayNights[0]}</h2>
-             <table className="border border-gray-300 text-left w-full">
-              <thead className="bg-gray-100">
-                <tr>
-                   <th className="px-4 py-2 border-b border-gray-300"></th>
-                  <th className="px-4 py-2 border-b   text-center"  >Price (INR)</th>
-                  <th className="px-4 py-2 border-b border-gray-300">Quantity</th>
-                  <th className="px-4 py-2 border-b border-gray-300">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="px-4 py-2 border-b border-gray-300">/Room (2P)</td>
-                  <td className="px-4 py-2 border-b border-gray-300">
-                    <input type="number" className='border-black border-2 px-2'/>
-                  </td>
-                  <td className="px-4 py-2 border-b border-gray-300">tes</td>
-                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2 border-b border-gray-300">/AWEB</td>
-                  <td className="px-4 py-2 border-b border-gray-300">INR 1200</td>
-                  <td className="px-4 py-2 border-b border-gray-300">No</td>
-                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2 border-b border-gray-300">/CWEB</td>
-                  <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
-                  <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                </tr>
+<table className="border border-gray-300 text-left w-full">
+  <thead className="bg-gray-100">
+    <tr>
+      <th></th>
+      <th className="text-center">Price (INR)</th>
+      <th>Quantity</th>
+      <th>Total</th>
+    </tr>
+  </thead>
 
-                 <tr>
-                  <td className="px-4 py-2 border-b border-gray-300">/CNB</td>
-                  <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
-                  <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                </tr>
+  <tbody>
+
+    {/* ROOM */}
+    <tr>
+      <td>/Room ({roomDetails.paxRoom || 0}P)</td>
+
+      <td className="text-center">
+        {roomDetails.paxRoom ? (
+          <input
+            type="number"
+            name="roomPrice"
+            value={roomDetails.roomPrice}
+            onChange={RoomHandler}
+            className="border px-2 w-24"
+          />
+        ) : "—"}
+      </td>
+
+      {/* QUANTITY */}
+      <td>
+        {roomDetails.paxRoom 
+          ? roomDetails.noOfRooms
+          : "—"}
+      </td>
+
+      {/* TOTAL */}
+      <td>
+        {roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
+          ? roomDetails.noOfRooms * roomDetails.roomPrice
+          : "—"}
+      </td>
+    </tr>
+
+    {/* AWEB */}
+    <tr>
+      <td>/AWEB</td>
+
+      <td className="text-center">
+        {roomDetails.adultWithExtraBed ? (
+          <input
+            type="number"
+            name="awebPrice"
+            value={roomDetails.awebPrice}
+            onChange={RoomHandler}
+            className="border px-2 w-24"
+          />
+        ) : "—"}
+      </td>
+
+      {/* QUANTITY = adultWithExtraBed */}
+      <td>
+        {roomDetails.adultWithExtraBed
+          ? roomDetails.adultWithExtraBed
+          : "—"}
+      </td>
+
+      <td>
+        {roomDetails.adultWithExtraBed && roomDetails.awebPrice
+          ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
+          : "—"}
+      </td>
+    </tr>
+
+    {/* CWEB */}
+    <tr>
+      <td>/CWEB</td>
+
+      <td className="text-center">
+        {roomDetails.childWithExtraBed ? (
+          <input
+            type="number"
+            name="cwebPrice"
+            value={roomDetails.cwebPrice}
+            onChange={RoomHandler}
+            className="border px-2 w-24"
+          />
+        ) : "—"}
+      </td>
+
+      <td>
+        {roomDetails.childWithExtraBed
+          ? roomDetails.childWithExtraBed
+          : "—"}
+      </td>
+
+      <td>
+        {roomDetails.childWithExtraBed && roomDetails.cwebPrice
+          ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
+          : "—"}
+      </td>
+    </tr>
+
+    {/* CNB */}
+    <tr>
+      <td>/CNB</td>
+
+      <td className="text-center">
+        {roomDetails.childNoBed ? (
+          <input
+            type="number"
+            name="cnbPrice"
+            value={roomDetails.cnbPrice}
+            onChange={RoomHandler}
+            className="border px-2 w-24"
+          />
+        ) : "—"}
+      </td>
+
+      <td>
+        {roomDetails.childNoBed
+          ? roomDetails.childNoBed
+          : "—"}
+      </td>
+
+      <td>
+        {roomDetails.childNoBed && roomDetails.cnbPrice
+          ? roomDetails.childNoBed * roomDetails.cnbPrice
+          : "—"}
+      </td>
+    </tr>
+
+    {/* GRAND TOTAL */}
+    <tr className="bg-gray-100 font-semibold">
+      <td>Total</td>
+      <td><sup>INR</sup></td>
+      <td></td>
+      <td>
+        {/* {(() => {
+          const roomTotal =
+            roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
+              ? roomDetails.noOfRooms * roomDetails.roomPrice
+              : 0;
+
+          const awebTotal =
+            roomDetails.adultWithExtraBed && roomDetails.awebPrice
+              ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
+              : 0;
+
+          const cwebTotal =
+            roomDetails.childWithExtraBed && roomDetails.cwebPrice
+              ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
+              : 0;
+
+          const cnbTotal =
+            roomDetails.childNoBed && roomDetails.cnbPrice
+              ? roomDetails.childNoBed * roomDetails.cnbPrice
+              : 0;
+
+          return roomTotal + awebTotal + cwebTotal + cnbTotal; // Show 0 if nothing
+        })()} */}
 
 
-                <tr>
-                  <td>Total</td>
-                  <td><sup>Inr</sup></td>
-                </tr>
-              </tbody>
-            </table>
+        {grandTotal()}
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+
 
 
             <div>
@@ -629,7 +915,7 @@ value={mealSearch}
                 <input type="checkbox" name="" id="" />
                 <span className='font-bold text-lg'>Keep same prices for other nights:17 Dec</span>
               </div>
-              <button className='p-3 text-white bg-blue-500 rounded-sm mr-3'>Save</button>
+              <button className='p-3 text-white bg-blue-500 rounded-sm mr-3' onClick={saveRoomDetails}>Save</button>
               <button className='p-3 text-white bg-red-500 rounded-sm'>Cancel</button>
             </div>
            </div>
@@ -668,7 +954,7 @@ value={mealSearch}
        <tr className='' key={index}>
         <td>{val}</td>
          <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
-        <td className="px-4 py-2 border-b border-gray-300">Null</td>
+        <td className="px-4 py-2 border-b border-gray-300">{grandTotal()== 0 ? "INR 0 ":`INR${grandTotal()}`}</td>
       </tr>
 
   ))
@@ -739,8 +1025,21 @@ value={mealSearch}
         <div className="p-2 bg-green-300 flex gap-2 items-center relative">
           <input type="checkbox" />
           <span>Same Cab Type for All</span>
+          <div>
+            Innova Crysta
+          </div>
         </div>
       </div>
+
+
+
+
+
+
+
+
+
+
 
       {/* Modal */}
       {showModal && (
@@ -766,16 +1065,72 @@ value={mealSearch}
               </thead>
               <tbody>
                 <tr>
-                  <td className="border-b border-gray-300 px-4 py-2">
-                    <input type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full" />
+                  <td className="border-b border-gray-300 px-4 py-2 relative">
+                    <input type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full"  value={carSearch}
+                     onFocus={async() => {
+                     await CarsData()
+                     setShowDropdown5(true)
+
+
+                    }} 
+                    
+                    onBlur={() => setTimeout(() => setShowDropdown5(false), 150)} // small delay
+
+                     onChange={(e)=>setCarSearch(e.target.value)}
+                    />
+
+
+
+                    {
+                      showDropdown5 &&
+                      <div className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()}  >
+
+      {/* {inputValue === "" && <div className="px-3 py-2 text-gray-500">Type to search</div>} */}
+
+      { allCars.length > 0 &&
+        allCars.map((val, index) => (
+
+          <label
+            key={index}
+            className='flex items-center px-[12px] py-[8px] border-b border-gray-200 cursor-pointer' >
+            <input
+              type="radio"
+              name="selectedHotel"
+              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+              onClick={() => {
+                setCarSearch(val.car_name)
+                setShowDropdown5(false);
+              }}/>
+            {val.car_name}
+          </label>
+   
+        ))
+      }
+    </div>
+                    }
+  
                   </td>
-                  <td className="border-b border-gray-300 px-4 py-2">
+                  <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
                     <input type="number" placeholder="0" className="border border-gray-400 rounded px-2 py-1 w-full" />
+                        <button className='border-2 border-black text-black p-1 '  >remove</button>
                   </td>
+                  
+                   
                 </tr>
            
               </tbody>
             </table>
+                                        {/* Last me button */}
+  <button
+    className=' text-left px-[12px] py-[8px] mt-1 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded cursor-pointer'
+    onClick={() => {
+      console.log("Add more clicked");
+      // Yahan tum naya car add karne ka logic daal sakte ho
+    }}
+  >
+    Add More
+  </button>
 
             {/* Save / Close buttons */}
             <div className="mt-4 flex  gap-2">
@@ -800,6 +1155,13 @@ value={mealSearch}
       ) : (
         <h1 className="text-center text-gray-400 py-10">Loading...</h1>
       )}
+
+
+
+
+
+
+
     </>
   );
 }
