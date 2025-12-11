@@ -26,15 +26,30 @@ const [selectedNights, setSelectedNights] = useState([]);
 let [hotelDisplay, setHotelDisplay] = useState(false)
 let [toggle1, setToggle1] = useState(false)
 let {id} = useParams()
-let [adultWithExtraBed, setAdultWithExtraBed]= useState("")
-let [childWithExtraBed, setChildWithExtraBed]= useState("")
-let [childNoBed, setChildNoBed]= useState("")
-
-
-let [showModal, setShowModal] = useState(false)
-let [carData,]
-
  
+let [showModal, setShowModal] = useState(false)
+
+
+
+const [roomDetails, setRoomDetails] = useState({
+  adultWithExtraBed: "",
+  childWithExtraBed: "",
+  childNoBed: "",
+  noOfRooms: "",
+  paxRoom: "",
+  form_no:""
+});
+
+
+// input change handler
+const RoomHandler = (e) => {
+  const { name, value } = e.target;
+
+  setRoomDetails(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
 
 
 
@@ -511,10 +526,8 @@ value={mealSearch}
   {/* <!-- Pax/Room --> */}
   <div className="flex flex-col">
     <label htmlFor="pax-room" className="text-gray-700 font-medium">Pax/Room</label>
-    <input type="number" id="pax-room" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
-
- 
-
+    <input type="number" name="paxRoom" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+      value={roomDetails.paxRoom} onChange={RoomHandler}/>
 
   </div>
  
@@ -523,25 +536,28 @@ value={mealSearch}
     <label htmlFor="no-of-rooms" className="text-gray-700 font-medium">No. of Rooms</label>
   
 
-    <input type="number" id="no-of-rooms" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+    <input type="number" id="no-of-rooms" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"    value={roomDetails.noOfRooms} onChange={RoomHandler}/>
   </div>
 
   {/* <!-- AWEB --> */}
   <div className="flex flex-col">
     <label htmlFor="aweb" className="text-gray-700 font-medium">AWEB</label>
-    <input type="number" id="aweb" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+    <input type="number" name="adultWithExtraBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+      value={roomDetails.adultWithExtraBed}  onChange={RoomHandler}/>
   </div>
 
   {/* <!-- CWEB --> */}
   <div className="flex flex-col">
     <label htmlFor="cweb" className="text-gray-700 font-medium">CWEB</label>
-    <input type="number" id="cweb" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+    <input type="number" name="childWithExtraBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+     value={roomDetails.childWithExtraBed} onChange={RoomHandler}/>
   </div>
 
   {/* <!-- CNB --> */}
   <div className="flex flex-col">
     <label htmlFor="cnb" className="text-gray-700 font-medium">CNB</label>
-    <input type="number" id="cnb" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+    <input type="number" name="childNoBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    value={roomDetails.childNoBed}   onChange={RoomHandler}/>
   </div>
 </div>
 
@@ -597,6 +613,12 @@ value={mealSearch}
                   <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
                   <td className="px-4 py-2 border-b border-gray-300">Yes</td>
                      <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                </tr>
+
+
+                <tr>
+                  <td>Total</td>
+                  <td><sup>Inr</sup></td>
                 </tr>
               </tbody>
             </table>
