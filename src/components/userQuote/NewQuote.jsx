@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { FaArrowLeft } from "react-icons/fa";
 import { supabase } from '../../supabase-client'
 import { useParams } from 'react-router-dom';
@@ -28,34 +28,161 @@ let [roomSearch, setRoomSearch] = useState("")
 let [stayNights, setStayNights] = useState([])
 const [selectedNights, setSelectedNights] = useState([]);
 let [hotelDisplay, setHotelDisplay] = useState(false)
-let [toggle1, setToggle1] = useState(false)
+
 let {id} = useParams()
 let [transportDisplay, setTransportDisplay] = useState(false)
 let [showModal, setShowModal] = useState(false)
 let [allCars, setAllcars] = useState([])
 
-
-const [showDropdown6, setShowDropdown6] = useState(false)
-
-
-
-const [additionalCars, setAdditionalCars] = useState([""]); // dynamic inputs
+ 
 
 let [stayNights2, setStayNights2] = useState([])
 
- const [inputs, setInputs] = useState([""]); 
-
-function handleAddInput(){
-  
-  setAdditionalCars([...handleAddInput, ""])
-}
-
-
-function handleRemove(){
-  setAdditionalCars()
-}
-
  
+ 
+
+
+
+let[ maxRows, setMaxRows] = useState(null)
+let [showCars, setShowCars]= useState([])
+
+
+      const fetchRows = async () => {
+    const { data } = await supabase
+      .from("car_entries")
+      .select("*")
+      .eq("form_no", id);
+
+
+      console.log(data);
+      
+
+
+       if (data) {
+      const mappedRows = data.map(d => ({
+        carName: d.car_name,
+        quantity: d.quantity,
+        showDropdown: false,
+        db_id: d.id
+      }));
+      setRows(mappedRows);
+    }
+    }
+
+
+useEffect(()=>{
+  if(showCars.length >0){
+    fetchRows()
+    
+
+  }
+
+},[showCars])
+
+
+// 22
+const [rows, setRows] = useState([
+  { carName: "", quantity: "", showDropdown: false, db_id: null }
+]);
+
+
+// Row Add
+
+const addRow = () => {
+  if (rows.length < maxRows) {
+    setRows([...rows, { carName: "", quantity: "", showDropdown: false, db_id: null }]);
+  }
+};
+
+
+// Row Remove
+const removeRow = (index) => {
+  setRows(rows.filter((_, i) => i !== index));
+};
+
+// Save (Insert Into Supabase)
+
+
+// const saveCars = async () => {
+//   for (let row of rows) {
+//     await supabase.from("car_entries").insert({
+//       form_no: id,
+//       car_name: row.carName,
+//       quantity: Number(row.quantity)
+//     });
+//   }
+//   alert("Saved!");
+// };
+
+
+const saveCars = async () => {
+  try {
+    // 1️⃣ Fetch existing rows from Supabase for this form_no
+    const { data: dbRows } = await supabase
+      .from("car_entries")
+      .select("*")
+      .eq("form_no", id);
+
+    // 2️⃣ IDs for comparison
+    const dbIds = dbRows.map(r => r.id); // DB me jo rows already hain
+    const uiIds = rows.filter(r => r.db_id).map(r => r.db_id); // UI me jo rows hain with db_id
+
+    // 3️⃣ DELETE → jo UI me nahi hain
+    const toDelete = dbIds.filter(id => !uiIds.includes(id));
+
+    if (toDelete.length) {
+      await supabase.from("car_entries").delete().in("id", toDelete);
+    }
+
+    // 4️⃣ INSERT / UPDATE → UI me jo rows hain
+    for (let row of rows) {
+      if (!row.carName || !row.quantity) continue; // blank skip
+
+      if (row.db_id) {
+        // UPDATE existing row
+        await supabase
+          .from("car_entries")
+          .update({ car_name: row.carName, quantity: Number(row.quantity) })
+          .eq("id", row.db_id);
+      } else {
+        // INSERT new row
+        const { data } = await supabase
+          .from("car_entries")
+          .insert({
+            form_no: id,
+            car_name: row.carName,
+            quantity: Number(row.quantity)
+          })
+          .select();
+        row.db_id = data[0].id; // assign db_id for future updates
+      }
+    }
+fetchRows()
+    alert("Saved successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Error saving data");
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -115,6 +242,7 @@ useEffect(()=>{
              console.log(data)    
              setUserData(data)
              setStayNights(data.nightDates)
+             setMaxRows(data.nightDates.length)
               setStayNights2(data.nightDates)
             //  setSelectedNights(data.nightDates)
             }
@@ -1050,6 +1178,7 @@ value={mealSearch}
 
 
       {/* Modal */}
+
       {showModal && (
         <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg w-1/2 p-6 relative">
@@ -1064,88 +1193,117 @@ value={mealSearch}
             <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
 
             {/* Table */}
-            <table className="w-full border border-gray-300">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
-                  <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="border-b border-gray-300 px-4 py-2 relative">
-                    <input type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full"  value={carSearch}
-                     onFocus={async() => {
-                     await CarsData()
-                     setShowDropdown5(true)
+        <table className="w-full border border-gray-300">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
+      <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
+    </tr>
+  </thead>
 
+  <tbody>
+    {rows.map((row, index) => (
+      <tr key={index}>
+        <td className="border-b border-gray-300 px-4 py-2 relative">
 
-                    }} 
-                    
-                    onBlur={() => setTimeout(() => setShowDropdown5(false), 150)} // small delay
+          {/* CAR INPUT */}
+          <input
+            type="text"
+            placeholder="Enter type"
+            className="border border-gray-400 rounded px-2 py-1 w-full"
+            value={row.carName}
+            onFocus={async () => {
+              await CarsData();
+              const updated = [...rows];
+              updated[index].showDropdown = true;
+              setRows(updated);
+            }}
+            onBlur={() =>
+              setTimeout(() => {
+                const updated = [...rows];
+                updated[index].showDropdown = false;
+                setRows(updated);
+              }, 150)
+            }
+            onChange={(e) => {
+              const updated = [...rows];
+              updated[index].carName = e.target.value;
+              setRows(updated);
+            }}
+          />
 
-                     onChange={(e)=>setCarSearch(e.target.value)}
-                    />
+          {/* DROPDOWN */}
+          {row.showDropdown && (
+            <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
+              onMouseDown={(e) => e.preventDefault()}>
+              {allCars.map((val, i) => (
+                <label
+                  key={i}
+                  className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer"
+                  onClick={() => {
+                    const updated = [...rows];
+                    updated[index].carName = val.car_name;
+                    updated[index].showDropdown = false;
+                    setRows(updated);
+                  }}
+                >
+                  <input type="radio" className="mr-2" /> {val.car_name}
+                </label>
+              ))}
+            </div>
+          )}
+        </td>
 
+        {/* QUANTITY */}
+        <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
+          <input
+            type="number"
+            placeholder="0"
+            className="border border-gray-400 rounded px-2 py-1 w-full"
+            value={row.quantity}
+            onChange={(e) => {
+              const updated = [...rows];
+              updated[index].quantity = e.target.value;
+              setRows(updated);
+            }}
+          />
 
+          {/* REMOVE BUTTON */}
+          {rows.length > 1 && (
+            <button
+              className="border-2 border-black text-black p-1"
+              onClick={() => removeRow(index)}
+            >
+              remove
+            </button>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
-                    {
-                      showDropdown5 &&
-                      <div className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-      onMouseDown={(e) => e.preventDefault()}  >
-
-      {/* {inputValue === "" && <div className="px-3 py-2 text-gray-500">Type to search</div>} */}
-
-      { allCars.length > 0 &&
-        allCars.map((val, index) => (
-
-          <label
-            key={index}
-            className='flex items-center px-[12px] py-[8px] border-b border-gray-200 cursor-pointer' >
-            <input
-              type="radio"
-              name="selectedHotel"
-              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
-              onClick={() => {
-                setCarSearch(val.car_name)
-                setShowDropdown5(false);
-              }}/>
-            {val.car_name}
-          </label>
-   
-        ))
-      }
-    </div>
-                    }
-  
-                  </td>
-                  <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
-                    <input type="number" placeholder="0" className="border border-gray-400 rounded px-2 py-1 w-full" />
-                        <button className='border-2 border-black text-black p-1 '  >remove</button>
-                  </td>
-                  
-                   
-                </tr>
-           
-              </tbody>
-            </table>
                                         {/* Last me button */}
-  <button
-    className=' text-left px-[12px] py-[8px] mt-1 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded cursor-pointer'
-    onClick={() => {
-      console.log("Add more clicked");
-      // Yahan tum naya car add karne ka logic daal sakte ho
-    }}
-  >
-    Add More
-  </button>
+<button
+  className={`px-3 py-2 mt-1 border rounded 
+    ${rows.length >= maxRows ? "bg-gray-200 cursor-not-allowed" : "bg-gray-100 hover:bg-gray-200"}`}
+  onClick={addRow}
+  disabled={rows.length >= maxRows}
+>
+  Add More
+</button>
+
 
             {/* Save / Close buttons */}
             <div className="mt-4 flex  gap-2">
 
-              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                Select Cab Types
-              </button>
+              <button
+  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+  onClick={saveCars}
+>
+  Select Cab Types
+</button>
+
 
                             <button
                 className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"

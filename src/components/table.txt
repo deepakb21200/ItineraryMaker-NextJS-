@@ -1,45 +1,109 @@
-   <table className="border border-gray-300 text-left w-full">
+  {/* Modal */}
+
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg w-1/2 p-6 relative">
+            {/* Close Button */}
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              onClick={() => setShowModal(false)}
+            >
+              ✕
+            </button>
+
+            <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
+
+            {/* Table */}
+            <table className="w-full border border-gray-300">
               <thead className="bg-gray-100">
                 <tr>
-                   <th className="px-4 py-2 border-b border-gray-300"></th>
-                  <th className="px-4 py-2 border-b   text-center"  >Price (INR)</th>
-                  <th className="px-4 py-2 border-b border-gray-300">Quantity</th>
-                  <th className="px-4 py-2 border-b border-gray-300">Total</th>
+                  <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
+                  <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="px-4 py-2 border-b border-gray-300">/Room (2P)</td>
-                  <td className="px-4 py-2 border-b border-gray-300">
-                    <input type="number" className='border-black border-2 px-2'/>
+                  <td className="border-b border-gray-300 px-4 py-2 relative">
+                    <input type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full"  value={carSearch}
+                     onFocus={async() => {
+                     await CarsData()
+                     setShowDropdown5(true)
+
+
+                    }} 
+                    
+                    onBlur={() => setTimeout(() => setShowDropdown5(false), 150)} // small delay
+
+                     onChange={(e)=>setCarSearch(e.target.value)}
+                    />
+
+
+
+                    {
+                      showDropdown5 &&
+                      <div className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()}  >
+
+      {/* {inputValue === "" && <div className="px-3 py-2 text-gray-500">Type to search</div>} */}
+
+      { allCars.length > 0 &&
+        allCars.map((val, index) => (
+
+          <label
+            key={index}
+            className='flex items-center px-[12px] py-[8px] border-b border-gray-200 cursor-pointer' >
+            <input
+              type="radio"
+              name="selectedHotel"
+              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+              onClick={() => {
+                setCarSearch(val.car_name)
+                setShowDropdown5(false);
+              }}/>
+            {val.car_name}
+          </label>
+   
+        ))
+      }
+    </div>
+                    }
+  
                   </td>
-                  <td className="px-4 py-2 border-b border-gray-300">tes</td>
-                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
+                  <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
+                    <input type="number" placeholder="0" className="border border-gray-400 rounded px-2 py-1 w-full" />
+                        <button className='border-2 border-black text-black p-1 '  >remove</button>
+                  </td>
+                  
+                   
                 </tr>
-                <tr>
-                  <td className="px-4 py-2 border-b border-gray-300">/AWEB</td>
-                  <td className="px-4 py-2 border-b border-gray-300">INR 1200</td>
-                  <td className="px-4 py-2 border-b border-gray-300">No</td>
-                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2 border-b border-gray-300">/CWEB</td>
-                  <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
-                  <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                </tr>
-
-                 <tr>
-                  <td className="px-4 py-2 border-b border-gray-300">/CNB</td>
-                  <td className="px-4 py-2 border-b border-gray-300">INR 1500</td>
-                  <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                     <td className="px-4 py-2 border-b border-gray-300">Yes</td>
-                </tr>
-
-
-                <tr>
-                  <td>Total</td>
-                  <td><sup>Inr</sup></td>
-                </tr>
+           
               </tbody>
             </table>
+                                        {/* Last me button */}
+  <button
+    className=' text-left px-[12px] py-[8px] mt-1 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded cursor-pointer'
+    onClick={() => {
+      console.log("Add more clicked");
+      // Yahan tum naya car add karne ka logic daal sakte ho
+    }}
+  >
+    Add More
+  </button>
+
+            {/* Save / Close buttons */}
+            <div className="mt-4 flex  gap-2">
+
+              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Select Cab Types
+              </button>
+
+                            <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
