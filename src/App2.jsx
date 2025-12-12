@@ -10,14 +10,7 @@ function App2() {
 
 
 
-// useEffect(()=>{
-// console.log("call", allCars);
-// }, [allCars])
-
-
-
 let [NoOfCars, setNoOfCars] = useState([])
-
 
 
 
@@ -49,8 +42,7 @@ const handleRemove = (index) => {
   return (
    <>
    
-   {
-
+   {  
     inputs.length > 0 &&
         inputs.map((a, i)=>(
         <Try value={allCars} 
@@ -65,7 +57,7 @@ const handleRemove = (index) => {
 
         <button className='p-3 border-2 border-blue-600 text-black bg-gray-500'
         onClick={()=>{
-            
+
         }}>save</button>
 
    </>

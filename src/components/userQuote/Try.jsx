@@ -102,23 +102,19 @@
 
 
 
-
-
- import { supabase } from '../../supabase-client'
-
 import React, { useEffect, useState } from 'react';
 
 function Try({value, onRemove, NoOfCars, setNoOfCars}) {
 
   const [dropdown, setShowDropdown] = useState(false);
-  const [carSearch, setCarSearch] = useState("");
+  const [carSearch, setCarSearch] = useState("")
 
 
-useEffect(()=>{
-console.log(value,"of");
-
-},[value])
-
+  useEffect(()=>{
+  console.log("sd", NoOfCars);
+  
+  },[NoOfCars])
+  
   return (
     <div className='relative'>
       <input
@@ -148,18 +144,14 @@ console.log(value,"of");
                   type="radio"
                   name={`selectedCar${index}`}
                   className='mr-2 appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
-                   value={val.car_name}   // ← YEH ADD KAREIN
+                   value={val.car_name}   
                   onClick={(e) => {
                     setCarSearch(val.car_name);
                     setShowDropdown(false);
-                    // console.log("vallllllllll", val);
-
+                   // console.log("vallllllllll", val); 
+                   setNoOfCars((prev)=>
+                [...prev, val.car_name])
                       console.log("vallllllllll", val.car_name);
-
-              
-                  
-
-                         
                   }}
                 
                 />

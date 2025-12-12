@@ -15,6 +15,8 @@ const [showDropdown2, setShowDropdown2] = useState(false);
 const [showDropdown3, setShowDropdown3] = useState(false);
 const [showDropdown4, setShowDropdown4] = useState(false);
 const [showDropdown5, setShowDropdown5] = useState(false);
+
+
 let [carSearch, setCarSearch] = useState("")
 const [inputValue, setInputValue] = useState(""); // user ka input
 const [inputValue2, setInputValue2] = useState(""); // meal ka input
@@ -28,21 +30,24 @@ const [selectedNights, setSelectedNights] = useState([]);
 let [hotelDisplay, setHotelDisplay] = useState(false)
 let [toggle1, setToggle1] = useState(false)
 let {id} = useParams()
- 
+let [transportDisplay, setTransportDisplay] = useState(false)
 let [showModal, setShowModal] = useState(false)
 let [allCars, setAllcars] = useState([])
+
+
+const [showDropdown6, setShowDropdown6] = useState(false)
 
 
 
 const [additionalCars, setAdditionalCars] = useState([""]); // dynamic inputs
 
-
+let [stayNights2, setStayNights2] = useState([])
 
  const [inputs, setInputs] = useState([""]); 
 
 function handleAddInput(){
-
-  setAdditionalCars([...HandleAddInput, ""])
+  
+  setAdditionalCars([...handleAddInput, ""])
 }
 
 
@@ -63,6 +68,11 @@ function handleRemove(){
 //   paxRoom: "",
 //   form_no:id
 // });
+
+
+
+
+
 
 const [roomDetails, setRoomDetails] = useState({
   paxRoom: "",
@@ -105,6 +115,7 @@ useEffect(()=>{
              console.log(data)    
              setUserData(data)
              setStayNights(data.nightDates)
+              setStayNights2(data.nightDates)
             //  setSelectedNights(data.nightDates)
             }
 
@@ -448,6 +459,7 @@ stayNights.length > 0 &&
     >
 
      {
+
 stayNights.length > 0 &&
   stayNights.map((date, index) => (
     <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
@@ -458,9 +470,7 @@ stayNights.length > 0 &&
         value={date}
            checked={selectedNights.includes(date)}
             onChange={handleCheckboxChange}
-        className="mr-2"
-
-      />
+        className="mr-2"/>
       <label htmlFor={`night-${index}`}>{date}</label>
     </div>
   ))
@@ -638,7 +648,7 @@ value={mealSearch}
 >
       {room.length > 0 &&
         room.map((val, index) => (
-          <label   key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'  >
+          <label  key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'  >
             <input type="radio" name="selectedHotel" value={val} className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
             autoComplete='off'
               onClick={(e) => {
@@ -875,6 +885,9 @@ value={mealSearch}
       <td><sup>INR</sup></td>
       <td></td>
       <td>
+
+
+
         {/* {(() => {
           const roomTotal =
             roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
@@ -921,6 +934,7 @@ value={mealSearch}
            </div>
 
             {/* Close button */}
+            
             <button  onClick={() => setShowPopup(false)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg" >✕
 </button>
@@ -1035,12 +1049,6 @@ value={mealSearch}
 
 
 
-
-
-
-
-
-
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
@@ -1149,6 +1157,108 @@ value={mealSearch}
           </div>
         </div>
       )}
+
+
+
+   {
+    transportDisplay ? 
+         <button className="bg-blue-600 mt-4 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300">
+  Add services
+</button> :
+  
+<div className="flex flex-col md:flex-row gap-8 p-4">
+  {/* Left form section */}
+  <div className="flex-1 flex  gap-4">
+    <label className="flex flex-col">
+      <span className="font-semibold mb-1">Days</span>
+      <input
+        type="text"
+        placeholder="Select days ..."
+        className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+
+        {showDropdown5 && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
+    >
+
+     {
+stayNights2.length > 0 &&
+  stayNights2.map((date, index) => (
+    <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
+      <input
+        type="checkbox"
+        id={`night-${index}`}
+        name="selectedNights"
+        value={date}
+          //  checked={selectedNights.includes(date)}
+          //   onChange={handleCheckboxChange}
+        className="mr-2"/>
+      <label htmlFor={`night-${index}`}>{date}</label>
+    </div>
+  ))
+}
+
+    </div>
+  )}
+
+
+      
+
+
+    </label>
+
+    <label className="flex flex-col">
+      <span className="font-semibold mb-1">Service Locations</span>
+      <input
+        type="text"
+        placeholder="Type to search"
+        className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+    </label>
+
+    <label className="flex flex-col">
+      <span className="font-semibold mb-1">Service Type</span>
+      <input
+        type="text"
+        className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+    </label>
+  </div>
+
+  {/* Right table section */}
+  <div className="flex-1 overflow-x-auto">
+    <table className="min-w-full border border-gray-300 rounded overflow-hidden">
+      <thead className="bg-gray-100">
+        <tr>
+          <th className="border px-4 py-2 text-left">Transportation</th>
+          <th className="border px-4 py-2 text-left">Rate</th>
+          <th className="border px-4 py-2 text-left">Given</th>
+        </tr>
+      </thead>
+      <tbody>
+        {/* Example row */}
+        <tr>
+          <td className="border px-4 py-2">Bus</td>
+          <td className="border px-4 py-2">$10</td>
+          <td className="border px-4 py-2">Yes</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+   }
+
+
+
+
+
+
+
     </div>
     
         </div>

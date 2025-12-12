@@ -10,8 +10,8 @@ createRoot(document.getElementById('root')).render(
  
   <BrowserRouter>
   <LoginContext> 
-    {/* <App /> */}
-    <App2/>
+    <App />
+    {/* <App2/> */}
   </LoginContext>
      </BrowserRouter>
 
