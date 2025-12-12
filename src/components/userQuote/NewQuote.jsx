@@ -30,7 +30,7 @@ const [selectedNights, setSelectedNights] = useState([]);
 let [hotelDisplay, setHotelDisplay] = useState(false)
 
 let {id} = useParams()
-let [transportDisplay, setTransportDisplay] = useState(false)
+
 let [showModal, setShowModal] = useState(false)
 let [allCars, setAllcars] = useState([])
 
@@ -41,23 +41,21 @@ let [stayNights2, setStayNights2] = useState([])
  
  
 
-
+let [transportDisplay, setTransportDisplay] = useState(false)
 
 let[ maxRows, setMaxRows] = useState(null)
 let [showCars, setShowCars]= useState([])
 
-
       const fetchRows = async () => {
-    const { data } = await supabase
+        
+      const { data } = await supabase
       .from("car_entries")
       .select("*")
       .eq("form_no", id);
 
-
       console.log(data);
-      
 
-
+         
        if (data) {
       const mappedRows = data.map(d => ({
         carName: d.car_name,
@@ -65,16 +63,15 @@ let [showCars, setShowCars]= useState([])
         showDropdown: false,
         db_id: d.id
       }));
+  
       setRows(mappedRows);
     }
     }
 
 
 useEffect(()=>{
-  if(showCars.length >0){
+  if(showCars.length > 0){
     fetchRows()
-    
-
   }
 
 },[showCars])
@@ -664,8 +661,9 @@ stayNights.length > 0 &&
     id="hotel"
     placeholder="Hotel name"
     className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+
     value={inputValue}
-  
+
     autoComplete='off'
     onFocus={() => {
       setShowDropdown(true);
@@ -1256,17 +1254,22 @@ value={mealSearch}
 
         {/* QUANTITY */}
         <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
-          <input
-            type="number"
-            placeholder="0"
-            className="border border-gray-400 rounded px-2 py-1 w-full"
-            value={row.quantity}
+          {/* <input   type="number" placeholder="type here" className="border border-gray-400 rounded px-2 py-1 w-full"  value={row.quantity} min={1}
             onChange={(e) => {
               const updated = [...rows];
               updated[index].quantity = e.target.value;
               setRows(updated);
             }}
-          />
+          /> */}
+
+
+          <input type="number" min="1" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" value={row.quantity ?? 1}
+          
+          onChange={(e) => {
+            const updated = [...rows];
+            updated[index].quantity = Number(e.target.value) || 1;
+            setRows(updated);}}/>
+
 
           {/* REMOVE BUTTON */}
           {rows.length > 1 && (
@@ -1318,98 +1321,97 @@ value={mealSearch}
 
 
 
-   {
-    transportDisplay ? 
-         <button className="bg-blue-600 mt-4 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300">
-  Add services
-</button> :
-  
-<div className="flex flex-col md:flex-row gap-8 p-4">
-  {/* Left form section */}
-  <div className="flex-1 flex  gap-4">
-    <label className="flex flex-col">
-      <span className="font-semibold mb-1">Days</span>
-      <input
-        type="text"
-        placeholder="Select days ..."
-        className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
+ {
+  (!transportDisplay) ? (
+    <button className="bg-blue-600 mt-4 hover:bg-blue-700 text-black font-semibold py-2 px-4 rounded shadow-lg transition duration-300"
+    onClick={()=>setTransportDisplay(true)}>
+      Add services
+    </button>
+  ) : (
+    <div className="flex flex-col md:flex-row gap-8 p-4">
+      {/* Left form section */}
+      <div className="flex-1 flex gap-4">
+        <label className="flex flex-col">
+          <span className="font-semibold mb-1">Days</span>
+       <div className='relative'>
+           <input
+            type="text"
+            placeholder="Select days ..."
+            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onChange={()=>{
+// console.log(stayNights);
 
-        {showDropdown5 && (
-    <div
-      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-      onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
-    >
+    }}
+    onFocus={()=>setShowDropdown5(true)}
+    onBlur={()=>setShowDropdown5(false)}
+          />
+           {showDropdown5 && (
+            <div
+              className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+              onMouseDown={(e) => e.preventDefault()} >
+              {stayNights2.length > 0 &&
+                stayNights2.map((date, index) => (
+                  <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
+                    <input
+                      type="checkbox"
+                      id={`night-${index}`}
+                      name="selectedNights"
+                      value={date}
+                      className="mr-2"
+                      onClick={()=>{
+                        // code here
+                      }}
+                    />
+                    <label htmlFor={`night-${index}`}>{date}</label>
+                  </div>
+                ))}
+            </div>
+          )}
 
-     {
-stayNights2.length > 0 &&
-  stayNights2.map((date, index) => (
-    <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
-      <input
-        type="checkbox"
-        id={`night-${index}`}
-        name="selectedNights"
-        value={date}
-          //  checked={selectedNights.includes(date)}
-          //   onChange={handleCheckboxChange}
-        className="mr-2"/>
-      <label htmlFor={`night-${index}`}>{date}</label>
+       </div>
+         
+        </label>
+
+        <label className="flex flex-col">
+          <span className="font-semibold mb-1">Service Locations</span>
+          <input
+            type="text"
+            placeholder="Type to search"
+            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </label>
+
+        <label className="flex flex-col">
+          <span className="font-semibold mb-1">Service Type</span>
+          <input
+            type="text"
+            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </label>
+      </div>
+
+      {/* Right table section */}
+      <div className="flex-1 overflow-x-auto">
+        <table className="min-w-full border border-gray-300 rounded overflow-hidden">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border px-4 py-2 text-left">Transportation</th>
+              <th className="border px-4 py-2 text-left">Rate</th>
+              <th className="border px-4 py-2 text-left">Given</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border px-4 py-2"></td>
+              <td className="border px-4 py-2"></td>
+              <td className="border px-4 py-2"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  ))
+  )
 }
-
-    </div>
-  )}
-
-
-      
-
-
-    </label>
-
-    <label className="flex flex-col">
-      <span className="font-semibold mb-1">Service Locations</span>
-      <input
-        type="text"
-        placeholder="Type to search"
-        className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-    </label>
-
-    <label className="flex flex-col">
-      <span className="font-semibold mb-1">Service Type</span>
-      <input
-        type="text"
-        className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-    </label>
-  </div>
-
-  {/* Right table section */}
-  <div className="flex-1 overflow-x-auto">
-    <table className="min-w-full border border-gray-300 rounded overflow-hidden">
-      <thead className="bg-gray-100">
-        <tr>
-          <th className="border px-4 py-2 text-left">Transportation</th>
-          <th className="border px-4 py-2 text-left">Rate</th>
-          <th className="border px-4 py-2 text-left">Given</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* Example row */}
-        <tr>
-          <td className="border px-4 py-2">Bus</td>
-          <td className="border px-4 py-2">$10</td>
-          <td className="border px-4 py-2">Yes</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-
-   }
 
 
 
@@ -1420,9 +1422,11 @@ stayNights2.length > 0 &&
     </div>
     
         </div>
-      ) : (
-        <h1 className="text-center text-gray-400 py-10">Loading...</h1>
-      )}
+      ) : 
+      (  <h1 className="text-center text-gray-400 py-10">Loading...</h1>
+      )
+      
+      }
 
 
 
