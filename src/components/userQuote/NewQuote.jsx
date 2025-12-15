@@ -120,21 +120,21 @@ const [selectedServiceLocation, setSelectedServiceLocation] = useState([]);
 // 22
 
 
-// const [rows, setRows] = useState([
-//   { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
-// ]);
-
-
 const [rows, setRows] = useState([
-  {
-    date: stayNights2[0]?.date || "",
-    car_name: "",
-    quantity: "",
-    showDropdown: false,
-    db_id: null,
-    flag: false
-  }
+  { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
 ]);
+
+
+// const [rows, setRows] = useState([
+//   {
+//     date: stayNights2[0]?.date || "",
+//     car_name: "",
+//     quantity: "",
+//     showDropdown: false,
+//     db_id: null,
+//     flag: false
+//   }
+// ]);
 
 
 
@@ -461,7 +461,9 @@ useEffect(() => {
 
 
 
-
+{/* const [rows, setRows] = useState([
+  { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
+]); */}
 
       {/* Modal */}
 
@@ -478,7 +480,9 @@ useEffect(() => {
 
             <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
 
-            {/* Table */}
+
+
+            {/* Table 62*/}
         <table className="w-full border border-gray-300">
   <thead className="bg-gray-100">
     <tr>
@@ -492,10 +496,7 @@ useEffect(() => {
   <tbody>
     {rows.map((row, index) => (
        <tr key={index}>
-
-   
-
-        <td className="border-b border-gray-300 px-4 py-2 relative">
+                <td className="border-b border-gray-300 px-4 py-2 relative">
 
           <input    type="text" placeholder="Enter type" className="border-4  rounded px-2 py-1 w-full"
             value={row.car_name}
@@ -709,23 +710,7 @@ useEffect(() => {
           }} />
       
 
-                 {/* DROPDOWN */}
-    {/* {dayDropdown[index] && (
-      <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto bg-white border z-50 shadow"
-        onMouseDown={(e) => e.preventDefault()}   >
-        {stayNights2.map((date, i) => (
-          <div  key={i} className="flex items-center px-3 py-2 cursor-pointer border-b">
-            <input    type="checkbox" className="mr-2"
-              onClick={() => {
-                const updatedRows = [...rows];
-              // Toggle flag
-             updatedRows[index].flag = !updatedRows[index].flag;
-             setRows(updatedRows);  }}  />
-            <label>{date}</label>
-          </div>
-        ))}
-      </div>
-    )} */}
+ 
 
     {dayDropdown[index] && (
   <div
@@ -753,7 +738,7 @@ useEffect(() => {
   
 
               </div>
-                 {/* {
+                 {
               rows[index].flag == true && (
                     <div  className="  items-center px-3 py-1 border-b border-gray-200">
                          <input   type="checkbox"   checked={true}  className="mr-2"
@@ -763,22 +748,9 @@ useEffect(() => {
       </div>
               )
       
-            } */}
+            }
 
-            {
-  rows[index].flag === true && (
-    <div className="items-center px-3 py-1 border-b border-gray-200">
-      <input
-        type="checkbox"
-        checked={true}
-        className="mr-2"
-        onChange={() => {}}
-      />
-      <span>{stayNights2[index].date} ({stayNights2[index].day})</span>
-    </div>
-  )
-}
-
+  
             </label>
 
 
