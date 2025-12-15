@@ -13,3 +13,48 @@ AWEB = roomDetails.adultWithExtraBed
 CWEB = roomDetails.childWithExtraBed
 
 CNB = roomDetails.childNoBed
+
+
+
+
+
+
+
+
+
+  <tbody>
+      {selectedNights.map((night, index) => (
+        <tr key={index}>
+          <td>
+            {night.date} ({night.day})
+          </td>
+
+          <td>INR N/A</td>
+
+          {/* <td
+  className="cursor-pointer"
+  onClick={() => {
+    setActiveNight(night);   // 👈 kis date ka popup
+    setShowPopup(true);
+  }}
+>
+  {nightPrices[night.date]
+    ? `INR ${nightPrices[night.date]}`
+    : "INR 0"}
+</td> */}
+
+   <td
+            className="cursor-pointer"
+            onClick={() => {
+              setActiveNight(night);
+              setShowPopup(true);
+            }}
+          >
+            {roomDetails.roomPrice[night.date]
+              ? `INR ${roomDetails.roomPrice[night.date]}`
+              : "INR 0"}
+          </td>
+
+        </tr>
+      ))}
+    </tbody>

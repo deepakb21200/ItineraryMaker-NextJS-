@@ -5,6 +5,36 @@ export const context = createContext();
 function LoginContext(props) {
  const [userSession, setUserSession] = useState(null);
 
+
+//hotels
+
+  const [inputValue, setInputValue] = useState("");
+  const [mealSearch, setMealSearch] = useState("");
+  const [roomSearch, setRoomSearch] = useState("");
+  const [nightPrices, setNightPrices] = useState({});
+  
+
+  // 
+
+    const [roomDetails, setRoomDetails] = useState({
+    paxRoom: "",
+    noOfRooms: "",
+    adultWithExtraBed: "",
+    childWithExtraBed: "",
+    childNoBed: "",
+
+    // roomPrice: "",
+        roomPrice: {},
+    awebPrice: "",
+    cwebPrice: "",
+    cnbPrice: "",
+
+    form_no: null
+  });
+
+
+
+
 useEffect(() => {
   fetchUserSession();
 
@@ -29,8 +59,29 @@ const fetchUserSession = async () => {
 const logoutHandler = async () => {
   await supabase.auth.signOut();
 };
+
+
+
+
+
+
+
   return (
-     <context.Provider value={{ userSession, logoutHandler}}>
+     <context.Provider 
+           value={{
+            userSession, logoutHandler,
+        inputValue,
+        setInputValue,
+        mealSearch,
+        setMealSearch,
+        roomSearch,
+        setRoomSearch,
+        nightPrices,
+        setNightPrices,
+        roomDetails,
+        setRoomDetails
+      }}
+     >
       {props.children}
     </context.Provider>
   )

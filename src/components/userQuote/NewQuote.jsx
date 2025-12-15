@@ -1,19 +1,20 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import { FaArrowLeft } from "react-icons/fa";
 import { supabase } from '../../supabase-client'
 import { useParams } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import ExtraServices from './sections/ExtraServices';
 import Hotels from './sections/Hotels';
+import { context } from '../../context/LoginContext';
 
 
 function NewQuote() {
  
 let [userData, setUserData] = useState(null)
  
-let [mealSearch, setMealSearch]= useState("")
+// let [mealSearch, setMealSearch]= useState("")
  
-let [roomSearch, setRoomSearch] = useState("")
+// let [roomSearch, setRoomSearch] = useState("")
 let [stayNights, setStayNights] = useState([])
  
 
@@ -28,7 +29,10 @@ let [allCars, setAllcars] = useState([])
 let [stayNights2, setStayNights2] = useState([])
 
  
+ useEffect(()=>{
+console.log(stayNights,"pp");
  
+ },[stayNights])
  
 
 let [transportDisplay, setTransportDisplay] = useState(false)
@@ -76,11 +80,30 @@ let[ maxRows, setMaxRows] = useState(null)
  
 
 useEffect(()=>{
-  console.log(stayNights,"12");
+ console.log(stayNights2,"staynights2");
+ 
   
-},[stayNights])
+},[stayNights2])
 
  
+const {
+  roomDetails,
+  setRoomDetails,
+  inputValue,
+  mealSearch,
+  roomSearch
+} = useContext(context);
+
+
+
+
+
+
+
+
+
+
+
 
 const [activeDays, setActiveDays] = useState(1);
 const [dayDropdown, setDayDropdown] = useState([]);
@@ -95,9 +118,24 @@ const [selectedServiceLocation, setSelectedServiceLocation] = useState([]);
 
 
 // 22
+
+
+// const [rows, setRows] = useState([
+//   { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
+// ]);
+
+
 const [rows, setRows] = useState([
-  { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
+  {
+    date: stayNights2[0]?.date || "",
+    car_name: "",
+    quantity: "",
+    showDropdown: false,
+    db_id: null,
+    flag: false
+  }
 ]);
+
 
 
 // Row Add
@@ -109,11 +147,51 @@ const addRow = () => {
 };
 
 
+// const addRow = () => {
+//   setRows(prev => {
+//     const nextIndex = prev.length;
+
+//     // ❌ agar dates khatam
+//     if (!stayNights2[nextIndex]) return prev;
+
+//     return [
+//       ...prev,
+//       {
+//         date: stayNights2[nextIndex].date,
+//         car_name: "",
+//         quantity: "",
+//         showDropdown: false,
+//         db_id: null,
+//         flag: false
+//       }
+//     ];
+//   });
+// };
+
+
+
 // Row Remove
+
+
+
+
+// const removeRow = (index) => {
+//   setRows(rows.filter((_, i) => i !== index));
+// };
+ 
+
+
 const removeRow = (index) => {
+  // ❌ agar sirf ek row hai to remove mat karo
+
+  if (rows.length === 1){
+alert("ok")
+return
+  }
+
   setRows(rows.filter((_, i) => i !== index));
 };
- 
+
 
  
  
@@ -242,42 +320,42 @@ useEffect(() => {
       }
 
 
-const saveRoomDetails = async () => {
-  console.log("done");
+// const saveRoomDetails = async () => {
+//   console.log("done");
 
-  const { data, error } = await supabase
-    .from("hotel_pricing")
-    .upsert(
-      {
-        form_no: roomDetails.form_no,
-        pax_room: Number(roomDetails.paxRoom) || 0,
-        no_of_rooms: Number(roomDetails.noOfRooms) || 0,
-        adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
-        child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
-        child_no_bed: Number(roomDetails.childNoBed) || 0,
-        room_price: Number(roomDetails.roomPrice) || 0,
-        aweb_price: Number(roomDetails.awebPrice) || 0,
-        cweb_price: Number(roomDetails.cwebPrice) || 0,
-        cnb_price: Number(roomDetails.cnbPrice) || 0,
+//   const { data, error } = await supabase
+//     .from("hotel_pricing")
+//     .upsert(
+//       {
+//         form_no: roomDetails.form_no,
+//         pax_room: Number(roomDetails.paxRoom) || 0,
+//         no_of_rooms: Number(roomDetails.noOfRooms) || 0,
+//         adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
+//         child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
+//         child_no_bed: Number(roomDetails.childNoBed) || 0,
+//         room_price: Number(roomDetails.roomPrice) || 0,
+//         aweb_price: Number(roomDetails.awebPrice) || 0,
+//         cweb_price: Number(roomDetails.cwebPrice) || 0,
+//         cnb_price: Number(roomDetails.cnbPrice) || 0,
 
 
-        hotel_name:inputValue,
-        meal_plan:mealSearch,
-        room_type:roomSearch
-      },
-      {
-        onConflict: 'form_no'  // ← ye ensure kare ki same form_no update ho, insert na ho
-      }
-    )
-    .select(); // inserted/updated row ka data return kare
-    setShowPopup(false)
+//         hotel_name:inputValue,
+//         meal_plan:mealSearch,
+//         room_type:roomSearch
+//       },
+//       {
+//         onConflict: 'form_no'   
+//       }
+//     )
+//     .select();  
+//     setShowPopup(false)
 
-  if (error) {
-    console.log("Save/Update Error:", error);
-  } else {
-    console.log("Saved/Updated Successfully:", data);
-  }
-};
+//   if (error) {
+//     console.log("Save/Update Error:", error);
+//   } else {
+//     console.log("Saved/Updated Successfully:", data);
+//   }
+// };
 
 
  return (
@@ -343,7 +421,8 @@ const saveRoomDetails = async () => {
           <Hotels 
         formId={id}
         stayNights={stayNights}
-        onSaveRoomDetails={saveRoomDetails}/>
+        // onSaveRoomDetails={saveRoomDetails}
+        />
 
     
     
@@ -354,12 +433,9 @@ const saveRoomDetails = async () => {
 
       <div className="p-4">
       {/* Trigger Div */}
-      <div
-        className="cursor-pointer"
-        onClick={() => {
-          setShowModal(true)
-        }}
-      >
+      <div className="cursor-pointer" onClick={() => {
+                                       setShowModal(true)
+                                          }}>
         <h2 className="font-bold text-2xl text-black">Transports and Activities</h2>
         <div className="p-2 bg-green-300 flex gap-2 items-center relative">
           <input type="checkbox" />
@@ -410,20 +486,18 @@ const saveRoomDetails = async () => {
       <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
     </tr>
   </thead>
+      {/* DROPDOWN 1/11/1111*/}
+
 
   <tbody>
     {rows.map((row, index) => (
        <tr key={index}>
 
-        {/* <tr key={row.db_id || index}> */}
- 
+   
 
- 
         <td className="border-b border-gray-300 px-4 py-2 relative">
 
-          {/* CAR INPUT */}
-
-          <input    type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full"
+          <input    type="text" placeholder="Enter type" className="border-4  rounded px-2 py-1 w-full"
             value={row.car_name}
             onFocus={async () => {
               await CarsData();
@@ -445,7 +519,7 @@ const saveRoomDetails = async () => {
             }}
           />
 
-          {/* DROPDOWN */}
+    
           {row.showDropdown && (
             <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
               onMouseDown={(e) => {
@@ -453,9 +527,7 @@ const saveRoomDetails = async () => {
                       e.stopPropagation()}}>
 
               {allCars.map((val, i) => (
-                <label
-                  key={i}
-                  className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer"
+                <label key={i} className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer"
                   onChange={() => {
                     const updated = [...rows];
                     updated[index].car_name = val.car_name;
@@ -470,7 +542,7 @@ const saveRoomDetails = async () => {
           )}
         </td>
 
-        {/* QUANTITY */}
+ 
         <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
 
           <input type="number" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" value={row.quantity ?? ""}
@@ -482,25 +554,108 @@ const saveRoomDetails = async () => {
             setRows(updated);}}/>
 
 
-          {/* REMOVE BUTTON */}
-          {rows.length > 1 && (
+      
+          
+          {rows.length >= 1 && (
             <button  className="border-2 border-black text-black p-1"  onClick={() => removeRow(index)} >
               remove </button>
-  )}
+            )}
         </td>
       </tr>
     ))}
   </tbody>
+
+{/* <tbody>
+  {rows.map((row, index) => (
+    <tr key={index}>
+
+   
+      <td className="border-b px-4 py-2 relative">
+
+  
+        <div className="text-xs text-gray-500 mb-1">
+          {row.date}
+        </div>
+
+        <input
+          type="text"
+          placeholder="Enter car"
+          className="border rounded px-2 py-1 w-full"
+          value={row.car_name}
+          onFocus={async () => {
+            await CarsData();
+            const updated = [...rows];
+            updated[index].showDropdown = true;
+            setRows(updated);
+          }}
+          onBlur={() => {
+            const updated = [...rows];
+            updated[index].showDropdown = false;
+            setRows(updated);
+          }}
+          onChange={(e) => {
+            const updated = [...rows];
+            updated[index].car_name = e.target.value;
+            setRows(updated);
+          }}
+        />
+
+ 
+        {row.showDropdown && (
+          <div
+            className="absolute top-full left-0 w-full bg-white border shadow z-50"
+            onMouseDown={e => e.preventDefault()}
+          >
+            {allCars.map((val, i) => (
+              <div
+                key={i}
+                className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                onClick={() => {
+                  const updated = [...rows];
+                  updated[index].car_name = val.car_name;
+                  updated[index].showDropdown = false;
+                  setRows(updated);
+                }}
+              >
+                {val.car_name}
+              </div>
+            ))}
+          </div>
+        )}
+      </td>
+ 
+      <td className="border-b px-4 py-2 flex gap-2">
+        <input
+          type="number"
+          min={1}
+          className="border rounded px-2 py-1 w-full"
+          value={row.quantity}
+          onChange={(e) => {
+            const updated = [...rows];
+            updated[index].quantity = Number(e.target.value) || "";
+            setRows(updated);
+          }}
+        />
+
+        {rows.length > 1 && (
+          <button onClick={() => removeRow(index)}>remove</button>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody> */}
+
+  
 </table>
 
-                                        {/* Last me button */}
+                          
 <button className={`px-3 py-2 mt-1 border rounded 
     ${rows.length >= maxRows ? "bg-gray-200 cursor-not-allowed" : "bg-gray-100 hover:bg-gray-200"}`}
   onClick={addRow}
   disabled={rows.length >= maxRows}>Add More</button>
 
 
-            {/* Save / Close buttons */}
+        
             <div className="mt-4 flex  gap-2">
 
               <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -532,28 +687,30 @@ const saveRoomDetails = async () => {
       {stayNights2.slice(0, activeDays).map((day, index) => (
         <div key={index} className="flex flex-col md:flex-row gap-8 p-4 border   rounded">
           
-          {/* LEFT */}
+      
           <div className="flex-1 flex gap-4">
-            <label className="flex flex-col">
-              <span className="font-semibold mb-1">
-                Days
-              </span>
+            <label className="flex flex-col border-4 border-black">
+              <span className="font-semibold mb-1"> Days</span>
               <div className='relative'>
                 <input type="text"  className="border rounded px-3 py-2"
+
                   onFocus={() => {
+         const arr = [...dayDropdown];
+         arr[index] = true;
+         setDayDropdown(arr);
+         console.log("focus on");
+          }}
+
+        onBlur={() => {
         const arr = [...dayDropdown];
-        arr[index] = true;
-        setDayDropdown(arr);
-      }}
-      onBlur={() => {
-        const arr = [...dayDropdown];
-        arr[index] = false;
-        setDayDropdown(arr);
-      }} />
+         arr[index] = false;
+         setDayDropdown(arr);
+         console.log("focus of");
+          }} />
       
 
                  {/* DROPDOWN */}
-    {dayDropdown[index] && (
+    {/* {dayDropdown[index] && (
       <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto bg-white border z-50 shadow"
         onMouseDown={(e) => e.preventDefault()}   >
         {stayNights2.map((date, i) => (
@@ -568,13 +725,35 @@ const saveRoomDetails = async () => {
           </div>
         ))}
       </div>
-    )}
+    )} */}
+
+    {dayDropdown[index] && (
+  <div
+    className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto bg-white border z-50 shadow"
+    onMouseDown={(e) => e.preventDefault()} >
+    {stayNights2.map((night, i) => (
+      <div key={i} className="flex items-center px-3 py-2 cursor-pointer border-b" >
+        <input type="checkbox" className="mr-2"
+          onClick={() => {
+            const updatedRows = [...rows];
+            updatedRows[index].flag = !updatedRows[index].flag;
+            setRows(updatedRows);
+          }}  />
+
+        <label>
+          {night.date} ({night.day})
+        </label>
+      </div>
+    ))}
+  </div>
+)}
+
 
 
   
 
               </div>
-                 {
+                 {/* {
               rows[index].flag == true && (
                     <div  className="  items-center px-3 py-1 border-b border-gray-200">
                          <input   type="checkbox"   checked={true}  className="mr-2"
@@ -583,7 +762,23 @@ const saveRoomDetails = async () => {
         <span>{stayNights2[index]}</span>
       </div>
               )
-            }
+      
+            } */}
+
+            {
+  rows[index].flag === true && (
+    <div className="items-center px-3 py-1 border-b border-gray-200">
+      <input
+        type="checkbox"
+        checked={true}
+        className="mr-2"
+        onChange={() => {}}
+      />
+      <span>{stayNights2[index].date} ({stayNights2[index].day})</span>
+    </div>
+  )
+}
+
             </label>
 
 
@@ -794,7 +989,7 @@ const saveRoomDetails = async () => {
 
  
 
- {activeDays < stayNights2.length && transportDisplay && (
+ {/* {activeDays < stayNights2.length && transportDisplay && (
 <div className='text-right'>
  <button
   className="bg-green-600 text-white px-4 py-2 rounded"
@@ -823,7 +1018,48 @@ const saveRoomDetails = async () => {
   Next
 </button>
   </div>
+)} */}
+
+
+{activeDays < stayNights2.length && transportDisplay && (
+  <div className='text-right'>
+    <button
+      className="bg-green-600 text-white px-4 py-2 rounded"
+      onClick={() => {
+        // 1️⃣ increment activeDays
+        setActiveDays(prev => {
+          const nextDay = prev + 1;
+
+          // 2️⃣ update rows for new day
+          setRows(prevRows => {
+            const copy = [...prevRows];
+
+            // ensure new index exists
+            if (!copy[nextDay - 1]) copy[nextDay - 1] = {};
+
+            // copy previous flag
+            if (copy[prev - 1]?.flag === true) {
+              copy[nextDay - 1] = {
+                ...copy[nextDay - 1],
+                flag: true
+              };
+            }
+
+            return copy;
+          });
+
+          // 3️⃣ update dayDropdown for new day
+          setDayDropdown(prevDropdown => [...prevDropdown, false]);
+
+          return nextDay;
+        });
+      }}
+    >
+      Next
+    </button>
+  </div>
 )}
+
 
 
     {/* any extra or sightseeing in Transportation */}
@@ -860,25 +1096,81 @@ const saveRoomDetails = async () => {
   </table>
  </div>
 
- <div>
-  <h3>Accommodation</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Night</th>
-        <th>Hotel</th>
-        <th>Meal</th>
-        <th>Rooms</th>
-        <th>Price</th>
-      </tr>
-    </thead>
-    <tbody>
+ <div className='ce'>
+ 
 
-    </tbody>
-  </table>
-  <div className='p-2  text-right'>
-    Total: <sup>INR</sup>
+  <div className="ce  rounded-xl  p-4 mt-4">
+  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+    Accommodation
+  </h3>
+
+  <div className="overflow-x-auto">
+    <table className="w-full border border-gray-200 text-sm">
+      <thead className="bg-gray-100">
+        <tr>
+          <th className="px-3 py-2 border text-left font-medium text-gray-700">Night</th>
+          <th className="px-3 py-2 border text-left font-medium text-gray-700">Hotel</th>
+          <th className="px-3 py-2 border text-left font-medium text-gray-700">Meal</th>
+          <th className="px-3 py-2 border text-left font-medium text-gray-700">Rooms</th>
+          <th className="px-3 py-2 border text-right font-medium text-gray-700">Price</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {stayNights.map((data, index) => (
+          <tr
+            key={index}
+            className="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition"
+          >
+            <td className="px-3 py-2 border">
+              {index + 1}, {data.date}
+            </td>
+
+            <td className="px-3 py-2 border">
+              {inputValue || "-"}
+            </td>
+
+            <td className="px-3 py-2 border">
+              {mealSearch || "-"}
+            </td>
+
+            <td className="px-3 py-2 border">
+              <div className="text-gray-700">
+                {roomDetails?.noOfRooms} {roomSearch  || "-"}
+              </div>
+
+              <div className="text-xs text-gray-500 leading-tight">
+  {[
+    roomDetails?.paxRoom && `${roomDetails.paxRoom} Pax`,
+    roomDetails?.adultWithExtraBed && `${roomDetails.adultWithExtraBed} AWEB`,
+    roomDetails?.childWithExtraBed && `${roomDetails.childWithExtraBed} CWEB`,
+    roomDetails?.childNoBed && `${roomDetails.childNoBed} CNB`,
+  ]
+    .filter(Boolean)
+    .join(", ")}
+</div>
+
+            </td>
+
+            <td className="px-3 py-2 border text-right font-semibold text-gray-800">
+              INR {roomDetails?.roomPrice?.[data.date] || 0}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
+
+ <div className="p-2 text-right">
+  Total: <sup>INR</sup>{" "}
+  {Object.values(roomDetails?.roomPrice || {}).reduce(
+    (sum, price) => sum + Number(price || 0) * Number(roomDetails?.noOfRooms || 0),
+    0
+  )}
+</div>
+
+</div>
+
  </div>
 </div>
 
