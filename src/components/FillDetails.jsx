@@ -10,8 +10,7 @@ function FillDetails() {
 
   const [query, setquery] = useState([]);
     const [query2, setquery2] = useState([]);
-  // let [value, setValue] = useState("") 
-  //   let [value2, setValue2] = useState("") 
+ 
    const [dropdownOpen, setDropdownOpen] = useState(false);
     const [dropdownOpen2, setDropdownOpen2] = useState(false);
 
@@ -55,7 +54,7 @@ function FillDetails() {
     })
  
 useEffect(()=>{
-console.log(startDate);
+console.log(startDate,"jo");
 
 },[startDate])
 
@@ -91,15 +90,17 @@ function formFill(e) {
     try {
       console.log("form", details);
 
-      const start = new Date(startDate);
-  const nightDates = [];
+      // const start = new Date(startDate);
+  // const nightDates = [];
 
-  for (let i = 0; i < Number(details.noOfNights); i++) {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    nightDates.push(d.toISOString().split("T")[0]);
-  }
-  console.log("night",nightDates);
+  // for (let i = 0; i < Number(details.noOfNights); i++) {
+  //   const d = new Date(start);
+  //   d.setDate(start.getDate() + i);
+  //   nightDates.push(d.toISOString().split("T")[0]);
+  // }
+  // console.log("night",nightDates);
+
+   const nightDates = generateNightDates(startDate,details.noOfNights)
   
       const { data, error } = await supabase
         .from("form_1")
@@ -397,176 +398,27 @@ export default FillDetails
 
 
 
-{/* <div className="form-wrapper">
+const generateNightDates = (startDate, nights) => {
+  if (!startDate || !nights) return [];
 
-  <form onSubmit={DataSubmit}>
+  const start = new Date(startDate);
+  const dates = [];
 
- 
-    <div className="form-section">
-      <label className="form-label">Query Source</label>
-      <input
-        type="text"
-        name="querysource"
-        placeholder="Type to Search..."
-        className="form-input"
-        value={details.querysource}
-        onChange={formFill}
-      />
-    </div>
+  for (let i = 0; i < Number(nights); i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
 
- 
-    <div className="form-section">
-      <label className="form-label">Reference ID</label>
-      <input
-        type="text"
-        name="referenceid"
-        placeholder="1231231"
-        className="form-input"
-        value={details.referenceid}
-        onChange={formFill}
-      />
-      <p className="small-text">A custom id for your reference regarding the query</p>
-    </div>
+    dates.push({
+      date: d.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+      day: d.toLocaleDateString("en-GB", {
+        weekday: "long",
+      }),
+    });
+  }
 
-
-    <div className="grid-3 form-section">
-
-      <div className='border-2 border-red-500'>
-        <label className="form-label">Destination</label>
-        <input
-          type="text"
-          name="destination"
-          className="form-input relative"
-          placeholder='Type to search...'
-          value={details.destination}
-          onChange={formFill}
-        />
-
-           <div className="absolute top-0 left-0 w-full    bg-[#0f1117]/95 backdrop-blur-xl border border-[#2a2c38] rounded-2xl shadow-2xl  z-50 animate-fadeIn">
-        
-           </div>
-      </div>
-
-      
-      <div>
-        <label className="form-label">Start Date</label>
-        <input
-          type="date"
-          name="startDate"
-          className="form-input"
-          placeholder='MMMM D, YYY'
-          value={details.startDate}
-          onChange={formFill}
-        />
-      </div>
-
-      <div>
-        <label className="form-label">No. of Nights</label>
-        <input
-          type="number"
-          min="1"
-          name="noOfNights"
-            value={details.noOfNights}
-          className="form-input"
-          onChange={formFill}
-        />
-        <h2 className='mt-1'>{details.noOfNights} Nights, {details.noOfNights+1} Days</h2>
-       
-      </div>
-
-    </div>
-
-     
-    <div className="grid-2 form-section">
-      <div>
-        <label className="form-label">No. of Adults</label>
-        <input
-          type="number"
-          name="noOFAdults"
-          min="1"
-          
-          className="form-input"
-          value={details.noOFAdults}
-          onChange={formFill}
-        />
-      </div>
-
-      <div>
-        <label className="form-label">Add children and their ages</label>
-        <button className="btn-green">
-          <CiCirclePlus />
-        </button>
-      </div>
-    </div>
-
- 
-    <div className="grid-2 form-section">
-      <div>
-        <label className="form-label">Name</label>
-        <input
-          type="text"
-          name="userName"
-          placeholder="Anoop Rai"
-          className="form-input"
-          value={details.userName}
-          onChange={formFill}
-        />
-      </div>
-
-      <div>
-        <label className="form-label">Phone</label>
-    
-
-        <div className="phone-box">
-
-          <select
-            name="countryCode"
-            className="form-select"
-            onChange={formFill}
-          >
-            <option value="91">91-IN</option>
-            <option value="1">1-US</option>
-            <option value="44">44-UK</option>
-            <option value="61">61-AU</option>
-            <option value="81">81-JP</option>
-          </select>
-           <input
-          type="text"
-          name="userNumber"
-          className="form-input"
-          value={details.userNumber}
-          onChange={formFill}
-        />
-  
-
-   
-        </div>
-      </div>
-    </div>
-
-    
-    <div className="form-section">
-      <label className="form-label">Comments</label>
-      <textarea
-        name="Comments"
-        className="form-textarea"
-        placeholder="Only 5 star hotels"
-        value={details.Comments}
-        onChange={formFill}
-      ></textarea>
-    </div>
-
-    <button type="submit" className={`${flag ? "btn-red cursor-not-allowed" : "btn-green"}`}
- disabled={flag}>Save</button>
- 
-
-     <button
-  type="button"
-  onClick={() => navigate("/trips/")}
-  className="btn-red ml-2"
->
-  Cancel
-</button>
-
-  </form>
-</div> */}
+  return dates;
+};

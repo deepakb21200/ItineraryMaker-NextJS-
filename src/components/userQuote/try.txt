@@ -1,0 +1,15 @@
+Hotel = inputValue
+Meal Plan = mealSearch
+Room Type = roomSearch
+
+
+
+Pax/Room = roomDetails.paxRoom
+
+No. of Rooms = roomDetails.noOfRooms
+
+AWEB = roomDetails.adultWithExtraBed
+
+CWEB = roomDetails.childWithExtraBed
+
+CNB = roomDetails.childNoBed

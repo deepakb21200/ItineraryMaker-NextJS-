@@ -1,0 +1,1476 @@
+import React, { use, useEffect, useState } from 'react'
+import { FaArrowLeft } from "react-icons/fa";
+import { supabase } from '../../supabase-client'
+import { useParams } from 'react-router-dom';
+
+
+function NewQuote() {
+  const [showPopup, setShowPopup] = useState(false);
+let [userData, setUserData] = useState(null)
+ 
+let [stayHotel, setStayHotel] = useState([])
+ 
+const [showDropdown, setShowDropdown] = useState(false);
+const [showDropdown2, setShowDropdown2] = useState(false);
+const [showDropdown3, setShowDropdown3] = useState(false);
+const [showDropdown4, setShowDropdown4] = useState(false);
+const [showDropdown5, setShowDropdown5] = useState(false);
+
+
+let [carSearch, setCarSearch] = useState("")
+const [inputValue, setInputValue] = useState(""); // user ka input
+const [inputValue2, setInputValue2] = useState(""); // meal ka input
+const [inputValue3, setInputValue3] = useState(""); // meal ka input
+let [meal, setMeal] = useState([])
+let [mealSearch, setMealSearch]= useState("")
+let [room, setRoom] = useState([])
+let [roomSearch, setRoomSearch] = useState("")
+let [stayNights, setStayNights] = useState([])
+const [selectedNights, setSelectedNights] = useState([]);
+let [hotelDisplay, setHotelDisplay] = useState(false)
+
+let {id} = useParams()
+
+let [showModal, setShowModal] = useState(false)
+let [allCars, setAllcars] = useState([])
+
+ 
+
+let [stayNights2, setStayNights2] = useState([])
+
+ 
+ 
+
+let [transportDisplay, setTransportDisplay] = useState(false)
+
+let[ maxRows, setMaxRows] = useState(null)
+let [showCars, setShowCars]= useState([])
+
+      const fetchRows = async () => {
+        
+      const { data } = await supabase
+      .from("car_entries")
+      .select("*")
+      .eq("form_no", id);
+
+      console.log(data);
+
+         
+       if (data) {
+      const mappedRows = data.map(d => ({
+        car_name: d.car_name,
+        quantity: d.quantity,
+        showDropdown: false,
+        db_id: d.id
+      }));
+
+
+      console.log(mappedRows);
+      
+  
+      setRows(mappedRows);
+    }
+    }
+
+ 
+
+
+useEffect(()=>{
+  if(showCars.length > 0){
+    fetchRows()
+  }
+
+},[showCars])
+
+
+// 22
+const [rows, setRows] = useState([
+  { car_name: "", quantity: "", showDropdown: false, db_id: null }
+]);
+
+
+// Row Add
+
+const addRow = () => {
+  if (rows.length < maxRows) {
+    setRows([...rows, { car_name: "", quantity: "", showDropdown: false, db_id: null }]);
+  }
+};
+
+
+// Row Remove
+const removeRow = (index) => {
+  setRows(rows.filter((_, i) => i !== index));
+};
+
+// Save (Insert Into Supabase)
+
+
+// const saveCars = async () => {
+//   for (let row of rows) {
+//     await supabase.from("car_entries").insert({
+//       form_no: id,
+//       car_name: row.,
+//       quantity: Number(row.quantity)
+//     });
+//   }
+//   alert("Saved!");
+// };
+
+
+const saveCars = async () => {
+  try {
+    // 1️⃣ Fetch existing rows from Supabase for this form_no
+    const { data: dbRows } = await supabase
+      .from("car_entries")
+      .select("*")
+      .eq("form_no", id);
+
+    // 2️⃣ IDs for comparison
+    const dbIds = dbRows.map(r => r.id); // DB me jo rows already hain
+    const uiIds = rows.filter(r => r.db_id).map(r => r.db_id); // UI me jo rows hain with db_id
+
+    // 3️⃣ DELETE → jo UI me nahi hain
+    const toDelete = dbIds.filter(id => !uiIds.includes(id));
+
+    if (toDelete.length) {
+      await supabase.from("car_entries").delete().in("id", toDelete);
+    }
+
+    // 4️⃣ INSERT / UPDATE → UI me jo rows hain
+    for (let row of rows) {
+      if (!row.car_name || !row.quantity) continue; // blank skip
+
+      if (row.db_id) {
+        // UPDATE existing row
+        await supabase
+          .from("car_entries")
+          .update({ car_name: row.car_name, quantity: Number(row.quantity) })
+          .eq("id", row.db_id);
+      } else {
+        // INSERT new row
+        const { data } = await supabase
+          .from("car_entries")
+          .insert({
+            form_no: id,
+            car_name: row.car_name,
+            quantity: Number(row.quantity)
+          })
+          .select();
+        row.db_id = data[0].id; // assign db_id for future updates
+      }
+    }
+fetchRows()
+    alert("Saved successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Error saving data");
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const [roomDetails, setRoomDetails] = useState({
+//   adultWithExtraBed: "",
+//   childWithExtraBed: "",
+//   childNoBed: "",
+//   noOfRooms: "",
+//   paxRoom: "",
+//   form_no:id
+// });
+
+
+
+
+
+
+const [roomDetails, setRoomDetails] = useState({
+  paxRoom: "",
+  noOfRooms: "",
+  adultWithExtraBed: "",
+  childWithExtraBed: "",
+  childNoBed: "",
+
+  roomPrice: "",     // ← new
+  awebPrice: "",     // ← new
+  cwebPrice: "",     // ← new
+  cnbPrice: "",      // ← new
+
+  form_no:id
+});
+
+
+
+// input change handler
+const RoomHandler = (e) => {
+  const { name, value } = e.target;
+
+  setRoomDetails(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
+
+useEffect(()=>{
+  // console.log(mealSearch);
+  console.log("inputValue", inputValue);
+  
+  
+},[mealSearch])
+
+      useEffect(()=>{
+          async function userData(){
+             const { data, error } = await supabase.from("form_1").select("*").eq("formNo",id).single();
+             console.log(data)    
+             setUserData(data)
+             setStayNights(data.nightDates)
+             setMaxRows(data.nightDates.length)
+              setStayNights2(data.nightDates)
+            //  setSelectedNights(data.nightDates)
+            }
+
+            userData()
+      },[])
+    
+      //   return (
+//      userData ? 
+//      <div className='px-4 border-2 py-3'>
+//         <div className='flex items-center gap-2'>
+//             <button><FaArrowLeft /></button>
+//             <span className='font-bold text'>New Quote</span>
+//         </div>
+
+//         <div>
+//             <h3>Basic Details</h3>
+//             <p>Please review basic details for this quote. You can edit these details to provide a quote with different configuration, without changing
+//                 the trip details. </p>
+//         </div>
+
+//         <div>
+//             <table>
+//                 <thead>
+//                     <tr className='uppercase text-left'>
+//                         <th>destination</th>
+//                         <th>start date</th>
+//                         <th>duration</th>
+//                         <th>pax</th>
+//                     </tr>
+//                 </thead>
+//                 <tbody>
+//                     <tr className='font-bold'>
+//                         <td>{userData.destination}</td>
+//                         <td>{userData.startDate}</td>
+//                         <td>{`${userData.noOfNights} nights, ${userData.noOfDays} Days`}</td>
+//                         <td>{userData.noOfAdults} Adults</td>
+//                     </tr>
+//                 </tbody>
+//             </table>
+
+//             <div>
+//                 Edit Basic Details
+//             </div>
+//         </div>
+
+//      </div> : <h1></h1>//   )
+
+
+      async function getData2(){
+          const { data, error } = await supabase.from("Hotels").select("*");
+             console.log(data)    
+             setStayHotel(data)
+           
+      }
+
+
+
+       async function CarsData(){
+          const { data, error } = await supabase.from("cars").select("*");
+             console.log(data)    
+            setAllcars(data)
+           
+      }
+
+
+
+
+
+
+
+  
+// checkbox change handler
+
+const handleCheckboxChange = (e) => {
+  const { value, checked } = e.target;
+
+  if (checked) {
+    setSelectedNights([...selectedNights, value]);
+  } else {
+    setSelectedNights(selectedNights.filter((n) => n !== value));
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+const saveRoomDetails = async () => {
+  console.log("done");
+
+  const { data, error } = await supabase
+    .from("hotel_pricing")
+    .upsert(
+      {
+        form_no: roomDetails.form_no,
+        pax_room: Number(roomDetails.paxRoom) || 0,
+        no_of_rooms: Number(roomDetails.noOfRooms) || 0,
+        adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
+        child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
+        child_no_bed: Number(roomDetails.childNoBed) || 0,
+        room_price: Number(roomDetails.roomPrice) || 0,
+        aweb_price: Number(roomDetails.awebPrice) || 0,
+        cweb_price: Number(roomDetails.cwebPrice) || 0,
+        cnb_price: Number(roomDetails.cnbPrice) || 0,
+
+
+        hotel_name:inputValue,
+        meal_plan:mealSearch,
+        room_type:roomSearch
+      },
+      {
+        onConflict: 'form_no'  // ← ye ensure kare ki same form_no update ho, insert na ho
+      }
+    )
+    .select(); // inserted/updated row ka data return kare
+    setShowPopup(false)
+
+  if (error) {
+    console.log("Save/Update Error:", error);
+  } else {
+    console.log("Saved/Updated Successfully:", data);
+  }
+};
+
+
+
+
+
+
+
+
+
+const fetchRoomDetails = async () => {
+  const { data, error } = await supabase
+    .from("hotel_pricing")
+    .select("*")
+    .eq("form_no", id) // use the same form_no
+    .single(); // we expect only 1 record per form_no
+
+
+    console.log(data);
+    
+  if (error) {
+    console.log("Fetch Error:", error);
+  } else if (data) {
+    console.log(data);
+    
+    setRoomDetails({
+      paxRoom: data.pax_room.toString(),
+      noOfRooms: data.no_of_rooms.toString(),
+      adultWithExtraBed: data.adult_with_extra_bed.toString(),
+      childWithExtraBed: data.child_with_extra_bed.toString(),
+      childNoBed: data.child_no_bed.toString(),
+      roomPrice: data.room_price.toString(),
+      awebPrice: data.aweb_price.toString(),
+      cwebPrice: data.cweb_price.toString(),
+      cnbPrice: data.cnb_price.toString(),
+      form_no: data.form_no
+  
+    });
+
+    setInputValue(data.hotel_name || "")
+    setMealSearch(data.meal_plan || "")
+    setRoomSearch(data.room_type || "")
+  }
+};
+
+
+
+
+
+useEffect(() => {
+  fetchRoomDetails();
+}, []);
+
+
+
+
+function grandTotal(){
+
+          const roomTotal =
+            roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
+              ? roomDetails.noOfRooms * roomDetails.roomPrice
+              : 0;
+
+          const awebTotal =
+            roomDetails.adultWithExtraBed && roomDetails.awebPrice
+              ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
+              : 0;
+
+          const cwebTotal =
+            roomDetails.childWithExtraBed && roomDetails.cwebPrice
+              ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
+              : 0;
+
+          const cnbTotal =
+            roomDetails.childNoBed && roomDetails.cnbPrice
+              ? roomDetails.childNoBed * roomDetails.cnbPrice
+              : 0;
+
+          return roomTotal + awebTotal + cwebTotal + cnbTotal; 
+    
+
+}
+
+
+ return (
+    <>
+
+  {/* <div className='fixed  top-0 right-0 bottom-0 left-0 z-[1000] transition-all duration-[600ms] hidden lg:block' 
+     style={{opacity: toggle1? 1 : 0, visibility: toggle1 ? "visible": "hidden", 
+     backgroundColor: "rgba(2, 6, 12, 0.75)"}} onClick={()=>setToggle1(false)}>
+      </div> */}
+
+
+
+
+      {userData ? (
+        <div className="px-4 py-4 border-2 rounded-lg  mx-auto space-y-6 bg-blue-100">
+          
+          {/* HEADER */}
+          <div className="flex items-center gap-3 mb-4">
+            <button className="p-2 bg-gray-200 rounded hover:bg-gray-300 transition">
+              <FaArrowLeft />
+            </button>
+            <span className="font-bold text-xl">New Quote</span>
+          </div>
+
+          {/* DESCRIPTION */}
+          <div className="space-y-2">
+            <h3 className="font-semibold text-lg">Basic Details</h3>
+            <p className="text-gray-600 text-sm sm:text-base">
+              Please review basic details for this quote. You can edit these details to provide a quote with different configuration, without changing the trip details.
+            </p>
+          </div>
+
+          {/* TABLE + BUTTON ROW */}
+          <div className="flex flex-col  sm:flex-row sm:items-center xl:items-start sm:justify-between xl:justify-start gap-4">
+            
+            {/* TABLE */}
+            <div className="overflow-x-auto   sm:w-auto flex justify-start">
+              <table className=" border-collapse text-left border-2 border-black">
+                <thead>
+                  <tr className="uppercase text-gray-500 text-sm sm:text-base border-b">
+                    <th className="px-3 py-2">Destination</th>
+                    <th className="px-3 py-2">Start Date</th>
+                    <th className="px-3 py-2">Duration</th>
+                    <th className="px-3 py-2">Pax</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="font-semibold  transition rounded-lg">
+                    <td className="px-3 py-2">{userData.destination}</td>
+                    <td className="px-3 py-2">{userData.nightDates[0]}</td>
+                    <td className="px-3 py-2">{`${userData.noOfNights} nights, ${userData.noOfDays} Days`}</td>
+                    <td className="px-3 py-2">{userData.noOFAdults} Adults</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* EDIT BUTTON */}
+            <div className="">
+              <button className="bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 transition w-full sm:w-auto">
+                Edit Basic Details
+              </button>
+            </div>
+
+          </div>
+
+
+          <div className='bg-white p-2 text-black font-semibold'>Package Types / Categories: 1 Option</div>
+
+          <div className='border-4 border-red-500 '>
+            <h2 className='font-bold text-black text-2xl'>Hotels</h2>
+            <p>Please add hotels details</p>
+
+ 
+<button className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300 ${hotelDisplay ? "hidden": "block"}`}
+onClick={()=>setHotelDisplay(true)}>
+  Add Hotel
+</button>
+
+<div className={`border-4 border-yellow-400  flex  ${hotelDisplay ? "border-4 border-yellow-400 ": "hidden"}`}>
+
+<div>
+  
+<div className="flex space-x-6 items-start border-2 border-blue-500">
+ 
+  <div className="flex flex-col relative">
+     {/* <div className='absolute  top-full left-0 w-full max-h-[15vh] overflow-y-auto  text-black  border z-1000 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'>
+{
+stayNights.length > 0 &&
+  stayNights.map((date, index) => (
+    <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
+      <input
+        type="checkbox"
+        id={`night-${index}`}
+        name="selectedNights"
+        value={date}
+        className="mr-2"
+      />
+      <label htmlFor={`night-${index}`}>{date}</label>
+    </div>
+  ))
+}
+
+    </div> */}
+
+
+
+
+
+
+
+    
+    <label htmlFor="stay-nights" className="text-gray-700 font-medium">Stay Nights</label>
+ <div className='relative'>
+     <input type="text" id="stay-nights" placeholder="Enter nights" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    onChange={()=>{
+// console.log(stayNights);
+
+    }}
+    onFocus={()=>setShowDropdown4(true)}
+    onBlur={()=>setShowDropdown4(false)}/>
+
+
+
+
+
+        {showDropdown4 && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
+    >
+
+     {
+
+stayNights.length > 0 &&
+  stayNights.map((date, index) => (
+    <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
+      <input
+        type="checkbox"
+        id={`night-${index}`}
+        name="selectedNights"
+        value={date}
+           checked={selectedNights.includes(date)}
+            onChange={handleCheckboxChange}
+        className="mr-2"/>
+      <label htmlFor={`night-${index}`}>{date}</label>
+    </div>
+  ))
+}
+
+    </div>
+  )}
+ </div>
+
+   {/* Selected nights display */}
+{/* <div className="mt-2 border p-2">
+  {selectedNights.length > 0 && (
+    selectedNights.map((night, index) => (
+      <div key={index} className="flex items-center px-3 py-1 border-b border-gray-200">
+        <input type="checkbox" checked={true} readOnly className="mr-2" onClick={() => handleCheckboxChange()} />
+        <span>{night}</span>
+      </div>
+    ))
+  ) }
+</div> */}
+
+<div className="mt-2 border p-2">
+  {selectedNights.length > 0 &&
+    selectedNights.map((night, index) => (
+      <div key={index} className="flex items-center px-3 py-1 border-b border-gray-200">
+
+        <input
+          type="checkbox"
+          value={night}
+          checked={true}
+          className="mr-2"
+          onChange={handleCheckboxChange}
+        />
+
+        <span>{night}</span>
+      </div>
+    ))
+  }
+</div>
+
+
+
+   
+  </div>
+
+
+
+
+
+
+
+
+
+
+  
+
+  {/* <!-- Hotel --> */}
+<div className="relative flex flex-col">
+  <label htmlFor="hotel" className="text-gray-700 font-medium">Hotel</label>
+{/* cpS */}
+  <input
+    type="text"
+    id="hotel"
+    placeholder="Hotel name"
+    className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+    value={inputValue}
+
+    autoComplete='off'
+    onFocus={() => {
+      setShowDropdown(true);
+      getData2();
+    }}
+    onChange={(e) => setInputValue(e.target.value)}
+ 
+    onBlur={() => setTimeout(() => setShowDropdown(false), 150)} // small delay
+  />
+
+  {showDropdown && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
+    >
+      {inputValue === "" && <div className="px-3 py-2 text-gray-500">Type to search</div>}
+      {inputValue !== "" && stayHotel.length > 0 &&
+        stayHotel.map((val, index) => (
+          <label
+            key={index}
+            className='flex items-center px-[12px] py-[8px] border-b border-gray-200 cursor-pointer'
+          >
+            <input
+              type="radio"
+              name="selectedHotel"
+              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+              onClick={() => {
+                setInputValue(val.hotel_name);
+                setMeal(val.meal_plan);
+                setMealSearch(val.meal_plan[0]);
+                setRoom(val.room);
+       console.log("val.room",val.room);
+       
+                setRoomSearch(val.room[0])
+                setShowDropdown(false);
+              }}
+            />
+            {val.hotel_name}
+          </label>
+        ))
+      }
+    </div>
+  )}
+</div>
+
+
+  {/* <!-- Meal Plan --> */}
+  <div className="flex flex-col relative">
+      {showDropdown2 && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+ onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
+>
+      {meal.length > 0 &&
+        meal.map((val, index) => (
+          <label   key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'  >
+            <input type="radio" name="selectedHotel" value={val} className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+              onClick={(e) => {
+                setInputValue2(val.hotel_name)
+                // setMeal(val.meal_plan)   
+                console.log("e",e.target.value);
+                
+                setMealSearch(e.target.value)
+                setShowDropdown2(false); // click ke baad dropdown hide
+              }}/>
+            {val}
+          </label>
+        ))
+      }
+
+
+
+
+</div>)}
+
+
+
+    <label htmlFor="meal-plan" className="text-gray-700 font-medium">Meal Plan</label>
+    <input type="text" id="meal-plan" placeholder="Meal plan" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+  
+
+value={mealSearch}
+    onChange={(e)=>{
+      setMealSearch(e.target.value)
+    }}
+
+        onFocus={() => {
+      setShowDropdown2(true);
+      console.log("focus")   
+    }}
+
+    onBlur={()=>setShowDropdown2(false)}
+
+    />
+  </div>
+
+
+
+
+
+
+  {/* <!-- Room Type --> */}
+  <div className="flex flex-col relative">   
+      {showDropdown3 && (
+    <div
+      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+  onMouseDown={(e) => e.preventDefault()}   // <-- prevent blur while clicking
+>
+      {room.length > 0 &&
+        room.map((val, index) => (
+          <label  key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'  >
+            <input type="radio" name="selectedHotel" value={val} className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
+            autoComplete='off'
+              onClick={(e) => {
+                setInputValue3(val.room)
+                // setMeal(val.meal_plan)   
+                // console.log("e",e.target.value);
+                console.log("checking");
+                
+                setRoomSearch(e.target.value)
+                setShowDropdown3(false); // click ke baad dropdown hide
+              }}
+              
+            />
+            {val}
+          </label>
+        ))
+      }
+</div>)}
+
+
+
+    <label htmlFor="room-type" className="text-gray-700 font-medium">Room Type</label>
+    <input type="text" id="room-type" placeholder="Room type" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+ 
+    value={roomSearch}
+    onChange={(e)=>{
+ 
+      setRoomSearch(e.target.value)
+    }}
+
+        onFocus={() => {
+      setShowDropdown3(true);
+      console.log("focus")   
+    }}
+
+    onBlur={()=>setShowDropdown3(false)}
+
+    
+    
+    
+    />
+  </div>
+</div>
+
+<div className="flex space-x-6 items-end border-2 border-green-400">
+  {/* <!-- Pax/Room --> */}
+  <div className="flex flex-col">
+    <label htmlFor="pax-room" className="text-gray-700 font-medium">Pax/Room</label>
+    <input type="number" name="paxRoom" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+      value={roomDetails.paxRoom} onChange={RoomHandler}/>
+
+  </div>
+ 
+  {/* <!-- No. of Rooms --> */}
+  <div className="flex flex-col">
+    <label htmlFor="no-of-rooms" className="text-gray-700 font-medium">No. of Rooms</label>
+  
+
+    <input type="number" name="noOfRooms" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"    value={roomDetails.noOfRooms} onChange={RoomHandler}/>
+  </div>
+
+  {/* <!-- AWEB --> */}
+  <div className="flex flex-col">
+    <label htmlFor="aweb" className="text-gray-700 font-medium">AWEB</label>
+    <input type="number" name="adultWithExtraBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+      value={roomDetails.adultWithExtraBed}  onChange={RoomHandler}/>
+  </div>
+
+  {/* <!-- CWEB --> */}
+  <div className="flex flex-col">
+    <label htmlFor="cweb" className="text-gray-700 font-medium">CWEB</label>
+    <input type="number" name="childWithExtraBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+     value={roomDetails.childWithExtraBed} onChange={RoomHandler}/>
+  </div>
+
+  {/* <!-- CNB --> */}
+  <div className="flex flex-col">
+    <label htmlFor="cnb" className="text-gray-700 font-medium">CNB</label>
+    <input type="number" name="childNoBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    value={roomDetails.childNoBed}   onChange={RoomHandler}/>
+  </div>
+</div>
+
+</div>
+
+
+
+<div className="p-4 bg-white rounded shadow-md border-black border-4 w-full">
+
+
+   {/* Static Popup Modal */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg relative">
+            <h2 className="text-xl font-bold mb-4">Duplicate Table</h2>
+
+            {/* Table with static values */}
+           <div>
+            <h2>Given Price- {stayNights[0]}</h2>
+<table className="border border-gray-300 text-left w-full">
+  <thead className="bg-gray-100">
+    <tr>
+      <th></th>
+      <th className="text-center">Price (INR)</th>
+      <th>Quantity</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    {/* ROOM */}
+    <tr>
+      <td>/Room ({roomDetails.paxRoom || 0}P)</td>
+
+      <td className="text-center">
+        {roomDetails.paxRoom ? (
+          <input
+            type="number"
+            name="roomPrice"
+            value={roomDetails.roomPrice}
+            onChange={RoomHandler}
+            className="border px-2 w-24"
+          />
+        ) : "—"}
+      </td>
+
+      {/* QUANTITY */}
+      <td>
+        {roomDetails.paxRoom 
+          ? roomDetails.noOfRooms
+          : "—"}
+      </td>
+
+      {/* TOTAL */}
+      <td>
+        {roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
+          ? roomDetails.noOfRooms * roomDetails.roomPrice
+          : "—"}
+      </td>
+    </tr>
+
+    {/* AWEB */}
+    <tr>
+      <td>/AWEB</td>
+
+      <td className="text-center">
+        {roomDetails.adultWithExtraBed ? (
+          <input
+            type="number"
+            name="awebPrice"
+            value={roomDetails.awebPrice}
+            onChange={RoomHandler}
+            className="border px-2 w-24"
+          />
+        ) : "—"}
+      </td>
+
+      {/* QUANTITY = adultWithExtraBed */}
+      <td>
+        {roomDetails.adultWithExtraBed
+          ? roomDetails.adultWithExtraBed
+          : "—"}
+      </td>
+
+      <td>
+        {roomDetails.adultWithExtraBed && roomDetails.awebPrice
+          ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
+          : "—"}
+      </td>
+    </tr>
+
+    {/* CWEB */}
+    <tr>
+      <td>/CWEB</td>
+
+      <td className="text-center">
+        {roomDetails.childWithExtraBed ? (
+          <input
+            type="number"
+            name="cwebPrice"
+            value={roomDetails.cwebPrice}
+            onChange={RoomHandler}
+            className="border px-2 w-24"
+          />
+        ) : "—"}
+      </td>
+
+      <td>
+        {roomDetails.childWithExtraBed
+          ? roomDetails.childWithExtraBed
+          : "—"}
+      </td>
+
+      <td>
+        {roomDetails.childWithExtraBed && roomDetails.cwebPrice
+          ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
+          : "—"}
+      </td>
+    </tr>
+
+    {/* CNB */}
+    <tr>
+      <td>/CNB</td>
+
+      <td className="text-center">
+        {roomDetails.childNoBed ? (
+          <input
+            type="number"
+            name="cnbPrice"
+            value={roomDetails.cnbPrice}
+            onChange={RoomHandler}
+            className="border px-2 w-24"
+          />
+        ) : "—"}
+      </td>
+
+      <td>
+        {roomDetails.childNoBed
+          ? roomDetails.childNoBed
+          : "—"}
+      </td>
+
+      <td>
+        {roomDetails.childNoBed && roomDetails.cnbPrice
+          ? roomDetails.childNoBed * roomDetails.cnbPrice
+          : "—"}
+      </td>
+    </tr>
+
+    {/* GRAND TOTAL */}
+    <tr className="bg-gray-100 font-semibold">
+      <td>Total</td>
+      <td><sup>INR</sup></td>
+      <td></td>
+      <td>
+
+
+
+        {/* {(() => {
+          const roomTotal =
+            roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
+              ? roomDetails.noOfRooms * roomDetails.roomPrice
+              : 0;
+
+          const awebTotal =
+            roomDetails.adultWithExtraBed && roomDetails.awebPrice
+              ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
+              : 0;
+
+          const cwebTotal =
+            roomDetails.childWithExtraBed && roomDetails.cwebPrice
+              ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
+              : 0;
+
+          const cnbTotal =
+            roomDetails.childNoBed && roomDetails.cnbPrice
+              ? roomDetails.childNoBed * roomDetails.cnbPrice
+              : 0;
+
+          return roomTotal + awebTotal + cwebTotal + cnbTotal; // Show 0 if nothing
+        })()} */}
+
+
+        {grandTotal()}
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+
+
+            <div>
+              <div>
+                <input type="checkbox" name="" id="" />
+                <span className='font-bold text-lg'>Keep same prices for other nights:17 Dec</span>
+              </div>
+              <button className='p-3 text-white bg-blue-500 rounded-sm mr-3' onClick={saveRoomDetails}>Save</button>
+              <button className='p-3 text-white bg-red-500 rounded-sm'>Cancel</button>
+            </div>
+           </div>
+
+            {/* Close button */}
+            
+            <button  onClick={() => setShowPopup(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg" >✕
+</button>
+          </div>
+        </div>
+      )}
+
+
+
+
+
+
+
+  <h3 className="font-bold text-2xl text-black mb-2">Prices</h3>
+  <p className="mb-4 text-gray-600">Please fill all required fields</p>
+
+  {
+    selectedNights.length > 0 &&
+    <table className=" border border-gray-300 text-left w-full">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="px-4 py-2 border-b border-gray-300">Date</th>
+        <th className="px-4 py-2 border-b border-gray-300">Rate</th>
+        <th className="px-4 py-2 border-b border-gray-300">Given</th>
+      </tr>
+    </thead>
+    <tbody>
+
+{
+  selectedNights.map((val,index)=>(
+       <tr className='' key={index}>
+        <td>{val}</td>
+         <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
+        <td className="px-4 py-2 border-b border-gray-300">{grandTotal()== 0 ? "INR 0 ":`INR${grandTotal()}`}</td>
+      </tr>
+
+  ))
+}
+   
+
+
+      
+      {/* <tr className="hover:bg-gray-50">
+        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
+        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
+        <td className="px-4 py-2 border-b border-gray-300">Null</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
+        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
+        <td className="px-4 py-2 border-b border-gray-300">Null</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
+        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
+        <td className="px-4 py-2 border-b border-gray-300">Null</td>
+      </tr> */}
+    </tbody>
+  </table>
+  }
+
+  <div className="mt-4 flex gap-2">
+    <button className="px-4 py-2 text-blue-600 border border-gray-500 rounded hover:bg-gray-100" onClick={()=>setShowPopup(true)}>Duplicate</button>
+    <button className="px-4 py-2 text-blue-600 border border-gray-500 rounded hover:bg-gray-100">Remove</button>
+  </div>
+</div>
+{/* deepak */}
+
+
+
+
+
+
+</div>
+
+<div>
+    <h2 className='font-bold'>Any special inclusions in hotels</h2>
+  <p>Add any extra services for hotels e.g, special dinner, honeymoon cake etc.</p>
+  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300">
+  Add services
+</button>
+</div>
+
+          </div>
+
+    
+    
+    
+
+
+    {/* Transport and Activities */}
+
+      <div className="p-4">
+      {/* Trigger Div */}
+      <div
+        className="cursor-pointer"
+        onClick={() => {
+          setShowModal(true)
+        }}
+      >
+        <h2 className="font-bold text-2xl text-black">Transports and Activities</h2>
+        <div className="p-2 bg-green-300 flex gap-2 items-center relative">
+          <input type="checkbox" />
+          <span>Same Cab Type for All</span>
+          <div>
+            {/* 66 */}
+            Innova Crysta
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      {/* Modal */}
+
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg w-1/2 p-6 relative">
+            {/* Close Button */}
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              onClick={() => setShowModal(false)}
+            >
+              ✕
+            </button>
+
+            <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
+
+            {/* Table */}
+        <table className="w-full border border-gray-300">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
+      <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {rows.map((row, index) => (
+      <tr key={index}>
+        <td className="border-b border-gray-300 px-4 py-2 relative">
+
+          {/* CAR INPUT */}
+          <input
+            type="text"
+            placeholder="Enter type"
+            className="border border-gray-400 rounded px-2 py-1 w-full"
+            value={row.car_name}
+            onFocus={async () => {
+              await CarsData();
+              const updated = [...rows];
+              updated[index].showDropdown = true;
+              setRows(updated);
+            }}
+            // onBlur={() =>
+            //   setTimeout(() => {
+            //     const updated = [...rows];
+            //     updated[index].showDropdown = false;
+            //     setRows(updated);
+            //   }, 150)
+            // }
+
+            onBlur={(e) => {
+  // 👇 If blur happened because user clicked inside dropdown → don't close
+  // if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) {
+  //   return;
+  // }
+
+  const updated = [...rows];
+  updated[index].showDropdown = false;
+  setRows(updated);
+}}
+
+
+
+            onChange={(e) => {
+              const updated = [...rows];
+              updated[index].car_name = e.target.value;
+              setRows(updated);
+            }}
+          />
+
+          {/* DROPDOWN */}
+          {row.showDropdown && (
+            <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
+              onMouseDown={(e) => {
+                e.preventDefault()
+                      e.stopPropagation()}}>
+              {allCars.map((val, i) => (
+                <label
+                  key={i}
+                  className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer"
+                  onClick={() => {
+                    const updated = [...rows];
+                    updated[index].car_name = val.car_name;
+                    updated[index].showDropdown = false;
+                    setRows(updated);
+                  }}
+                >
+                  <input type="radio" className="mr-2" /> {val.car_name}
+                </label>
+              ))}
+            </div>
+          )}
+        </td>
+
+        {/* QUANTITY */}
+        <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
+          {/* <input   type="number" placeholder="type here" className="border border-gray-400 rounded px-2 py-1 w-full"  value={row.quantity} min={1}
+            onChange={(e) => {
+              const updated = [...rows];
+              updated[index].quantity = e.target.value;
+              setRows(updated);
+            }}
+          /> */}
+
+
+          <input type="number" min="1" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" value={row.quantity ?? 1}
+          
+          onChange={(e) => {
+            const updated = [...rows];
+            updated[index].quantity = Number(e.target.value) || 1;
+            setRows(updated);}}/>
+
+
+          {/* REMOVE BUTTON */}
+          {rows.length > 1 && (
+            <button
+              className="border-2 border-black text-black p-1"
+              onClick={() => removeRow(index)}
+            >
+              remove
+            </button>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+                                        {/* Last me button */}
+<button
+  className={`px-3 py-2 mt-1 border rounded 
+    ${rows.length >= maxRows ? "bg-gray-200 cursor-not-allowed" : "bg-gray-100 hover:bg-gray-200"}`}
+  onClick={addRow}
+  disabled={rows.length >= maxRows}
+>
+  Add More
+</button>
+
+
+            {/* Save / Close buttons */}
+            <div className="mt-4 flex  gap-2">
+
+              <button
+  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+  onClick={saveCars}
+>
+  Select Cab Types
+</button>
+
+
+                            <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+ {
+  (!transportDisplay) ? (
+    <button className="bg-blue-600 mt-4 hover:bg-blue-700 text-black font-semibold py-2 px-4 rounded shadow-lg transition duration-300"
+    onClick={()=>setTransportDisplay(true)}>
+      Add services
+    </button>
+  ) : (
+    <div className="flex flex-col md:flex-row gap-8 p-4">
+      {/* Left form section */}
+      <div className="flex-1 flex gap-4">
+        <label className="flex flex-col">
+          <span className="font-semibold mb-1">Days</span>
+       <div className='relative'>
+           <input
+            type="text"
+            placeholder="Select days ..."
+            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onChange={()=>{
+// console.log(stayNights);
+
+    }}
+    onFocus={()=>setShowDropdown5(true)}
+    onBlur={()=>setShowDropdown5(false)}
+ 
+
+          />
+           {showDropdown5 && (
+            <div
+              className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+              onMouseDown={(e) => e.preventDefault()} >
+              {stayNights2.length > 0 &&
+                stayNights2.map((date, index) => (
+                  <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
+                    <input
+                      type="checkbox"
+                      id={`night-${index}`}
+                      name="selectedNights"
+                      value={date}
+                      className="mr-2"
+                      onClick={()=>{
+                        // code here
+                      }}
+                    />
+                    <label htmlFor={`night-${index}`}>{date}</label>
+                  </div>
+                ))}
+            </div>
+          )}
+
+       </div>
+         
+        </label>
+
+        <label className="flex flex-col">
+          <span className="font-semibold mb-1">Service Locations</span>
+          <input
+            type="text"
+            placeholder="Type to search"
+            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </label>
+
+        <label className="flex flex-col">
+          <span className="font-semibold mb-1">Service Type</span>
+          <input
+            type="text"
+            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </label>
+      </div>
+
+      {/* Right table section */}
+      <div className="flex-1 overflow-x-auto">
+        <table className="min-w-full border border-gray-300 rounded overflow-hidden">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border px-4 py-2 text-left">Transportation</th>
+              <th className="border px-4 py-2 text-left">Rate</th>
+              <th className="border px-4 py-2 text-left">Given</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border px-4 py-2"></td>
+              <td className="border px-4 py-2"></td>
+              <td className="border px-4 py-2"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+
+
+
+
+
+
+    </div>
+    
+        </div>
+      ) : 
+      (  <h1 className="text-center text-gray-400 py-10">Loading...</h1>
+      )
+      
+      }
+
+
+
+
+
+
+
+    </>
+  );
+}
+
+export default NewQuote
+
+
+
+
+
+
+
+
+
+  

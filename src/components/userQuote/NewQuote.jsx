@@ -2,32 +2,21 @@ import React, { use, useEffect, useState } from 'react'
 import { FaArrowLeft } from "react-icons/fa";
 import { supabase } from '../../supabase-client'
 import { useParams } from 'react-router-dom';
+import { LogIn } from 'lucide-react';
+import ExtraServices from './sections/ExtraServices';
+import Hotels from './sections/Hotels';
 
 
 function NewQuote() {
-  const [showPopup, setShowPopup] = useState(false);
+ 
 let [userData, setUserData] = useState(null)
  
-let [stayHotel, setStayHotel] = useState([])
- 
-const [showDropdown, setShowDropdown] = useState(false);
-const [showDropdown2, setShowDropdown2] = useState(false);
-const [showDropdown3, setShowDropdown3] = useState(false);
-const [showDropdown4, setShowDropdown4] = useState(false);
-const [showDropdown5, setShowDropdown5] = useState(false);
-
-
-let [carSearch, setCarSearch] = useState("")
-const [inputValue, setInputValue] = useState(""); // user ka input
-const [inputValue2, setInputValue2] = useState(""); // meal ka input
-const [inputValue3, setInputValue3] = useState(""); // meal ka input
-let [meal, setMeal] = useState([])
 let [mealSearch, setMealSearch]= useState("")
-let [room, setRoom] = useState([])
+ 
 let [roomSearch, setRoomSearch] = useState("")
 let [stayNights, setStayNights] = useState([])
-const [selectedNights, setSelectedNights] = useState([]);
-let [hotelDisplay, setHotelDisplay] = useState(false)
+ 
+
 
 let {id} = useParams()
 
@@ -40,11 +29,12 @@ let [stayNights2, setStayNights2] = useState([])
 
  
  
+ 
 
 let [transportDisplay, setTransportDisplay] = useState(false)
 
 let[ maxRows, setMaxRows] = useState(null)
-let [showCars, setShowCars]= useState([])
+// let [showCars, setShowCars]= useState([])
 
       const fetchRows = async () => {
         
@@ -52,34 +42,61 @@ let [showCars, setShowCars]= useState([])
       .from("car_entries")
       .select("*")
       .eq("form_no", id);
+      // console.log(data,"hell");
+      
 
-      console.log(data);
 
-         
        if (data) {
-      const mappedRows = data.map(d => ({
-        carName: d.car_name,
+      let mappedRows = data.map(d => ({
+        car_name: d.car_name,
         quantity: d.quantity,
         showDropdown: false,
         db_id: d.id
       }));
+
+ 
+      console.log(data);
+      
   
-      setRows(mappedRows);
+      
+  
+    
+       if (mappedRows.length === 0) {
+    mappedRows = [{ car_name: "", quantity: "", showDropdown: false, db_id: null }]}
+   setRows(mappedRows);
+
+
     }
     }
 
+ 
+
+
+
+ 
 
 useEffect(()=>{
-  if(showCars.length > 0){
-    fetchRows()
-  }
+  console.log(stayNights,"12");
+  
+},[stayNights])
 
-},[showCars])
+ 
+
+const [activeDays, setActiveDays] = useState(1);
+const [dayDropdown, setDayDropdown] = useState([]);
+// example: [true, false, false]
+const [serviceDropdown, setServiceDropdown] = useState([]);
+
+const [serviceTypeDropdown, setServiceTypeDropdown] = useState([]);
+
+const [selectedServiceType, setSelectedServiceType] = useState([]); 
+const [selectedServiceLocation, setSelectedServiceLocation] = useState([]);
+
 
 
 // 22
 const [rows, setRows] = useState([
-  { carName: "", quantity: "", showDropdown: false, db_id: null }
+  { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
 ]);
 
 
@@ -87,7 +104,7 @@ const [rows, setRows] = useState([
 
 const addRow = () => {
   if (rows.length < maxRows) {
-    setRows([...rows, { carName: "", quantity: "", showDropdown: false, db_id: null }]);
+    setRows([...rows, { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}]);
   }
 };
 
@@ -96,22 +113,10 @@ const addRow = () => {
 const removeRow = (index) => {
   setRows(rows.filter((_, i) => i !== index));
 };
+ 
 
-// Save (Insert Into Supabase)
-
-
-// const saveCars = async () => {
-//   for (let row of rows) {
-//     await supabase.from("car_entries").insert({
-//       form_no: id,
-//       car_name: row.carName,
-//       quantity: Number(row.quantity)
-//     });
-//   }
-//   alert("Saved!");
-// };
-
-
+ 
+ 
 const saveCars = async () => {
   try {
     // 1️⃣ Fetch existing rows from Supabase for this form_no
@@ -133,13 +138,13 @@ const saveCars = async () => {
 
     // 4️⃣ INSERT / UPDATE → UI me jo rows hain
     for (let row of rows) {
-      if (!row.carName || !row.quantity) continue; // blank skip
+      if (!row.car_name || !row.quantity) continue; // blank skip
 
       if (row.db_id) {
         // UPDATE existing row
         await supabase
           .from("car_entries")
-          .update({ car_name: row.carName, quantity: Number(row.quantity) })
+          .update({ car_name: row.car_name, quantity: Number(row.quantity) })
           .eq("id", row.db_id);
       } else {
         // INSERT new row
@@ -147,14 +152,14 @@ const saveCars = async () => {
           .from("car_entries")
           .insert({
             form_no: id,
-            car_name: row.carName,
+            car_name: row.car_name,
             quantity: Number(row.quantity)
           })
           .select();
         row.db_id = data[0].id; // assign db_id for future updates
       }
     }
-fetchRows()
+
     alert("Saved successfully!");
   } catch (err) {
     console.error(err);
@@ -166,77 +171,38 @@ fetchRows()
 
 
 
+useEffect(() => {
+
+     fetchRows();
+
+    
+ 
+    
+ 
+}, [showModal]);
 
 
 
 
 
+  const [services, setServices] = useState([]);
+ 
 
 
 
 
 
+ 
 
 
 
 
-
-
-
-
-// const [roomDetails, setRoomDetails] = useState({
-//   adultWithExtraBed: "",
-//   childWithExtraBed: "",
-//   childNoBed: "",
-//   noOfRooms: "",
-//   paxRoom: "",
-//   form_no:id
-// });
-
-
-
-
-
-
-const [roomDetails, setRoomDetails] = useState({
-  paxRoom: "",
-  noOfRooms: "",
-  adultWithExtraBed: "",
-  childWithExtraBed: "",
-  childNoBed: "",
-
-  roomPrice: "",     // ← new
-  awebPrice: "",     // ← new
-  cwebPrice: "",     // ← new
-  cnbPrice: "",      // ← new
-
-  form_no:id
-});
-
-
-
-// input change handler
-const RoomHandler = (e) => {
-  const { name, value } = e.target;
-
-  setRoomDetails(prev => ({
-    ...prev,
-    [name]: value
-  }));
-};
-
-
-useEffect(()=>{
-  // console.log(mealSearch);
-  console.log("inputValue", inputValue);
-  
-  
-},[mealSearch])
+ 
 
       useEffect(()=>{
           async function userData(){
              const { data, error } = await supabase.from("form_1").select("*").eq("formNo",id).single();
-             console.log(data)    
+            //  console.log(data)    
              setUserData(data)
              setStayNights(data.nightDates)
              setMaxRows(data.nightDates.length)
@@ -246,53 +212,23 @@ useEffect(()=>{
 
             userData()
       },[])
-    
-      //   return (
-//      userData ? 
-//      <div className='px-4 border-2 py-3'>
-//         <div className='flex items-center gap-2'>
-//             <button><FaArrowLeft /></button>
-//             <span className='font-bold text'>New Quote</span>
-//         </div>
-
-//         <div>
-//             <h3>Basic Details</h3>
-//             <p>Please review basic details for this quote. You can edit these details to provide a quote with different configuration, without changing
-//                 the trip details. </p>
-//         </div>
-
-//         <div>
-//             <table>
-//                 <thead>
-//                     <tr className='uppercase text-left'>
-//                         <th>destination</th>
-//                         <th>start date</th>
-//                         <th>duration</th>
-//                         <th>pax</th>
-//                     </tr>
-//                 </thead>
-//                 <tbody>
-//                     <tr className='font-bold'>
-//                         <td>{userData.destination}</td>
-//                         <td>{userData.startDate}</td>
-//                         <td>{`${userData.noOfNights} nights, ${userData.noOfDays} Days`}</td>
-//                         <td>{userData.noOfAdults} Adults</td>
-//                     </tr>
-//                 </tbody>
-//             </table>
-
-//             <div>
-//                 Edit Basic Details
-//             </div>
-//         </div>
-
-//      </div> : <h1></h1>//   )
+ 
 
 
       async function getData2(){
           const { data, error } = await supabase.from("Hotels").select("*");
              console.log(data)    
              setStayHotel(data)
+           
+      }
+
+      let [serviceLocation, setServiceLocation]= useState([])
+      let [serviceName, setserviceName]= useState([])
+
+            async function getData3(){
+          const { data, error } = await supabase.from("services_tour").select("*");
+             console.log(data)    
+             setServiceLocation(data)
            
       }
 
@@ -304,34 +240,6 @@ useEffect(()=>{
             setAllcars(data)
            
       }
-
-
-
-
-
-
-
-  
-// checkbox change handler
-
-const handleCheckboxChange = (e) => {
-  const { value, checked } = e.target;
-
-  if (checked) {
-    setSelectedNights([...selectedNights, value]);
-  } else {
-    setSelectedNights(selectedNights.filter((n) => n !== value));
-  }
-};
-
-
-
-
-
-
-
-
-
 
 
 const saveRoomDetails = async () => {
@@ -372,98 +280,8 @@ const saveRoomDetails = async () => {
 };
 
 
-
-
-
-
-
-
-
-const fetchRoomDetails = async () => {
-  const { data, error } = await supabase
-    .from("hotel_pricing")
-    .select("*")
-    .eq("form_no", id) // use the same form_no
-    .single(); // we expect only 1 record per form_no
-
-
-    console.log(data);
-    
-  if (error) {
-    console.log("Fetch Error:", error);
-  } else if (data) {
-    console.log(data);
-    
-    setRoomDetails({
-      paxRoom: data.pax_room.toString(),
-      noOfRooms: data.no_of_rooms.toString(),
-      adultWithExtraBed: data.adult_with_extra_bed.toString(),
-      childWithExtraBed: data.child_with_extra_bed.toString(),
-      childNoBed: data.child_no_bed.toString(),
-      roomPrice: data.room_price.toString(),
-      awebPrice: data.aweb_price.toString(),
-      cwebPrice: data.cweb_price.toString(),
-      cnbPrice: data.cnb_price.toString(),
-      form_no: data.form_no
-  
-    });
-
-    setInputValue(data.hotel_name || "")
-    setMealSearch(data.meal_plan || "")
-    setRoomSearch(data.room_type || "")
-  }
-};
-
-
-
-
-
-useEffect(() => {
-  fetchRoomDetails();
-}, []);
-
-
-
-
-function grandTotal(){
-
-          const roomTotal =
-            roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
-              ? roomDetails.noOfRooms * roomDetails.roomPrice
-              : 0;
-
-          const awebTotal =
-            roomDetails.adultWithExtraBed && roomDetails.awebPrice
-              ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
-              : 0;
-
-          const cwebTotal =
-            roomDetails.childWithExtraBed && roomDetails.cwebPrice
-              ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
-              : 0;
-
-          const cnbTotal =
-            roomDetails.childNoBed && roomDetails.cnbPrice
-              ? roomDetails.childNoBed * roomDetails.cnbPrice
-              : 0;
-
-          return roomTotal + awebTotal + cwebTotal + cnbTotal; 
-    
-
-}
-
-
  return (
     <>
-
-  {/* <div className='fixed  top-0 right-0 bottom-0 left-0 z-[1000] transition-all duration-[600ms] hidden lg:block' 
-     style={{opacity: toggle1? 1 : 0, visibility: toggle1 ? "visible": "hidden", 
-     backgroundColor: "rgba(2, 6, 12, 0.75)"}} onClick={()=>setToggle1(false)}>
-      </div> */}
-
-
-
-
       {userData ? (
         <div className="px-4 py-4 border-2 rounded-lg  mx-auto space-y-6 bg-blue-100">
           
@@ -500,7 +318,7 @@ function grandTotal(){
                 <tbody>
                   <tr className="font-semibold  transition rounded-lg">
                     <td className="px-3 py-2">{userData.destination}</td>
-                    <td className="px-3 py-2">{userData.nightDates[0]}</td>
+                    <td className="px-3 py-2">{userData.nightDates[0].date}</td>
                     <td className="px-3 py-2">{`${userData.noOfNights} nights, ${userData.noOfDays} Days`}</td>
                     <td className="px-3 py-2">{userData.noOFAdults} Adults</td>
                   </tr>
@@ -520,631 +338,12 @@ function grandTotal(){
 
           <div className='bg-white p-2 text-black font-semibold'>Package Types / Categories: 1 Option</div>
 
-          <div className='border-4 border-red-500 '>
-            <h2 className='font-bold text-black text-2xl'>Hotels</h2>
-            <p>Please add hotels details</p>
 
- 
-<button className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300 ${hotelDisplay ? "hidden": "block"}`}
-onClick={()=>setHotelDisplay(true)}>
-  Add Hotel
-</button>
 
-<div className={`border-4 border-yellow-400  flex  ${hotelDisplay ? "border-4 border-yellow-400 ": "hidden"}`}>
-
-<div>
-  
-<div className="flex space-x-6 items-start border-2 border-blue-500">
- 
-  <div className="flex flex-col relative">
-     {/* <div className='absolute  top-full left-0 w-full max-h-[15vh] overflow-y-auto  text-black  border z-1000 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'>
-{
-stayNights.length > 0 &&
-  stayNights.map((date, index) => (
-    <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
-      <input
-        type="checkbox"
-        id={`night-${index}`}
-        name="selectedNights"
-        value={date}
-        className="mr-2"
-      />
-      <label htmlFor={`night-${index}`}>{date}</label>
-    </div>
-  ))
-}
-
-    </div> */}
-
-
-
-
-
-
-
-    
-    <label htmlFor="stay-nights" className="text-gray-700 font-medium">Stay Nights</label>
- <div className='relative'>
-     <input type="text" id="stay-nights" placeholder="Enter nights" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    onChange={()=>{
-// console.log(stayNights);
-
-    }}
-    onFocus={()=>setShowDropdown4(true)}
-    onBlur={()=>setShowDropdown4(false)}/>
-
-
-
-
-
-        {showDropdown4 && (
-    <div
-      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-      onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
-    >
-
-     {
-
-stayNights.length > 0 &&
-  stayNights.map((date, index) => (
-    <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
-      <input
-        type="checkbox"
-        id={`night-${index}`}
-        name="selectedNights"
-        value={date}
-           checked={selectedNights.includes(date)}
-            onChange={handleCheckboxChange}
-        className="mr-2"/>
-      <label htmlFor={`night-${index}`}>{date}</label>
-    </div>
-  ))
-}
-
-    </div>
-  )}
- </div>
-
-   {/* Selected nights display */}
-{/* <div className="mt-2 border p-2">
-  {selectedNights.length > 0 && (
-    selectedNights.map((night, index) => (
-      <div key={index} className="flex items-center px-3 py-1 border-b border-gray-200">
-        <input type="checkbox" checked={true} readOnly className="mr-2" onClick={() => handleCheckboxChange()} />
-        <span>{night}</span>
-      </div>
-    ))
-  ) }
-</div> */}
-
-<div className="mt-2 border p-2">
-  {selectedNights.length > 0 &&
-    selectedNights.map((night, index) => (
-      <div key={index} className="flex items-center px-3 py-1 border-b border-gray-200">
-
-        <input
-          type="checkbox"
-          value={night}
-          checked={true}
-          className="mr-2"
-          onChange={handleCheckboxChange}
-        />
-
-        <span>{night}</span>
-      </div>
-    ))
-  }
-</div>
-
-
-
-   
-  </div>
-
-
-
-
-
-
-
-
-
-
-  
-
-  {/* <!-- Hotel --> */}
-<div className="relative flex flex-col">
-  <label htmlFor="hotel" className="text-gray-700 font-medium">Hotel</label>
-{/* cpS */}
-  <input
-    type="text"
-    id="hotel"
-    placeholder="Hotel name"
-    className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-    value={inputValue}
-
-    autoComplete='off'
-    onFocus={() => {
-      setShowDropdown(true);
-      getData2();
-    }}
-    onChange={(e) => setInputValue(e.target.value)}
- 
-    onBlur={() => setTimeout(() => setShowDropdown(false), 150)} // small delay
-  />
-
-  {showDropdown && (
-    <div
-      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-      onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
-    >
-      {inputValue === "" && <div className="px-3 py-2 text-gray-500">Type to search</div>}
-      {inputValue !== "" && stayHotel.length > 0 &&
-        stayHotel.map((val, index) => (
-          <label
-            key={index}
-            className='flex items-center px-[12px] py-[8px] border-b border-gray-200 cursor-pointer'
-          >
-            <input
-              type="radio"
-              name="selectedHotel"
-              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
-              onClick={() => {
-                setInputValue(val.hotel_name);
-                setMeal(val.meal_plan);
-                setMealSearch(val.meal_plan[0]);
-                setRoom(val.room);
-       console.log("val.room",val.room);
-       
-                setRoomSearch(val.room[0])
-                setShowDropdown(false);
-              }}
-            />
-            {val.hotel_name}
-          </label>
-        ))
-      }
-    </div>
-  )}
-</div>
-
-
-  {/* <!-- Meal Plan --> */}
-  <div className="flex flex-col relative">
-      {showDropdown2 && (
-    <div
-      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
- onMouseDown={(e) => e.preventDefault()} // <-- prevent blur while clicking
->
-      {meal.length > 0 &&
-        meal.map((val, index) => (
-          <label   key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'  >
-            <input type="radio" name="selectedHotel" value={val} className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
-              onClick={(e) => {
-                setInputValue2(val.hotel_name)
-                // setMeal(val.meal_plan)   
-                console.log("e",e.target.value);
-                
-                setMealSearch(e.target.value)
-                setShowDropdown2(false); // click ke baad dropdown hide
-              }}/>
-            {val}
-          </label>
-        ))
-      }
-
-
-
-
-</div>)}
-
-
-
-    <label htmlFor="meal-plan" className="text-gray-700 font-medium">Meal Plan</label>
-    <input type="text" id="meal-plan" placeholder="Meal plan" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-  
-
-value={mealSearch}
-    onChange={(e)=>{
-      setMealSearch(e.target.value)
-    }}
-
-        onFocus={() => {
-      setShowDropdown2(true);
-      console.log("focus")   
-    }}
-
-    onBlur={()=>setShowDropdown2(false)}
-
-    />
-  </div>
-
-
-
-
-
-
-  {/* <!-- Room Type --> */}
-  <div className="flex flex-col relative">   
-      {showDropdown3 && (
-    <div
-      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-  onMouseDown={(e) => e.preventDefault()}   // <-- prevent blur while clicking
->
-      {room.length > 0 &&
-        room.map((val, index) => (
-          <label  key={index} className='flex items-center px-[12px] py-[8px] border-b border-gray-200'  >
-            <input type="radio" name="selectedHotel" value={val} className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
-            autoComplete='off'
-              onClick={(e) => {
-                setInputValue3(val.room)
-                // setMeal(val.meal_plan)   
-                // console.log("e",e.target.value);
-                console.log("checking");
-                
-                setRoomSearch(e.target.value)
-                setShowDropdown3(false); // click ke baad dropdown hide
-              }}
-              
-            />
-            {val}
-          </label>
-        ))
-      }
-</div>)}
-
-
-
-    <label htmlFor="room-type" className="text-gray-700 font-medium">Room Type</label>
-    <input type="text" id="room-type" placeholder="Room type" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
- 
-    value={roomSearch}
-    onChange={(e)=>{
- 
-      setRoomSearch(e.target.value)
-    }}
-
-        onFocus={() => {
-      setShowDropdown3(true);
-      console.log("focus")   
-    }}
-
-    onBlur={()=>setShowDropdown3(false)}
-
-    
-    
-    
-    />
-  </div>
-</div>
-
-<div className="flex space-x-6 items-end border-2 border-green-400">
-  {/* <!-- Pax/Room --> */}
-  <div className="flex flex-col">
-    <label htmlFor="pax-room" className="text-gray-700 font-medium">Pax/Room</label>
-    <input type="number" name="paxRoom" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
-      value={roomDetails.paxRoom} onChange={RoomHandler}/>
-
-  </div>
- 
-  {/* <!-- No. of Rooms --> */}
-  <div className="flex flex-col">
-    <label htmlFor="no-of-rooms" className="text-gray-700 font-medium">No. of Rooms</label>
-  
-
-    <input type="number" name="noOfRooms" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"    value={roomDetails.noOfRooms} onChange={RoomHandler}/>
-  </div>
-
-  {/* <!-- AWEB --> */}
-  <div className="flex flex-col">
-    <label htmlFor="aweb" className="text-gray-700 font-medium">AWEB</label>
-    <input type="number" name="adultWithExtraBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
-      value={roomDetails.adultWithExtraBed}  onChange={RoomHandler}/>
-  </div>
-
-  {/* <!-- CWEB --> */}
-  <div className="flex flex-col">
-    <label htmlFor="cweb" className="text-gray-700 font-medium">CWEB</label>
-    <input type="number" name="childWithExtraBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
-     value={roomDetails.childWithExtraBed} onChange={RoomHandler}/>
-  </div>
-
-  {/* <!-- CNB --> */}
-  <div className="flex flex-col">
-    <label htmlFor="cnb" className="text-gray-700 font-medium">CNB</label>
-    <input type="number" name="childNoBed" placeholder="0" className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    value={roomDetails.childNoBed}   onChange={RoomHandler}/>
-  </div>
-</div>
-
-</div>
-
-
-
-<div className="p-4 bg-white rounded shadow-md border-black border-4 w-full">
-
-
-   {/* Static Popup Modal */}
-      {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg relative">
-            <h2 className="text-xl font-bold mb-4">Duplicate Table</h2>
-
-            {/* Table with static values */}
-           <div>
-            <h2>Given Price- {stayNights[0]}</h2>
-<table className="border border-gray-300 text-left w-full">
-  <thead className="bg-gray-100">
-    <tr>
-      <th></th>
-      <th className="text-center">Price (INR)</th>
-      <th>Quantity</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-
-  <tbody>
-
-    {/* ROOM */}
-    <tr>
-      <td>/Room ({roomDetails.paxRoom || 0}P)</td>
-
-      <td className="text-center">
-        {roomDetails.paxRoom ? (
-          <input
-            type="number"
-            name="roomPrice"
-            value={roomDetails.roomPrice}
-            onChange={RoomHandler}
-            className="border px-2 w-24"
-          />
-        ) : "—"}
-      </td>
-
-      {/* QUANTITY */}
-      <td>
-        {roomDetails.paxRoom 
-          ? roomDetails.noOfRooms
-          : "—"}
-      </td>
-
-      {/* TOTAL */}
-      <td>
-        {roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
-          ? roomDetails.noOfRooms * roomDetails.roomPrice
-          : "—"}
-      </td>
-    </tr>
-
-    {/* AWEB */}
-    <tr>
-      <td>/AWEB</td>
-
-      <td className="text-center">
-        {roomDetails.adultWithExtraBed ? (
-          <input
-            type="number"
-            name="awebPrice"
-            value={roomDetails.awebPrice}
-            onChange={RoomHandler}
-            className="border px-2 w-24"
-          />
-        ) : "—"}
-      </td>
-
-      {/* QUANTITY = adultWithExtraBed */}
-      <td>
-        {roomDetails.adultWithExtraBed
-          ? roomDetails.adultWithExtraBed
-          : "—"}
-      </td>
-
-      <td>
-        {roomDetails.adultWithExtraBed && roomDetails.awebPrice
-          ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
-          : "—"}
-      </td>
-    </tr>
-
-    {/* CWEB */}
-    <tr>
-      <td>/CWEB</td>
-
-      <td className="text-center">
-        {roomDetails.childWithExtraBed ? (
-          <input
-            type="number"
-            name="cwebPrice"
-            value={roomDetails.cwebPrice}
-            onChange={RoomHandler}
-            className="border px-2 w-24"
-          />
-        ) : "—"}
-      </td>
-
-      <td>
-        {roomDetails.childWithExtraBed
-          ? roomDetails.childWithExtraBed
-          : "—"}
-      </td>
-
-      <td>
-        {roomDetails.childWithExtraBed && roomDetails.cwebPrice
-          ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
-          : "—"}
-      </td>
-    </tr>
-
-    {/* CNB */}
-    <tr>
-      <td>/CNB</td>
-
-      <td className="text-center">
-        {roomDetails.childNoBed ? (
-          <input
-            type="number"
-            name="cnbPrice"
-            value={roomDetails.cnbPrice}
-            onChange={RoomHandler}
-            className="border px-2 w-24"
-          />
-        ) : "—"}
-      </td>
-
-      <td>
-        {roomDetails.childNoBed
-          ? roomDetails.childNoBed
-          : "—"}
-      </td>
-
-      <td>
-        {roomDetails.childNoBed && roomDetails.cnbPrice
-          ? roomDetails.childNoBed * roomDetails.cnbPrice
-          : "—"}
-      </td>
-    </tr>
-
-    {/* GRAND TOTAL */}
-    <tr className="bg-gray-100 font-semibold">
-      <td>Total</td>
-      <td><sup>INR</sup></td>
-      <td></td>
-      <td>
-
-
-
-        {/* {(() => {
-          const roomTotal =
-            roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
-              ? roomDetails.noOfRooms * roomDetails.roomPrice
-              : 0;
-
-          const awebTotal =
-            roomDetails.adultWithExtraBed && roomDetails.awebPrice
-              ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
-              : 0;
-
-          const cwebTotal =
-            roomDetails.childWithExtraBed && roomDetails.cwebPrice
-              ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
-              : 0;
-
-          const cnbTotal =
-            roomDetails.childNoBed && roomDetails.cnbPrice
-              ? roomDetails.childNoBed * roomDetails.cnbPrice
-              : 0;
-
-          return roomTotal + awebTotal + cwebTotal + cnbTotal; // Show 0 if nothing
-        })()} */}
-
-
-        {grandTotal()}
-      </td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-
-
-            <div>
-              <div>
-                <input type="checkbox" name="" id="" />
-                <span className='font-bold text-lg'>Keep same prices for other nights:17 Dec</span>
-              </div>
-              <button className='p-3 text-white bg-blue-500 rounded-sm mr-3' onClick={saveRoomDetails}>Save</button>
-              <button className='p-3 text-white bg-red-500 rounded-sm'>Cancel</button>
-            </div>
-           </div>
-
-            {/* Close button */}
-            
-            <button  onClick={() => setShowPopup(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg" >✕
-</button>
-          </div>
-        </div>
-      )}
-
-
-
-
-
-
-
-  <h3 className="font-bold text-2xl text-black mb-2">Prices</h3>
-  <p className="mb-4 text-gray-600">Please fill all required fields</p>
-
-  {
-    selectedNights.length > 0 &&
-    <table className=" border border-gray-300 text-left w-full">
-    <thead className="bg-gray-100">
-      <tr>
-        <th className="px-4 py-2 border-b border-gray-300">Date</th>
-        <th className="px-4 py-2 border-b border-gray-300">Rate</th>
-        <th className="px-4 py-2 border-b border-gray-300">Given</th>
-      </tr>
-    </thead>
-    <tbody>
-
-{
-  selectedNights.map((val,index)=>(
-       <tr className='' key={index}>
-        <td>{val}</td>
-         <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
-        <td className="px-4 py-2 border-b border-gray-300">{grandTotal()== 0 ? "INR 0 ":`INR${grandTotal()}`}</td>
-      </tr>
-
-  ))
-}
-   
-
-
-      
-      {/* <tr className="hover:bg-gray-50">
-        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
-        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
-        <td className="px-4 py-2 border-b border-gray-300">Null</td>
-      </tr>
-      <tr className="hover:bg-gray-50">
-        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
-        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
-        <td className="px-4 py-2 border-b border-gray-300">Null</td>
-      </tr>
-      <tr className="hover:bg-gray-50">
-        <td className="px-4 py-2 border-b border-gray-300">15 Dec</td>
-        <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
-        <td className="px-4 py-2 border-b border-gray-300">Null</td>
-      </tr> */}
-    </tbody>
-  </table>
-  }
-
-  <div className="mt-4 flex gap-2">
-    <button className="px-4 py-2 text-blue-600 border border-gray-500 rounded hover:bg-gray-100" onClick={()=>setShowPopup(true)}>Duplicate</button>
-    <button className="px-4 py-2 text-blue-600 border border-gray-500 rounded hover:bg-gray-100">Remove</button>
-  </div>
-</div>
-{/* deepak */}
-
-
-
-
-
-
-</div>
-
-<div>
-    <h2 className='font-bold'>Any special inclusions in hotels</h2>
-  <p>Add any extra services for hotels e.g, special dinner, honeymoon cake etc.</p>
-  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300">
-  Add services
-</button>
-</div>
-
-          </div>
+          <Hotels 
+        formId={id}
+        stayNights={stayNights}
+        onSaveRoomDetails={saveRoomDetails}/>
 
     
     
@@ -1165,9 +364,22 @@ value={mealSearch}
         <div className="p-2 bg-green-300 flex gap-2 items-center relative">
           <input type="checkbox" />
           <span>Same Cab Type for All</span>
-          <div>
+           {/* 66 */}
+          {/* <div>
+           
             Innova Crysta
-          </div>
+          </div> */}
+
+  
+{
+  rows.length > 0 &&
+    rows.map((value, index) => (
+      <button key={index} className='text-black p-2 border bg-red-200'>
+        {value.car_name}
+      </button>
+    ))
+}
+
         </div>
       </div>
 
@@ -1201,31 +413,34 @@ value={mealSearch}
 
   <tbody>
     {rows.map((row, index) => (
-      <tr key={index}>
+       <tr key={index}>
+
+        {/* <tr key={row.db_id || index}> */}
+ 
+
+ 
         <td className="border-b border-gray-300 px-4 py-2 relative">
 
           {/* CAR INPUT */}
-          <input
-            type="text"
-            placeholder="Enter type"
-            className="border border-gray-400 rounded px-2 py-1 w-full"
-            value={row.carName}
+
+          <input    type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full"
+            value={row.car_name}
             onFocus={async () => {
               await CarsData();
               const updated = [...rows];
               updated[index].showDropdown = true;
               setRows(updated);
             }}
-            onBlur={() =>
-              setTimeout(() => {
-                const updated = [...rows];
-                updated[index].showDropdown = false;
-                setRows(updated);
-              }, 150)
-            }
+      
+            onBlur={(e) => { 
+              const updated = [...rows];
+              updated[index].showDropdown = false;
+              setRows(updated);
+            }}
+
             onChange={(e) => {
               const updated = [...rows];
-              updated[index].carName = e.target.value;
+              updated[index].car_name = e.target.value;
               setRows(updated);
             }}
           />
@@ -1233,18 +448,21 @@ value={mealSearch}
           {/* DROPDOWN */}
           {row.showDropdown && (
             <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
-              onMouseDown={(e) => e.preventDefault()}>
+              onMouseDown={(e) => {
+                e.preventDefault()
+                      e.stopPropagation()}}>
+
               {allCars.map((val, i) => (
                 <label
                   key={i}
                   className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer"
-                  onClick={() => {
+                  onChange={() => {
                     const updated = [...rows];
-                    updated[index].carName = val.car_name;
+                    updated[index].car_name = val.car_name;
                     updated[index].showDropdown = false;
                     setRows(updated);
-                  }}
-                >
+                  }}>
+
                   <input type="radio" className="mr-2" /> {val.car_name}
                 </label>
               ))}
@@ -1254,16 +472,9 @@ value={mealSearch}
 
         {/* QUANTITY */}
         <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
-          {/* <input   type="number" placeholder="type here" className="border border-gray-400 rounded px-2 py-1 w-full"  value={row.quantity} min={1}
-            onChange={(e) => {
-              const updated = [...rows];
-              updated[index].quantity = e.target.value;
-              setRows(updated);
-            }}
-          /> */}
 
-
-          <input type="number" min="1" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" value={row.quantity ?? 1}
+          <input type="number" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" value={row.quantity ?? ""}
+         min={1}
           
           onChange={(e) => {
             const updated = [...rows];
@@ -1273,13 +484,9 @@ value={mealSearch}
 
           {/* REMOVE BUTTON */}
           {rows.length > 1 && (
-            <button
-              className="border-2 border-black text-black p-1"
-              onClick={() => removeRow(index)}
-            >
-              remove
-            </button>
-          )}
+            <button  className="border-2 border-black text-black p-1"  onClick={() => removeRow(index)} >
+              remove </button>
+  )}
         </td>
       </tr>
     ))}
@@ -1287,33 +494,21 @@ value={mealSearch}
 </table>
 
                                         {/* Last me button */}
-<button
-  className={`px-3 py-2 mt-1 border rounded 
+<button className={`px-3 py-2 mt-1 border rounded 
     ${rows.length >= maxRows ? "bg-gray-200 cursor-not-allowed" : "bg-gray-100 hover:bg-gray-200"}`}
   onClick={addRow}
-  disabled={rows.length >= maxRows}
->
-  Add More
-</button>
+  disabled={rows.length >= maxRows}>Add More</button>
 
 
             {/* Save / Close buttons */}
             <div className="mt-4 flex  gap-2">
 
-              <button
-  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-  onClick={saveCars}
->
-  Select Cab Types
-</button>
+              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+               onClick={saveCars}> Select Cab Types</button>
 
 
-                            <button
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                onClick={() => setShowModal(false)}
-              >
-                Close
-              </button>
+             <button   className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              onClick={() => setShowModal(false)}>Close</button>
             </div>
           </div>
         </div>
@@ -1321,102 +516,371 @@ value={mealSearch}
 
 
 
- {
-  (!transportDisplay) ? (
-    <button className="bg-blue-600 mt-4 hover:bg-blue-700 text-black font-semibold py-2 px-4 rounded shadow-lg transition duration-300"
-    onClick={()=>setTransportDisplay(true)}>
+{
+  !transportDisplay ? (
+    <button
+      className="bg-blue-600 mt-4 hover:bg-blue-700 text-black font-semibold py-2 px-4 rounded shadow-lg transition duration-300"
+      onClick={() => {
+        setTransportDisplay(true)
+        setActiveDays(1)
+      }}
+    >
       Add services
     </button>
   ) : (
-    <div className="flex flex-col md:flex-row gap-8 p-4">
-      {/* Left form section */}
-      <div className="flex-1 flex gap-4">
-        <label className="flex flex-col">
-          <span className="font-semibold mb-1">Days</span>
-       <div className='relative'>
-           <input
-            type="text"
-            placeholder="Select days ..."
-            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                onChange={()=>{
-// console.log(stayNights);
+    <>
+      {stayNights2.slice(0, activeDays).map((day, index) => (
+        <div key={index} className="flex flex-col md:flex-row gap-8 p-4 border   rounded">
+          
+          {/* LEFT */}
+          <div className="flex-1 flex gap-4">
+            <label className="flex flex-col">
+              <span className="font-semibold mb-1">
+                Days
+              </span>
+              <div className='relative'>
+                <input type="text"  className="border rounded px-3 py-2"
+                  onFocus={() => {
+        const arr = [...dayDropdown];
+        arr[index] = true;
+        setDayDropdown(arr);
+      }}
+      onBlur={() => {
+        const arr = [...dayDropdown];
+        arr[index] = false;
+        setDayDropdown(arr);
+      }} />
+      
 
-    }}
-    onFocus={()=>setShowDropdown5(true)}
-    onBlur={()=>setShowDropdown5(false)}
-          />
-           {showDropdown5 && (
-            <div
-              className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-              onMouseDown={(e) => e.preventDefault()} >
-              {stayNights2.length > 0 &&
-                stayNights2.map((date, index) => (
-                  <div key={index} className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey">
-                    <input
-                      type="checkbox"
-                      id={`night-${index}`}
-                      name="selectedNights"
-                      value={date}
-                      className="mr-2"
-                      onClick={()=>{
-                        // code here
-                      }}
-                    />
-                    <label htmlFor={`night-${index}`}>{date}</label>
-                  </div>
-                ))}
-            </div>
-          )}
-
-       </div>
-         
-        </label>
-
-        <label className="flex flex-col">
-          <span className="font-semibold mb-1">Service Locations</span>
-          <input
-            type="text"
-            placeholder="Type to search"
-            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </label>
-
-        <label className="flex flex-col">
-          <span className="font-semibold mb-1">Service Type</span>
-          <input
-            type="text"
-            className="border border-gray-400 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </label>
+                 {/* DROPDOWN */}
+    {dayDropdown[index] && (
+      <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto bg-white border z-50 shadow"
+        onMouseDown={(e) => e.preventDefault()}   >
+        {stayNights2.map((date, i) => (
+          <div  key={i} className="flex items-center px-3 py-2 cursor-pointer border-b">
+            <input    type="checkbox" className="mr-2"
+              onClick={() => {
+                const updatedRows = [...rows];
+              // Toggle flag
+             updatedRows[index].flag = !updatedRows[index].flag;
+             setRows(updatedRows);  }}  />
+            <label>{date}</label>
+          </div>
+        ))}
       </div>
+    )}
 
-      {/* Right table section */}
-      <div className="flex-1 overflow-x-auto">
-        <table className="min-w-full border border-gray-300 rounded overflow-hidden">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border px-4 py-2 text-left">Transportation</th>
-              <th className="border px-4 py-2 text-left">Rate</th>
-              <th className="border px-4 py-2 text-left">Given</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border px-4 py-2"></td>
-              <td className="border px-4 py-2"></td>
-              <td className="border px-4 py-2"></td>
-            </tr>
-          </tbody>
-        </table>
+
+  
+
+              </div>
+                 {
+              rows[index].flag == true && (
+                    <div  className="  items-center px-3 py-1 border-b border-gray-200">
+                         <input   type="checkbox"   checked={true}  className="mr-2"
+                      onChange={()=>{}}  />
+
+        <span>{stayNights2[index]}</span>
       </div>
+              )
+            }
+            </label>
+
+
+           
+            <label className="flex flex-col">
+              <span className="font-semibold mb-1">Service Location</span>
+          <div className='relative'> 
+            
+   <input className="border px-3 py-2 rounded"  type="text" value={selectedServiceLocation[index] || ""} 
+          onChange={(e) => {
+             const selected = [...selectedServiceLocation];
+              selected[index] = e.target.value; // user input se update
+             setSelectedServiceLocation(selected);
+              }}
+
+          onFocus={() => {
+              const arr = [...serviceDropdown];
+              arr[index] = true;
+               setServiceDropdown(arr);
+              getData3();
+            }}
+
+            onBlur={() => {
+              const arr = [...serviceDropdown];
+              arr[index] = false;
+             setServiceDropdown(arr);
+            }}/>
+
+      {/*  service DROPDOWN */}
+  {serviceDropdown[index] && (
+    <div  className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow" onMouseDown={(e) => e.preventDefault()}>
+      {serviceLocation.map((val, i) => (
+        <label  key={i} className="flex items-center px-3 py-2 border-b cursor-pointer">
+          <input type="radio"name={`serviceLocation-${index}`}   className="mr-2"
+               onClick={() => {
+            // Dropdown close
+             const arr = [...serviceDropdown];
+            arr[index] = false;
+             setServiceDropdown(arr);
+
+           // Input me value set karo
+             const selected = [...selectedServiceLocation];
+            selected[index] = val.service_locations; // jo value select hui
+            setSelectedServiceLocation(selected);
+
+             // Service Type array bhi set karo
+           setserviceName(val.service_type);
+
+          // Service Type input ke liye pehla value
+            const selectedType = [...selectedServiceType];
+            selectedType[index] = val.service_type[0];
+           setSelectedServiceType(selectedType);
+             }}  />
+          {val.service_locations}
+        </label>
+      ))}
     </div>
+  )}
+     
+     
+     </div>   
+
+
+
+            </label>
+
+            <label className="flex flex-col">
+              <span className="font-semibold mb-1">Service Type</span>
+        <div className='relative'>
+            <input  className="border px-3 py-2 rounded" 
+             type="text"
+  value={selectedServiceType[index] || ""} // ✅ controlled input
+  onChange={(e) => {
+    const updated = [...selectedServiceType];
+    updated[index] = e.target.value; // user ke input se update
+    setSelectedServiceType(updated);
+  }}
+ 
+        onFocus={() => {
+        const arr = [...serviceTypeDropdown];
+         arr[index] = true;   
+           setServiceTypeDropdown(arr)}}
+           
+           
+             onBlur={() => {
+    
+      const arr = [...serviceTypeDropdown];
+      arr[index] = false; // hide dropdown
+      setServiceTypeDropdown(arr);
+    // timeout lagaya taaki dropdown pe click karne ka chance rahe
+  }}/>
+
+
+
+
+                 {/*SERVICE TYPE DROPDOWN */}
+  {/* {serviceTypeDropdown[index] && (
+    <div
+      className="absolute mt-1 top-full left-0 w-full max-h-[15vh]
+                 overflow-y-auto text-black border z-50 bg-white shadow"
+      onMouseDown={(e) => e.preventDefault()}  >
+      {serviceName.map((val, i) => (
+        <label
+          key={i}
+          className="flex items-center px-3 py-2 border-b cursor-pointer"
+        >
+          <input
+            type="radio"
+            name={`serviceLocation-${index}`}   // 👈 IMPORTANT
+            className="mr-2"
+            onClick={() => {
+              console.log("Selected for day", index, val.service_type[0]);
+
+                let arr = [...serviceName]
+                 arr[index] = true;
+
+                   serviceTypeDropdown(arr);
+            }}
+          />
+          {val.service_locations}
+        </label>
+      ))}
+    </div>
+  )} */}
+
+  {serviceTypeDropdown[index] && (
+  <div
+    className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow"
+    onMouseDown={e => e.preventDefault()}
+  >
+    {serviceName.map((type, i) => (
+      <label
+        key={i}
+        className="flex items-center px-3 py-2 border-b cursor-pointer"
+      >
+        <input
+          type="radio"
+          name={`serviceType-${index}`}
+          className="mr-2"
+          onClick={() => {
+            const selected = [...selectedServiceType];
+            selected[index] = type; // ✅ update input value
+            setSelectedServiceType(selected);
+
+            const arr = [...serviceTypeDropdown];
+            arr[index] = false; // close dropdown
+            setServiceTypeDropdown(arr);
+          }}
+        />
+        {type}
+      </label>
+    ))}
+  </div>
+)}
+
+        </div>
+            </label>
+          </div>
+
+          {/* RIGHT */}
+          <div className="flex-1 overflow-x-auto text-right">
+            <table className="min-w-full border text-left">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="border px-4 py-2">Transportation</th>
+                  <th className="border px-4 py-2">Rate</th>
+                  <th className="border px-4 py-2">Given</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+        
+            {rows[index].flag == true && (
+                 <>
+                 <td className="border px-4 py-2">{rows[index].car_name}</td>
+                 <td className="border px-4 py-2"><sup>INR</sup>NA</td>
+                 <td className="border px-4 py-2"><input type="number"/> </td>
+                 </>
+            ) }
+            
+          </tr>
+              </tbody>
+            </table>
+
+
+           <button 
+            className="ml-2 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+  onClick={() => {
+    if (activeDays > 0) {
+          // 1️⃣ dayDropdown se remove
+    const dd = [...dayDropdown];
+    dd.splice(index, 1);
+    setDayDropdown(dd);
+      setActiveDays(activeDays - 1);
+    }
+  }}
+>
+  Remove
+</button>
+
+          </div>
+
+        </div>
+      ))}
+    </>
   )
 }
 
+ 
+
+ {activeDays < stayNights2.length && transportDisplay && (
+<div className='text-right'>
+ <button
+  className="bg-green-600 text-white px-4 py-2 rounded"
+  onClick={() => {
+    // 1️⃣ next day add
+    setActiveDays(prev => prev + 1);
+
+    // // 2️⃣ dropdown control
+    // setDayDropdown(prev => [...prev, false]);
+
+    // 3️⃣ IMPORTANT: previous day ka flag copy
+    setRows(prev => {
+      const copy = [...prev];
+
+      if (copy[activeDays - 1]?.flag === true) {
+        copy[activeDays] = {
+          ...copy[activeDays],
+          flag: true
+        };
+      }
+
+      return copy;
+    });
+  }}
+>
+  Next
+</button>
+  </div>
+)}
 
 
+    {/* any extra or sightseeing in Transportation */}
 
 
+<ExtraServices  services={services}  setServices={setServices}/>
+
+
+{/* Summary */}
+
+<div>
+  <div>
+    <h3 className='font-bold text-2xl'>Summary</h3>
+    <p>Please review the quote's data before creating</p>
+  </div>
+
+ <div className='border-4 p-2 border-black bg-white'>
+   <table className='w-[30%] '>
+    <thead className='text-left'>
+     <tr>
+       <th>START DATE</th>
+      <th>DURATION</th>
+      <th>PAX</th>
+     </tr>
+    </thead>
+    <tbody>
+      <tr>
+ 
+                    <td className=" ">{userData.nightDates[0].date}</td>
+                    <td className=" ">{`${userData.noOfNights} nights, ${userData.noOfDays} Days`}</td>
+                    <td className=" ">{userData.noOFAdults} Adults</td>
+      </tr>
+    </tbody>
+  </table>
+ </div>
+
+ <div>
+  <h3>Accommodation</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Night</th>
+        <th>Hotel</th>
+        <th>Meal</th>
+        <th>Rooms</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+  <div className='p-2  text-right'>
+    Total: <sup>INR</sup>
+  </div>
+ </div>
+</div>
 
 
     </div>
