@@ -30,7 +30,7 @@ let [stayNights2, setStayNights2] = useState([])
 
  
  useEffect(()=>{
-console.log(stayNights,"pp");
+console.log(stayNights,"rocks");
  
  },[stayNights])
  
@@ -98,8 +98,7 @@ const {
 
 
 
-
-
+ 
 
 
 
@@ -117,24 +116,26 @@ const [selectedServiceLocation, setSelectedServiceLocation] = useState([]);
 
 
 
+
+useEffect(()=>{
+console.log("selectedServiceType",selectedServiceType);
+console.log("selectedServiceLocation", selectedServiceLocation);
+
+
+},[selectedServiceType,selectedServiceLocation])
+
 // 22
 
 
+// const [rows, setRows] = useState([
+//   { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
+// ]);
+
+
 const [rows, setRows] = useState([
-  { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
+  { car_name: "", quantity: 1, price: "", showDropdown: false, db_id: null, flag: false }
 ]);
 
-
-// const [rows, setRows] = useState([
-//   {
-//     date: stayNights2[0]?.date || "",
-//     car_name: "",
-//     quantity: "",
-//     showDropdown: false,
-//     db_id: null,
-//     flag: false
-//   }
-// ]);
 
 
 
@@ -146,39 +147,45 @@ const addRow = () => {
   }
 };
 
-
 // const addRow = () => {
-//   setRows(prev => {
-//     const nextIndex = prev.length;
+//   if (rows.length >= maxRows) return;
 
-//     // ❌ agar dates khatam
-//     if (!stayNights2[nextIndex]) return prev;
-
-//     return [
-//       ...prev,
-//       {
-//         date: stayNights2[nextIndex].date,
-//         car_name: "",
-//         quantity: "",
-//         showDropdown: false,
-//         db_id: null,
-//         flag: false
-//       }
-//     ];
-//   });
+//   setRows(prev => [
+//     ...prev,
+//     {
+//       day_no: null,
+//       car_name: "",
+//       quantity: "",
+//       price: 0,
+//       showDropdown: false,
+//       flag: false
+//     }
+//   ]);
 // };
 
-
-
-// Row Remove
-
-
+ 
 
 
 // const removeRow = (index) => {
+//   // ❌ agar sirf ek row hai to remove mat karo
+
+//   if (rows.length === 1){
+// alert("ok")
+// return
+//   }
+
 //   setRows(rows.filter((_, i) => i !== index));
 // };
- 
+
+
+// const removeRow = (index) => {
+//   if (rows.length === 1) {
+//     alert("At least one car is required");
+//     return;
+//   }
+
+//   setRows(prev => prev.filter((_, i) => i !== index));
+// };
 
 
 const removeRow = (index) => {
@@ -191,6 +198,7 @@ return
 
   setRows(rows.filter((_, i) => i !== index));
 };
+
 
 
  
@@ -249,15 +257,15 @@ const saveCars = async () => {
 
 
 
-useEffect(() => {
+// useEffect(() => {
 
-     fetchRows();
+//      fetchRows();
 
     
  
     
  
-}, [showModal]);
+// }, [showModal]);
 
 
 
@@ -320,6 +328,39 @@ useEffect(() => {
       }
 
 
+
+
+
+
+
+      useEffect(()=>{
+console.log(services,"ok");
+
+      }, [services])
+
+
+
+      // "deepak"
+
+
+  //     const totalAmount =
+  // rows.reduce((sum, row) => {
+  //   return row.flag
+  //     ? sum + Number(row.price || 0) * Number(row.quantity || 0)
+  //     : sum;
+  // }, 0)
+  // +
+  // services.reduce((sum, item) => {
+  //   return sum + Number(item.price || 0);
+  // }, 0);
+
+  const servicesTotal = services.reduce(
+  (sum, item) => sum + Number(item.price || 0),
+  0
+);
+
+
+
 // const saveRoomDetails = async () => {
 //   console.log("done");
 
@@ -358,6 +399,30 @@ useEffect(() => {
 // };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Initial state
+ 
  return (
     <>
       {userData ? (
@@ -440,12 +505,7 @@ useEffect(() => {
         <div className="p-2 bg-green-300 flex gap-2 items-center relative">
           <input type="checkbox" />
           <span>Same Cab Type for All</span>
-           {/* 66 */}
-          {/* <div>
-           
-            Innova Crysta
-          </div> */}
-
+   
   
 {
   rows.length > 0 &&
@@ -456,21 +516,19 @@ useEffect(() => {
     ))
 }
 
+
+
         </div>
       </div>
 
 
-
-{/* const [rows, setRows] = useState([
-  { car_name: "", quantity: "", showDropdown: false, db_id: null , flag:false}
-]); */}
-
-      {/* Modal */}
+ 
+      {/* Modal 76*/} {/* DROPDOWN 1/11/1111*/}
 
       {showModal && (
         <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg w-1/2 p-6 relative">
-            {/* Close Button */}
+   
             <button
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
               onClick={() => setShowModal(false)}
@@ -481,8 +539,7 @@ useEffect(() => {
             <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
 
 
-
-            {/* Table 62*/}
+ 
         <table className="w-full border border-gray-300">
   <thead className="bg-gray-100">
     <tr>
@@ -490,7 +547,7 @@ useEffect(() => {
       <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
     </tr>
   </thead>
-      {/* DROPDOWN 1/11/1111*/}
+     
 
 
   <tbody>
@@ -499,6 +556,7 @@ useEffect(() => {
                 <td className="border-b border-gray-300 px-4 py-2 relative">
 
           <input    type="text" placeholder="Enter type" className="border-4  rounded px-2 py-1 w-full"
+
             value={row.car_name}
             onFocus={async () => {
               await CarsData();
@@ -522,13 +580,14 @@ useEffect(() => {
 
     
           {row.showDropdown && (
-            <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
+            <div className="absolute mt-1 top-full left-0 
+             w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
               onMouseDown={(e) => {
                 e.preventDefault()
                       e.stopPropagation()}}>
 
               {allCars.map((val, i) => (
-                <label key={i} className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer"
+                <label key={i} className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer "
                   onChange={() => {
                     const updated = [...rows];
                     updated[index].car_name = val.car_name;
@@ -555,8 +614,6 @@ useEffect(() => {
             setRows(updated);}}/>
 
 
-      
-          
           {rows.length >= 1 && (
             <button  className="border-2 border-black text-black p-1"  onClick={() => removeRow(index)} >
               remove </button>
@@ -564,96 +621,25 @@ useEffect(() => {
         </td>
       </tr>
     ))}
+
+
+
+
   </tbody>
 
-{/* <tbody>
-  {rows.map((row, index) => (
-    <tr key={index}>
-
-   
-      <td className="border-b px-4 py-2 relative">
-
-  
-        <div className="text-xs text-gray-500 mb-1">
-          {row.date}
-        </div>
-
-        <input
-          type="text"
-          placeholder="Enter car"
-          className="border rounded px-2 py-1 w-full"
-          value={row.car_name}
-          onFocus={async () => {
-            await CarsData();
-            const updated = [...rows];
-            updated[index].showDropdown = true;
-            setRows(updated);
-          }}
-          onBlur={() => {
-            const updated = [...rows];
-            updated[index].showDropdown = false;
-            setRows(updated);
-          }}
-          onChange={(e) => {
-            const updated = [...rows];
-            updated[index].car_name = e.target.value;
-            setRows(updated);
-          }}
-        />
-
  
-        {row.showDropdown && (
-          <div
-            className="absolute top-full left-0 w-full bg-white border shadow z-50"
-            onMouseDown={e => e.preventDefault()}
-          >
-            {allCars.map((val, i) => (
-              <div
-                key={i}
-                className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                onClick={() => {
-                  const updated = [...rows];
-                  updated[index].car_name = val.car_name;
-                  updated[index].showDropdown = false;
-                  setRows(updated);
-                }}
-              >
-                {val.car_name}
-              </div>
-            ))}
-          </div>
-        )}
-      </td>
- 
-      <td className="border-b px-4 py-2 flex gap-2">
-        <input
-          type="number"
-          min={1}
-          className="border rounded px-2 py-1 w-full"
-          value={row.quantity}
-          onChange={(e) => {
-            const updated = [...rows];
-            updated[index].quantity = Number(e.target.value) || "";
-            setRows(updated);
-          }}
-        />
-
-        {rows.length > 1 && (
-          <button onClick={() => removeRow(index)}>remove</button>
-        )}
-      </td>
-    </tr>
-  ))}
-</tbody> */}
 
   
 </table>
 
                           
-<button className={`px-3 py-2 mt-1 border rounded 
+ <button className={`px-3 py-2 mt-1 border rounded 
     ${rows.length >= maxRows ? "bg-gray-200 cursor-not-allowed" : "bg-gray-100 hover:bg-gray-200"}`}
   onClick={addRow}
-  disabled={rows.length >= maxRows}>Add More</button>
+  disabled={rows.length >= maxRows}>Add More</button> 
+  
+ 
+
 
 
         
@@ -669,6 +655,10 @@ useEffect(() => {
           </div>
         </div>
       )}
+
+
+ 
+
 
 
 
@@ -732,26 +722,40 @@ useEffect(() => {
     ))}
   </div>
 )}
+   </div>
+ 
+
+{rows[index]?.flag && (
+  <div className="items-center px-3 py-1 border-b border-gray-200">
+    <input type="checkbox" checked={true} className="mr-2" onChange={() => {}} />
+    <span>{stayNights2[index].date} ({stayNights2[index].day})</span>
+  </div>
+)}
 
 
+{/* {rows[index].flag && (
+  <tr>
+    <td className="border px-4 py-2">{rows[index].car_name}</td>
+    <td className="border px-4 py-2">
+      <sup>INR</sup> {rows[index].date || "NA"}
+    </td>
+    <td className="border px-4 py-2">
+      <input
+        type="number"
+        min={0}
+        value={rows[index].price || ""}
+        onChange={(e) => {
+          const updated = [...rows];
+          updated[index].price = e.target.value;
+          setRows(updated);
+        }}
+        className="border px-2 py-1 rounded w-full"
+      />
+    </td>
+  </tr>
+)} */}
 
-  
-
-              </div>
-                 {
-              rows[index].flag == true && (
-                    <div  className="  items-center px-3 py-1 border-b border-gray-200">
-                         <input   type="checkbox"   checked={true}  className="mr-2"
-                      onChange={()=>{}}  />
-
-        <span>{stayNights2[index]}</span>
-      </div>
-              )
-      
-            }
-
-  
-            </label>
+</label>
 
 
            
@@ -842,50 +846,16 @@ useEffect(() => {
       setServiceTypeDropdown(arr);
     // timeout lagaya taaki dropdown pe click karne ka chance rahe
   }}/>
-
-
-
-
-                 {/*SERVICE TYPE DROPDOWN */}
-  {/* {serviceTypeDropdown[index] && (
-    <div
-      className="absolute mt-1 top-full left-0 w-full max-h-[15vh]
-                 overflow-y-auto text-black border z-50 bg-white shadow"
-      onMouseDown={(e) => e.preventDefault()}  >
-      {serviceName.map((val, i) => (
-        <label
-          key={i}
-          className="flex items-center px-3 py-2 border-b cursor-pointer"
-        >
-          <input
-            type="radio"
-            name={`serviceLocation-${index}`}   // 👈 IMPORTANT
-            className="mr-2"
-            onClick={() => {
-              console.log("Selected for day", index, val.service_type[0]);
-
-                let arr = [...serviceName]
-                 arr[index] = true;
-
-                   serviceTypeDropdown(arr);
-            }}
-          />
-          {val.service_locations}
-        </label>
-      ))}
-    </div>
-  )} */}
+ 
 
   {serviceTypeDropdown[index] && (
   <div
     className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow"
-    onMouseDown={e => e.preventDefault()}
-  >
+    onMouseDown={e => e.preventDefault()}>
+
     {serviceName.map((type, i) => (
       <label
-        key={i}
-        className="flex items-center px-3 py-2 border-b cursor-pointer"
-      >
+        key={i} className="flex items-center px-3 py-2 border-b cursor-pointer">
         <input
           type="radio"
           name={`serviceType-${index}`}
@@ -923,13 +893,44 @@ useEffect(() => {
               <tbody>
               <tr>
         
-            {rows[index].flag == true && (
+            {/* {rows[index].flag == true && (
                  <>
                  <td className="border px-4 py-2">{rows[index].car_name}</td>
                  <td className="border px-4 py-2"><sup>INR</sup>NA</td>
                  <td className="border px-4 py-2"><input type="number"/> </td>
                  </>
-            ) }
+            ) } */}
+
+
+            {rows[index]?.flag === true && (
+  <>
+    <td className="border px-4 py-2">
+      {rows[index].car_name}
+    </td>
+
+    <td className="border px-4 py-2">
+      <sup>INR</sup> NA
+    </td>
+
+    <td className="border px-4 py-2">
+      <input
+        type="number"
+        className="border rounded px-2 py-1 w-full"
+        value={rows[index].price || ""}
+        min={0}
+        onChange={(e) => {
+          const updated = [...rows];
+          updated[index] = {
+            ...updated[index],
+            price: e.target.value
+          };
+          setRows(updated);
+        }}
+      />
+    </td>
+  </>
+)}
+
             
           </tr>
               </tbody>
@@ -960,40 +961,9 @@ useEffect(() => {
 }
 
  
+ 
 
- {/* {activeDays < stayNights2.length && transportDisplay && (
-<div className='text-right'>
- <button
-  className="bg-green-600 text-white px-4 py-2 rounded"
-  onClick={() => {
-    // 1️⃣ next day add
-    setActiveDays(prev => prev + 1);
-
-    // // 2️⃣ dropdown control
-    // setDayDropdown(prev => [...prev, false]);
-
-    // 3️⃣ IMPORTANT: previous day ka flag copy
-    setRows(prev => {
-      const copy = [...prev];
-
-      if (copy[activeDays - 1]?.flag === true) {
-        copy[activeDays] = {
-          ...copy[activeDays],
-          flag: true
-        };
-      }
-
-      return copy;
-    });
-  }}
->
-  Next
-</button>
-  </div>
-)} */}
-
-
-{activeDays < stayNights2.length && transportDisplay && (
+{/* {activeDays < stayNights2.length && transportDisplay && (
   <div className='text-right'>
     <button
       className="bg-green-600 text-white px-4 py-2 rounded"
@@ -1030,14 +1000,96 @@ useEffect(() => {
       Next
     </button>
   </div>
+)} */}
+
+{activeDays < stayNights2.length && transportDisplay && (
+  <div className='text-right'>
+    <button
+      className="bg-green-600 text-white px-4 py-2 rounded"
+      // onClick={() => {
+      //   setActiveDays(prev => {
+      //     const nextDay = prev + 1;
+
+      //     // rows update
+      //     setRows(prevRows => {
+      //       const copy = [...prevRows];
+
+      //       // Ensure nextDay exists
+      //       if (!copy[nextDay - 1]) copy[nextDay - 1] = {};
+
+      //       // Find last filled row to propagate
+      //       const lastFilled = copy[prev - 1] || {};
+
+      //       // Propagate flag and car_name
+      //       if (lastFilled.flag) {
+      //         copy[nextDay - 1] = {
+      //           ...copy[nextDay - 1],
+      //           flag: true,
+      //           car_name: lastFilled.car_name || "",
+      //           quantity: lastFilled.quantity || 1
+      //         };
+      //       }
+
+      //       return copy;
+      //     });
+
+      //     // dayDropdown update
+      //     setDayDropdown(prevDropdown => [...prevDropdown, false]);
+
+      //     return nextDay;
+      //   });
+      // }}
+
+
+      onClick={() => {
+  setActiveDays(prev => {
+    const nextDay = prev + 1;
+
+    // Update rows for the new day
+    setRows(prevRows => {
+      const copy = [...prevRows];
+
+      // Ensure nextDay exists
+      if (!copy[nextDay - 1]) copy[nextDay - 1] = {};
+
+      // Find last filled row to propagate
+      const lastFilled = copy[prev - 1] || {};
+
+      // Propagate flag, car_name, quantity, and price
+      if (lastFilled.flag) {
+        copy[nextDay - 1] = {
+          ...copy[nextDay - 1],
+          flag: true,
+          car_name: lastFilled.car_name || "",
+          quantity: lastFilled.quantity || 1,
+          price: lastFilled.price || ""
+        };
+      }
+
+      return copy;
+    });
+
+    // Update dayDropdown
+    setDayDropdown(prevDropdown => [...prevDropdown, false]);
+
+    return nextDay;
+  });
+}}
+
+    >
+      Next
+    </button>
+  </div>
 )}
+
+
 
 
 
     {/* any extra or sightseeing in Transportation */}
 
 
-<ExtraServices  services={services}  setServices={setServices}/>
+<ExtraServices  services={services}  setServices={setServices} duration={stayNights}/>
 
 
 {/* Summary */}
@@ -1059,7 +1111,6 @@ useEffect(() => {
     </thead>
     <tbody>
       <tr>
- 
                     <td className=" ">{userData.nightDates[0].date}</td>
                     <td className=" ">{`${userData.noOfNights} nights, ${userData.noOfDays} Days`}</td>
                     <td className=" ">{userData.noOFAdults} Adults</td>
@@ -1070,7 +1121,7 @@ useEffect(() => {
 
  <div className='ce'>
  
-
+{/* Acoomodation */}
   <div className="ce  rounded-xl  p-4 mt-4">
   <h3 className="text-lg font-semibold mb-4 text-gray-800">
     Accommodation
@@ -1092,7 +1143,8 @@ useEffect(() => {
         {stayNights.map((data, index) => (
           <tr
             key={index}
-            className="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition"
+            // className="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition"
+                 className="bg-white   hover:bg-gray-100 transition"
           >
             <td className="px-3 py-2 border">
               {index + 1}, {data.date}
@@ -1124,24 +1176,209 @@ useEffect(() => {
 
             </td>
 
-            <td className="px-3 py-2 border text-right font-semibold text-gray-800">
+            {/* <td className="px-3 py-2 border text-right font-semibold text-gray-800">
               INR {roomDetails?.roomPrice?.[data.date] || 0}
-            </td>
+            </td> */}
+
+
+            <td className="px-3 py-2 border text-right font-semibold text-gray-800">
+  INR{" "}
+  {(
+    Number(roomDetails?.roomPrice?.[data.date] || 0) +
+    Number(roomDetails?.awebPrice || 0) +
+    Number(roomDetails?.cwebPrice || 0) +
+    Number(roomDetails?.cnbPrice || 0)
+  )}
+</td>
+
+
+ 
+
+ 
+
+
+
           </tr>
         ))}
       </tbody>
     </table>
   </div>
 
- <div className="p-2 text-right">
+ {/* <div className="p-2 text-right">
   Total: <sup>INR</sup>{" "}
   {Object.values(roomDetails?.roomPrice || {}).reduce(
     (sum, price) => sum + Number(price || 0) * Number(roomDetails?.noOfRooms || 0),
     0
   )}
+</div> */}
+
+{/* <div className="p-2 text-right font-semibold">
+  Total: <sup>INR</sup>{" "}
+  {(
+    // 1️⃣ Room price total (date-wise × no of rooms)
+    Object.values(roomDetails?.roomPrice || {}).reduce(
+      (sum, price) =>
+        sum + Number(price || 0) * Number(roomDetails?.noOfRooms || 0), 0)
+
+    // 2️⃣ Adult With Extra Bed
+    + Number(roomDetails?.awebPrice || 0)
+
+    // 3️⃣ Child With Extra Bed
+    + Number(roomDetails?.cwebPrice || 0)
+
+    // 4️⃣ Child No Bed
+    + Number(roomDetails?.cnbPrice || 0)
+  )}
+</div> */}
+
+
+<div className="p-2 text-right font-semibold">
+  Total: <sup>INR</sup>{" "}
+  {(
+    // Room price total (date-wise × noOfRooms)
+    Object.values(roomDetails?.roomPrice || {}).reduce(
+      (sum, price) =>
+        sum + Number(price || 0) * Number(roomDetails?.noOfRooms || 0),
+      0
+    )
+    +
+    // Adult with extra bed (multiply by days)
+    Number(roomDetails?.awebPrice || 0) * stayNights2.length
+    +
+    // Child with extra bed (multiply by days)
+    Number(roomDetails?.cwebPrice || 0) * stayNights2.length
+    +
+    // Child no bed (multiply by days)
+    Number(roomDetails?.cnbPrice || 0) * stayNights2.length
+  )}
 </div>
 
+
+
+ 
+
+
 </div>
+
+
+<div>
+  {/* 998 */}
+  <h3 className='font-bold text-xl my-3'>Transport and Activities</h3>
+  <table className='w-full border border-gray-200 text-sm'>
+<tbody>
+  
+  {stayNights.map((night, index) => (
+    <tr key={index} className='bg-white   hover:bg-gray-100 transition'>
+      {/* DAY */}
+      <td className=" border-b px-4 py-2">
+        {night.date} ({night.day})
+      </td>
+
+      {/* SERVICE LOCATION */}
+      {/* <td className="border px-3 py-2">
+        {selectedServiceLocation[index] || "—"}<br/>
+          {selectedServiceType[index] || "—"}
+      </td> */}
+
+      <td className="border-b px-4 py-2">
+  {(selectedServiceLocation[index] || selectedServiceType[index]) ? (
+    <>
+      {selectedServiceLocation[index] && (
+        <>
+          <strong>{selectedServiceLocation[index]}</strong>
+          <br/>
+        </>
+      )}
+      {selectedServiceType[index] && selectedServiceType[index]}
+    </>
+  ) : (
+    "—"
+  )}
+</td>
+
+
+
+      {/* SERVICE TYPE */}
+     
+      
+ 
+
+      {/* TRANSPORT */}
+      <td className=" px-4 py-2 border-b">
+        {rows[index]?.flag ? rows[index].car_name : "—"}
+      </td>
+
+      {/* PRICE INPUT */}
+     <td className=" px-4 py-2 border-b">
+  {rows[index]?.flag
+    ? rows[index]?.price
+      ? <><sup>INR</sup> {rows[index].price}</>
+      : "NA"
+    : "—"}
+</td>
+
+    </tr>
+  ))}
+
+
+
+
+
+
+
+
+
+
+  
+</tbody>
+
+  </table>
+</div>
+<div className="p-2 text-right font-bold  border-black">
+  Total: <sup>INR</sup>{" "}
+  {rows.reduce((sum, row) => {
+    if (!row.flag) return sum;
+    return sum + Number(row.price || 0) * Number(row.quantity || 0);
+  }, 0)}
+    {/* Total: <sup>INR</sup> {totalAmount} */}
+</div>
+
+
+
+{services.length > 0 && services.some(item => item.service || item.price) && (
+  <>
+    <table className="w-full border border-gray-200 text-sm mb-2">
+      <tbody>
+        <tr>
+          <th className="px-4 py-2 border-2 border-black text-left" colSpan={1}>
+            Service
+          </th>
+          <th className="px-4 py-2 border-2 border-black text-right" colSpan={2}>
+            Price (INR)
+          </th>
+        </tr>
+        {services.map((item, index) => (
+          <tr key={index} className="bg-white hover:bg-gray-100 transition border-b">
+            <td className="px-4 py-2 border-2 border-black">{item.service || "—"}</td>
+            <td className="px-4 py-2 border-2 border-black text-right">{item.price ? `INR ${item.price}` : "—"}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <div className="p-2 text-right font-bold border-black">
+      Total: <sup>INR</sup>{" "}
+      {services.reduce((sum, item) => sum + Number(item.price || 0), 0)}
+    </div>
+  </>
+)}
+
+
+
+
+
+
+
 
  </div>
 </div>
@@ -1155,19 +1392,70 @@ useEffect(() => {
       )
       
       }
-
-
-
-
-
-
-
     </>
   );
 }
 
 export default NewQuote
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //   {services.length > 0 &&  (
+  //     services.map((item, index) => (
+  //       <tr key={index} className='bg-white   hover:bg-gray-100 transition' >
+          
+  //         {/* SERVICE NAME */}
+  //     <td className="px-4 py-2 border-4 border-black">
+  //   {item.service || "—"}
+  // </td>
+
+
+  //         {/* PRICE */}
+  //         <td className="px-4 py-2 border-4 border-black" > 
+  //           <input
+  //             type="number"
+  //             className="border px-2 py-1 w-24 text-right"
+  //             value={item.price}
+  //             onChange={(e) => {
+  //               const updated = [...services];
+  //               updated[index].price = e.target.value;
+  //               setServices(updated);
+  //             }}
+  //           />
+
+    
+  //   {item.price ? `INR ${item.price}` : "—"}
+  
+
+  //         </td>
+
+  //         {/* DAY (optional display) */}
+  //         {/* <td className="border px-3 py-2">
+  //           {item.day || "—"}
+  //         </td> */}
+
+  //       </tr>
+  //     ))
+
+
+
+    
+  // )}
 
 
 

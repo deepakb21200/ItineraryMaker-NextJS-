@@ -28,7 +28,8 @@ const {
  
 
 useEffect(()=>{
-console.log(roomDetails.roomPrice,"done");
+console.log(roomDetails);
+
 
 },[roomDetails.roomPrice])
 
@@ -173,33 +174,61 @@ console.log(roomDetails.roomPrice,"done");
 // }
 
 
+// function grandTotal(date = null) {
+//   // 🟢 CASE 1: popup / specific date
+//   if (date) {
+//     return (
+//       Number(roomDetails.roomPrice?.[date] || 0) *
+//       Number(roomDetails.noOfRooms || 0)
+//     );
+//   }
+
+//   // 🟢 CASE 2: overall total
+//   let roomTotal = 0;
+
+//   Object.values(roomDetails.roomPrice || {}).forEach(price => {
+//     roomTotal += Number(price || 0) * Number(roomDetails.noOfRooms || 0);
+//   });
+
+//   const awebTotal =
+//     Number(roomDetails.adultWithExtraBed || 0) *
+//     Number(roomDetails.awebPrice || 0);
+
+//   const cwebTotal =
+//     Number(roomDetails.childWithExtraBed || 0) *
+//     Number(roomDetails.cwebPrice || 0);
+
+//   const cnbTotal =
+//     Number(roomDetails.childNoBed || 0) *
+//     Number(roomDetails.cnbPrice || 0);
+
+//   return roomTotal + awebTotal + cwebTotal + cnbTotal;
+// }
+
+
+
 function grandTotal(date = null) {
-  // 🟢 CASE 1: popup / specific date
+  const daysCount = Object.keys(roomDetails.roomPrice || {}).length || 1;
+
+  // 🟢 CASE 1: specific date
   if (date) {
     return (
-      Number(roomDetails.roomPrice?.[date] || 0) *
-      Number(roomDetails.noOfRooms || 0)
+      Number(roomDetails.roomPrice?.[date] || 0) * Number(roomDetails.noOfRooms || 0) +
+      Number(roomDetails.adultWithExtraBed || 0) * Number(roomDetails.awebPrice || 0) +
+      Number(roomDetails.childWithExtraBed || 0) * Number(roomDetails.cwebPrice || 0) +
+      Number(roomDetails.childNoBed || 0) * Number(roomDetails.cnbPrice || 0)
     );
   }
 
   // 🟢 CASE 2: overall total
-  let roomTotal = 0;
+  const roomTotal = Object.values(roomDetails.roomPrice || {}).reduce(
+    (sum, price) => sum + Number(price || 0) * Number(roomDetails.noOfRooms || 0),
+    0
+  );
 
-  Object.values(roomDetails.roomPrice || {}).forEach(price => {
-    roomTotal += Number(price || 0) * Number(roomDetails.noOfRooms || 0);
-  });
-
-  const awebTotal =
-    Number(roomDetails.adultWithExtraBed || 0) *
-    Number(roomDetails.awebPrice || 0);
-
-  const cwebTotal =
-    Number(roomDetails.childWithExtraBed || 0) *
-    Number(roomDetails.cwebPrice || 0);
-
-  const cnbTotal =
-    Number(roomDetails.childNoBed || 0) *
-    Number(roomDetails.cnbPrice || 0);
+  const awebTotal = Number(roomDetails.adultWithExtraBed || 0) * Number(roomDetails.awebPrice || 0) * daysCount;
+  const cwebTotal = Number(roomDetails.childWithExtraBed || 0) * Number(roomDetails.cwebPrice || 0) * daysCount;
+  const cnbTotal = Number(roomDetails.childNoBed || 0) * Number(roomDetails.cnbPrice || 0) * daysCount;
 
   return roomTotal + awebTotal + cwebTotal + cnbTotal;
 }
@@ -596,9 +625,8 @@ stayNights.length > 0 &&
 
          {showDropdown4 && (
     <div
-      className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-      onMouseDown={(e) => e.preventDefault()}  
-    >
+      className='absolute bg-[lightblue] mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn  shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
+      onMouseDown={(e) => e.preventDefault()}>
 
      {/* {
 
@@ -723,8 +751,7 @@ stayNights.length > 0 &&
 <div className="relative flex flex-col">
   <label htmlFor="hotel" className="text-gray-700 font-medium">Hotel</label>
 {/* cpS */}
-  <input  type="text" id="hotel" placeholder="Hotel name"
-    className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2
+  <input  type="text" id="hotel" placeholder="Hotel name"  className="mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2
      focus:ring-blue-500" value={inputValue} autoComplete='off'
 
     onFocus={() => {
@@ -1026,11 +1053,9 @@ value={mealSearch}
       </td>
 
       {/* QUANTITY = adultWithExtraBed */}
-      <td>
-        {roomDetails.adultWithExtraBed
+      <td>{roomDetails.adultWithExtraBed
           ? roomDetails.adultWithExtraBed
-          : "—"}
-      </td>
+          : "—"} </td>
 
       <td>
         {roomDetails.adultWithExtraBed && roomDetails.awebPrice
@@ -1146,71 +1171,7 @@ value={mealSearch}
 
   <h3 className="font-bold text-2xl text-black mb-2">Prices</h3>
   <p className="mb-4 text-gray-600">Please fill all required fields</p>
-
-  {/* {
-    selectedNights.length > 0 &&
-    <table className=" border border-gray-300 text-left w-full">
-    <thead className="bg-gray-100">
-      <tr>
-        <th className="px-4 py-2 border-b border-gray-300">Date</th>
-        <th className="px-4 py-2 border-b border-gray-300">Rate</th>
-        <th className="px-4 py-2 border-b border-gray-300">Given</th>
-      </tr>
-    </thead>
-    <tbody>
-
-{
-  selectedNights.map((val,index)=>(
-       <tr className='' key={index}>
-        <td>{val}</td>
-         <td className="px-4 py-2 border-b border-gray-300">INR N/A</td>
-        <td className="px-4 py-2 border-b border-gray-300">{grandTotal()== 0 ? "INR 0 ":`INR${grandTotal()}`}</td>
-      </tr>
-
-  ))
-}
-   
-
-
-      
-   
-    </tbody>
-  </table>
-  } */}
-
-  {/* {selectedNights.length > 0 && (
-  <table className="border border-gray-300 text-left w-full">
-    <thead className="bg-gray-100">
-      <tr>
-        <th className="px-4 py-2 border-b border-gray-300">Date</th>
-        <th className="px-4 py-2 border-b border-gray-300">Rate</th>
-        <th className="px-4 py-2 border-b border-gray-300">Given</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {selectedNights.map((night, index) => {
-        const total = grandTotal(); 
-
-        return (
-          <tr key={index}>
-            <td className="px-4 py-2 border-b border-gray-300">
-              {night.date} ({night.day})
-            </td>
-
-            <td className="px-4 py-2 border-b border-gray-300">
-              INR N/A
-            </td>
-
-            <td className="px-4 py-2 border-b border-gray-300" onClick={()=>setShowPopup(true)}>
-              {total === 0 ? "INR 0" : `INR ${total}`}
-            </td>
-          </tr>
-        );
-      })}
-    </tbody>
-  </table>
-)} */}
+ 
 
 {selectedNights.length > 0 && (
   <table className="border border-gray-300 text-left w-full">

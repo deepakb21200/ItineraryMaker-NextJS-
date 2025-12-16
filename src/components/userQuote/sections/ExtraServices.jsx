@@ -1,18 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {supabase} from  "../../../supabase-client"
  
 
  
 
-function ExtraServices({ services, setServices }) {
+function ExtraServices({ services, setServices, duration}) {
   
+ 
     
       const addService = () => {
         setServices(prev => [
           ...prev,
-          { service: "", price: "", day: "", comment: "" }
-        ]);
-      };
+          { service: "", price: "", day: null, comment: "" }
+        ])
+      }
+
+//       useEffect(()=>{
+// console.log(services,"ok");
+
+//       }, [services])
     
       const handleChange = (index, field, value) => {
         const updated = [...services];
@@ -41,6 +47,7 @@ function ExtraServices({ services, setServices }) {
     
     let [getService, setGetService] = useState([])
     let [openServiceIndex, setOpenServiceIndex] = useState(null)
+   const [openDayIndex, setOpenDayIndex] = useState(null);
           async function extraService(){
               const { data, error } = await supabase.from("extra_services").select("services").single();
                  console.log(data.services)    
@@ -79,6 +86,8 @@ function ExtraServices({ services, setServices }) {
         } />
 
            {/* DROPDOWN */}
+
+
       {openServiceIndex === index && (
         <div
           className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
@@ -89,17 +98,16 @@ function ExtraServices({ services, setServices }) {
       type="radio"
       name={`service-${index}`}   // 👈 same row ke radios ek group
       checked={item.service === val}
+
       onChange={() => {
-        handleChange(index, "service", val); // 👈 input me value set
-        setOpenServiceIndex(null);           // 👈 dropdown close
-      }}
-    />
+        handleChange(index, "service", val);  
+        setOpenServiceIndex(null);            
+      }}   />
     <span>{val}</span>
   </label>
 ))}
+</div>)}
 
-        </div>
-      )}
       </div>
           </div>
 
@@ -116,17 +124,61 @@ function ExtraServices({ services, setServices }) {
 
           </div>
 
-          <div className="flex flex-col">
+
+
+           {/* ================= DAY / DURATION ================= */}
+          <div className="flex flex-col relative">
             <label className="font-semibold mb-1">Day</label>
-            <input
+
+            {/* <input
               type="text"
-              className="border px-3 py-2 rounded"
-              value={item.day}
-              onChange={(e) =>
-                handleChange(index, "day", e.target.value)
-              }
-            />
-          </div>
+              className="border px-3 py-2 rounded w-48"
+              value={item.day?.date || ""}
+              placeholder="Select Day"
+       
+              onFocus={() => setOpenDayIndex(index)}
+                onBlur={() => setOpenDayIndex(null)}/> */}
+
+                <input
+  type="text"
+  className="border px-3 py-2 rounded w-48"
+  value={item.day || ""}
+  placeholder="Select Day"
+  onFocus={() => setOpenDayIndex(index)}
+  onBlur={() => setOpenDayIndex(null)}
+/>
+
+
+            {/* DROPDOWN OPEN → duration data show */}
+            {openDayIndex === index && (
+              <div
+                className="absolute top-full left-0 w-full bg-white border z-50 max-h-[15vh] overflow-y-auto shadow"
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                {duration.map((d, i) => (
+                  <label
+                    key={i}
+                    className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                    <input
+                      type="radio"
+                      name={`day-${index}`}
+                      checked={item.day?.date === d.date}
+      
+
+                      onChange={() => {
+  handleChange(index, "day", d.date); // 👈 sirf date
+  setOpenDayIndex(null)
+}}
+
+                    />
+                    {d.date} ({d.day})
+                  </label>
+                ))}
+              </div>
+            )}
+            </div>
+
+
 
           <div className="flex flex-col ">
         
@@ -135,10 +187,7 @@ function ExtraServices({ services, setServices }) {
               onChange={(e) =>
                 handleChange(index, "comment", e.target.value)
               } />
-     
- 
-
-
+    
           </div>
 
 
@@ -149,13 +198,13 @@ function ExtraServices({ services, setServices }) {
         </div>
       ))}
 
-      {/* TOTAL */}
+
     {showTotal && totalPrice > 0 && (
   <div className="text-lg font-semibold ml-auto text-right">
     Others INR: <span className="text-green-600">{totalPrice}</span>
   </div>
 )}
-    {/* ADD SERVICE BUTTON */}
+
       <button
         onClick={addService}
         className="text-blue-600 border border-gray-300 px-4 py-2 rounded-xl"
@@ -172,3 +221,45 @@ function ExtraServices({ services, setServices }) {
 }
 
 export default ExtraServices
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          {/* <div className="flex flex-col">
+            <label className="font-semibold mb-1">Day</label>
+        <div className='relative'>
+              <input
+              type="text"
+              className="border px-3 py-2 rounded"
+              value={item.day}
+              
+              onChange={(e) =>
+                handleChange(index, "day", e.target.value)
+              }
+
+  
+            />
+
+
+
+        </div>
+          </div> */}
