@@ -27,6 +27,7 @@ import CustomerDetails from './components/dashboard/CustomerDetails';
 import TripDetails from './components/userQuote/TripDetails';
 import NewQuote from './components/userQuote/NewQuote';
 import Try from './components/userQuote/Try';
+import Edit from './components/userQuote/Edit';
  
 
 function App() {
@@ -103,11 +104,11 @@ const [showPreview, setShowPreview] = useState(false)
 
     <Route path ="/trips/:id/newQuote" element={<NewQuote/>}/>
 
-    
 
-    
+     {/* Edit Itinerary – NEW PAGE */}
+        <Route  path="/trips/:id/newQuote/edit-iternary"   element={<Edit/>}/>
 
-
+        
       </Routes>
     </div>
   )

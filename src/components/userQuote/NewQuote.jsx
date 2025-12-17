@@ -1,7 +1,7 @@
 import React, { use, useContext, useEffect, useState } from 'react'
 import { FaArrowLeft } from "react-icons/fa";
 import { supabase } from '../../supabase-client'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import ExtraServices from './sections/ExtraServices';
 import Hotels from './sections/Hotels';
@@ -24,6 +24,7 @@ let {id} = useParams()
 let [showModal, setShowModal] = useState(false)
 let [allCars, setAllcars] = useState([])
 
+let navigate = useNavigate()
  
 
 let [stayNights2, setStayNights2] = useState([])
@@ -423,10 +424,35 @@ console.log(services,"ok");
 
   // Initial state
  
+
+
+
+
+// 🏨 Hotels total
+
+
+
+const hotelsTotal = rows.reduce((sum, row) => {
+  if (!row.flag) return sum;
+  return sum + Number(row.price || 0) * Number(row.quantity || 0);
+}, 0);
+
+// ➕ Extras / Services total
+const extrasTotal = services.reduce((sum, item) => {
+  return sum + Number(item.price || 0);
+}, 0);
+
+// 🔢 Grand Total
+const grandTotal = hotelsTotal + extrasTotal;
+
+
+
+
+
  return (
     <>
       {userData ? (
-        <div className="px-4 py-4 border-2 rounded-lg  mx-auto space-y-6 bg-blue-100">
+        <div className="px-4 py-4  rounded-lg  mx-auto space-y-6 bg-blue-100">
           
           {/* HEADER */}
           <div className="flex items-center gap-3 mb-4">
@@ -449,7 +475,7 @@ console.log(services,"ok");
             
             {/* TABLE */}
             <div className="overflow-x-auto   sm:w-auto flex justify-start">
-              <table className=" border-collapse text-left border-2 border-black">
+              <table className=" border-collapse text-left   border-black">
                 <thead>
                   <tr className="uppercase text-gray-500 text-sm sm:text-base border-b">
                     <th className="px-3 py-2">Destination</th>
@@ -1100,7 +1126,7 @@ console.log(services,"ok");
     <p>Please review the quote's data before creating</p>
   </div>
 
- <div className='border-4 p-2 border-black bg-white'>
+ <div className=' p-2  bg-white'>
    <table className='w-[30%] '>
     <thead className='text-left'>
      <tr>
@@ -1122,7 +1148,7 @@ console.log(services,"ok");
  <div className='ce'>
  
 {/* Acoomodation */}
-  <div className="ce  rounded-xl  p-4 mt-4">
+  <div className="ce  rounded-xl   mt-4">
   <h3 className="text-lg font-semibold mb-4 text-gray-800">
     Accommodation
   </h3>
@@ -1309,7 +1335,7 @@ console.log(services,"ok");
       </td>
 
       {/* PRICE INPUT */}
-     <td className=" px-4 py-2 border-b">
+     <td className=" px-4 py-2 border-b text-right">
   {rows[index]?.flag
     ? rows[index]?.price
       ? <><sup>INR</sup> {rows[index].price}</>
@@ -1336,10 +1362,7 @@ console.log(services,"ok");
 </div>
 <div className="p-2 text-right font-bold  border-black">
   Total: <sup>INR</sup>{" "}
-  {rows.reduce((sum, row) => {
-    if (!row.flag) return sum;
-    return sum + Number(row.price || 0) * Number(row.quantity || 0);
-  }, 0)}
+ {hotelsTotal}
     {/* Total: <sup>INR</sup> {totalAmount} */}
 </div>
 
@@ -1349,30 +1372,67 @@ console.log(services,"ok");
   <>
     <table className="w-full border border-gray-200 text-sm mb-2">
       <tbody>
-        <tr>
-          <th className="px-4 py-2 border-2 border-black text-left" colSpan={1}>
+        {/* <tr>
+          <th className="px-4 py-2  text-left" colSpan={1}>
             Service
           </th>
-          <th className="px-4 py-2 border-2 border-black text-right" colSpan={2}>
+          <th className="px-4 py-2   k text-right" colSpan={2}>
             Price (INR)
           </th>
-        </tr>
+        </tr> */}
         {services.map((item, index) => (
           <tr key={index} className="bg-white hover:bg-gray-100 transition border-b">
-            <td className="px-4 py-2 border-2 border-black">{item.service || "—"}</td>
-            <td className="px-4 py-2 border-2 border-black text-right">{item.price ? `INR ${item.price}` : "—"}</td>
+            <td className="px-4 py-2  border-black">{item.service || "—"}</td>
+            <td className="px-4 py-2  border-black text-right">{item.price ? `INR ${item.price}` : "—"}</td>
           </tr>
         ))}
       </tbody>
     </table>
 
     <div className="p-2 text-right font-bold border-black">
-      Total: <sup>INR</sup>{" "}
-      {services.reduce((sum, item) => sum + Number(item.price || 0), 0)}
+      Others: <sup>INR</sup>{" "}
+ {extrasTotal}
     </div>
   </>
 )}
 
+
+
+<div className="total flex justify-end gap-6 mt-4 border-t pt-4 font-semibold ">
+
+  {/* LEFT : TOTAL COST */}
+  <div className="text-right">
+    <h3 className=" ">Total Cost</h3>
+    <span className="text-xl font-bold">
+      <sup>INR</sup> {grandTotal}
+    </span>
+  </div>
+
+  {/* HOTELS */}
+  <div className="text-right">
+    Hotels <br />
+    <span className="font-semibold">
+      <sup>INR</sup> {hotelsTotal}
+    </span>
+  </div>
+
+  {/* EXTRAS */}
+  <div className="text-right">
+    Extras <br />
+    <span className="font-semibold">
+      <sup>INR</sup> {extrasTotal}
+    </span>
+  </div>
+
+</div>
+
+
+
+<button className='p-2 border-2 border-red-400 bg-orange-500'
+  onClick={() => navigate(`/trips/${id}/newQuote/edit-iternary`)}
+>
+Save Quote 
+</button>
 
 
 

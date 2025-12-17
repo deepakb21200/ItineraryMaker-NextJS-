@@ -94,164 +94,73 @@ CNB = roomDetails.childNoBed
 
 
 
+const saveRoomDetails = async () => {
+  let updatedRoomPrices = { ...roomDetails.roomPrice };
 
-
-
-import { useState } from "react";
-
-const TourCars = ({ stayNights }) => {
-  // Initial state
-  const [rowsByDay, setRowsByDay] = useState({
-    all: [{ car_name: "", quantity: 1, price: 0 }], // Default all days
-  });
-
-  // Handle input change
-  const handleChange = (dateKey, idx, field, value) => {
-    setRowsByDay((prev) => {
-      const updatedRows = [...(prev[dateKey] || prev["all"])];
-      updatedRows[idx][field] = value;
-      return { ...prev, [dateKey]: updatedRows };
+  if (keepSamePrice) {
+    stayNights.forEach(night => {
+      updatedRoomPrices[night.date] =
+        Number(roomDetails.roomPrice?.[activeNight.date] || 0);
     });
-  };
+  } 
+  else if (activeNight) {
+    updatedRoomPrices[activeNight.date] =
+      Number(roomDetails.roomPrice?.[activeNight.date] || 0);
+  }
 
-  // Add a new car input
-  const addCar = (dateKey) => {
-    setRowsByDay((prev) => {
-      const rows = prev[dateKey] || [...prev["all"]];
-      const updatedRows = [...rows, { car_name: "", quantity: 1, price: 0 }];
-      return { ...prev, [dateKey]: updatedRows };
-    });
-  };
-
-  // Remove a car input
-  const removeCar = (dateKey, idx) => {
-    setRowsByDay((prev) => {
-      const rows = [...(prev[dateKey] || prev["all"])];
-      if (rows.length === 1) return prev; // Don't remove last row
-      rows.splice(idx, 1);
-      return { ...prev, [dateKey]: rows };
-    });
-  };
-
-  // Check if only single input exists → apply to all days
-  const checkSingleInputForAllDays = () => {
-    // Count total rows across all days
-    const totalRows = stayNights.reduce((sum, date) => {
-      return sum + ((rowsByDay[date]?.length) || 0);
-    }, 0);
-
-    if (totalRows <= 1) {
-      // Only single input → replicate to "all"
-      const firstInput =
-        rowsByDay[stayNights[0]]?.[0] ||
-        rowsByDay["all"]?.[0];
-      setRowsByDay({ all: [firstInput] });
-    }
-  };
-
-  return (
-    <div>
-      {stayNights.map((date) => (
-        <div key={date} className="mb-4 border p-2">
-          <h3 className="font-bold">{date}</h3>
-          {(rowsByDay[date] || rowsByDay["all"]).map((row, idx) => (
-            <div key={idx} className="flex gap-2 mb-1">
-              <input
-                type="text"
-                placeholder="Car Name"
-                value={row.car_name}
-                onChange={(e) =>
-                  handleChange(date, idx, "car_name", e.target.value)
-                }
-              />
-              <input
-                type="number"
-                min={1}
-                value={row.quantity}
-                onChange={(e) =>
-                  handleChange(date, idx, "quantity", e.target.value)
-                }
-              />
-              <input
-                type="number"
-                min={0}
-                value={row.price}
-                onChange={(e) =>
-                  handleChange(date, idx, "price", e.target.value)
-                }
-              />
-              <button onClick={() => removeCar(date, idx)}>Remove</button>
-            </div>
-          ))}
-          <button onClick={() => addCar(date)}>Add Car</button>
-        </div>
-      ))}
-
-      <button
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
-        onClick={checkSingleInputForAllDays}
-      >
-        Apply Single Input to All Days
-      </button>
-    </div>
-  );
-};
-
-export default TourCars;
-
-
-
-
-selectedServiceType (5) ['Arrival Transfer & Gokul & / Mathura Sightseeing', 'Arrival Transfer & Gokul & / Mathura Sightseeing', 'transfer Mathura sightseeings', 'transfer Mathura sightseeings', 'transfer Mathura sightseeings']
-
-
-
-
-NewQuote.jsx:123 selectedServiceLocation (5) ['Delhi to Vrindavan', 'Delhi to Vrindavan', 'Delhi', 'Delhi', 'Delhi']
-
-
-
-
-  const [showDropdown4, setShowDropdown] = useState(false);
+  setRoomDetails(prev => ({
+    ...prev,
+    roomPrice: updatedRoomPrices
+  }));
 
 
 
 
 
+  //   // 💾 Supabase save
+  const { data, error } = await supabase
+    .from("hotel_pricing")
+    .upsert(
+      {
+        // form_no: roomDetails.form_no,
+        form_no: formId,
 
 
+        pax_room: Number(roomDetails.paxRoom) || 0,
+        no_of_rooms: Number(roomDetails.noOfRooms) || 0,
+        adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
+        child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
+        child_no_bed: Number(roomDetails.childNoBed) || 0,
 
+        // room_price: Number(roomDetails.roomPrice) || 0,
+        aweb_price: Number(roomDetails.awebPrice) || 0,
+        cweb_price: Number(roomDetails.cwebPrice) || 0,
+        cnb_price: Number(roomDetails.cnbPrice) || 0,
 
-      {showDropdown && (
-    <div
-      className='absolute bg-[lightblue] mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn  shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-      onMouseDown={(e) => e.preventDefault()}>
+        hotel_name: inputValue,
+        meal_plan: mealSearch,
+        room_type: roomSearch,
+
+        // ⭐ IMPORTANT
+           night_prices: updatedRoomPrices
+      },
+      {
+        onConflict: "form_no"
+      }
+    )
+    .select().single()
+ 
  
 
+  if (error) {
+    console.log("Save Error:", error);
+    return;
+  }
 
-{
-  stayNights.length > 0 &&
-  stayNights.map((item, index) => (
-    <div
-      key={index}
-      className="flex items-center px-3 py-2 cursor-pointer border-b-2 border-grey"
-    >
-      <input
-        type="checkbox"
-        id={`night-${index}`}
-        value={item.date}   // 👈 string value
-        checked={selectedNights.some(n => n.date === item.date)}
-        onChange={() => handleCheckboxChange(item)}
-        className="mr-2"
-      />
-
-      <label htmlFor={`night-${index}`}>
-        {item.date} ({item.day})
-      </label>
-    </div>
-  ))
-}
-
-
-    </div>
-  )}
+  // ✅ update local state from DB
+  setNightPrices(data.night_prices || {});
+  setKeepSamePrice(false);
+  setActiveNight(null);
+  setShowPopup(false);
+  console.log("Saved Successfully:", data);
+};
