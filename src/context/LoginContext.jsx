@@ -22,8 +22,7 @@ function LoginContext(props) {
     adultWithExtraBed: "",
     childWithExtraBed: "",
     childNoBed: "",
-    // roomPrice: {},
-     // ⭐ object because date-wise mandatory
+ 
   price_by_date: {},
     awebPrice: "",
     cwebPrice: "",

@@ -2,11 +2,9 @@ import React, { useEffect, useState , useContext} from 'react'
 import {supabase} from "../../../supabase-client"
 import { context } from  "../../../context/LoginContext";
 function Hotels({
-
-  formId,              // parent se form_no/id
+   formId,              // parent se form_no/id
   stayNights,          // parent se nights
- 
- 
+
 }) {
 
 
@@ -43,10 +41,7 @@ console.log(roomDetails);
   const [showDropdown4, setShowDropdown4] = useState(false);
      const [selectedNights, setSelectedNights] = useState([]);
        const [showPopup, setShowPopup] = useState(false);
-        //  const [mealSearch, setMealSearch] = useState(""); tick
  
-        // const [roomSearch, setRoomSearch] = useState(""); tick
-          // const [inputValue, setInputValue] = useState(""); // hotel tick
   const [inputValue2, setInputValue2] = useState(""); // meal
   const [inputValue3, setInputValue3] = useState(""); // room type
    const [meal, setMeal] = useState([]);
@@ -54,20 +49,7 @@ console.log(roomDetails);
     const [room, setRoom] = useState([]);
 
 
-// const [roomDetails, setRoomDetails] = useState({
-//   paxRoom: "",
-//   noOfRooms: "",
-//   adultWithExtraBed: "",
-//   childWithExtraBed: "",
-//   childNoBed: "",
-
-//   roomPrice: "",     
-//   awebPrice: "",     
-//   cwebPrice: "",      
-//   cnbPrice: "",       
-
-//   form_no:formId
-// });
+ 
 
  useEffect(() => {
     if (formId) {
@@ -87,151 +69,7 @@ console.log(roomDetails);
        setStayHotel(data) }
 
 
-      //  function grandTotal(){
-
-      //     const roomTotal =
-      //       roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
-      //         ? roomDetails.noOfRooms * roomDetails.roomPrice
-      //         : 0;
-
-         
-  
-
-      //     const awebTotal =
-      //       roomDetails.adultWithExtraBed && roomDetails.awebPrice
-      //         ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
-      //         : 0;
-
-      //     const cwebTotal =
-      //       roomDetails.childWithExtraBed && roomDetails.cwebPrice
-      //         ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
-      //         : 0;
-
-      //     const cnbTotal =
-      //       roomDetails.childNoBed && roomDetails.cnbPrice
-      //         ? roomDetails.childNoBed * roomDetails.cnbPrice
-      //         : 0;
-
-      //     return roomTotal + awebTotal + cwebTotal + cnbTotal; 
-      //   }
- 
-
-
-
-
-//       function grandTotal() {
-//   // ROOM total (sabhi nights ke prices ka sum × number of rooms)
-//   let roomTotal = 0;
-//   if (roomDetails.roomPrice && Object.keys(roomDetails.roomPrice).length > 0) {
-//     Object.values(roomDetails.roomPrice).forEach((price) => {
-//       roomTotal += Number(price || 0) * Number(roomDetails.noOfRooms || 0);
-//     });
-//   }
-
-//   // AWEB total
-//   const awebTotal =
-//     roomDetails.adultWithExtraBed && roomDetails.awebPrice
-//       ? Number(roomDetails.adultWithExtraBed) * Number(roomDetails.awebPrice)
-//       : 0;
-
-//   // CWEB total
-//   const cwebTotal =
-//     roomDetails.childWithExtraBed && roomDetails.cwebPrice
-//       ? Number(roomDetails.childWithExtraBed) * Number(roomDetails.cwebPrice)
-//       : 0;
-
-//   // CNB total
-//   const cnbTotal =
-//     roomDetails.childNoBed && roomDetails.cnbPrice
-//       ? Number(roomDetails.childNoBed) * Number(roomDetails.cnbPrice)
-//       : 0;
-
-//   return roomTotal + awebTotal + cwebTotal + cnbTotal;
-// }
-
-
-
-// function grandTotal(date = null) {
-//   let roomTotal = 0;
-
-//   if (roomDetails.roomPrice && Object.keys(roomDetails.roomPrice).length > 0) {
-//     if (date) {
-//       // Sirf specific date ka total
-//       roomTotal = Number(roomDetails.roomPrice[date] || 0) * Number(roomDetails.noOfRooms || 0);
-//     } else {
-//       // Sab dates ka sum
-//       Object.values(roomDetails.roomPrice).forEach(price => {
-//         roomTotal += Number(price || 0) * Number(roomDetails.noOfRooms || 0);
-//       });
-//     }
-//   }
-
-//   const awebTotal = Number(roomDetails.adultWithExtraBed || 0) * Number(roomDetails.awebPrice || 0);
-//   const cwebTotal = Number(roomDetails.childWithExtraBed || 0) * Number(roomDetails.cwebPrice || 0);
-//   const cnbTotal = Number(roomDetails.childNoBed || 0) * Number(roomDetails.cnbPrice || 0);
-
-//   return roomTotal + awebTotal + cwebTotal + cnbTotal;
-// }
-
-
-// function grandTotal(date = null) {
-//   // 🟢 CASE 1: popup / specific date
-//   if (date) {
-//     return (
-//       Number(roomDetails.roomPrice?.[date] || 0) *
-//       Number(roomDetails.noOfRooms || 0)
-//     );
-//   }
-
-//   // 🟢 CASE 2: overall total
-//   let roomTotal = 0;
-
-//   Object.values(roomDetails.roomPrice || {}).forEach(price => {
-//     roomTotal += Number(price || 0) * Number(roomDetails.noOfRooms || 0);
-//   });
-
-//   const awebTotal =
-//     Number(roomDetails.adultWithExtraBed || 0) *
-//     Number(roomDetails.awebPrice || 0);
-
-//   const cwebTotal =
-//     Number(roomDetails.childWithExtraBed || 0) *
-//     Number(roomDetails.cwebPrice || 0);
-
-//   const cnbTotal =
-//     Number(roomDetails.childNoBed || 0) *
-//     Number(roomDetails.cnbPrice || 0);
-
-//   return roomTotal + awebTotal + cwebTotal + cnbTotal;
-// }
-
-
-
-// function grandTotal(date = null) {
-//   const daysCount = Object.keys(roomDetails.roomPrice || {}).length || 1;
-
-//   // 🟢 CASE 1: specific date
-//   if (date) {
-//     return (
-//       Number(roomDetails.roomPrice?.[date] || 0) * Number(roomDetails.noOfRooms || 0) +
-//       Number(roomDetails.adultWithExtraBed || 0) * Number(roomDetails.awebPrice || 0) +
-//       Number(roomDetails.childWithExtraBed || 0) * Number(roomDetails.cwebPrice || 0) +
-//       Number(roomDetails.childNoBed || 0) * Number(roomDetails.cnbPrice || 0)
-//     );
-//   }
-
-//   // 🟢 CASE 2: overall total
-//   const roomTotal = Object.values(roomDetails.roomPrice || {}).reduce(
-//     (sum, price) => sum + Number(price || 0) * Number(roomDetails.noOfRooms || 0),
-//     0
-//   );
-
-//   const awebTotal = Number(roomDetails.adultWithExtraBed || 0) * Number(roomDetails.awebPrice || 0) * daysCount;
-//   const cwebTotal = Number(roomDetails.childWithExtraBed || 0) * Number(roomDetails.cwebPrice || 0) * daysCount;
-//   const cnbTotal = Number(roomDetails.childNoBed || 0) * Number(roomDetails.cnbPrice || 0) * daysCount;
-
-//   return roomTotal + awebTotal + cwebTotal + cnbTotal;
-// }
+   
 
 
 
@@ -266,56 +104,23 @@ function grandTotal(date = null) {
 
 
 
-//         const RoomHandler = (e) => {
-//   const { name, value } = e.target;
-
-//   setRoomDetails(prev => ({
-//     ...prev,
-//     [name]: value
-//   }));
-// };
-
-
-
-
-
-// const RoomHandler = (e, nightDate = null) => {
-//   const { name, value } = e.target;
-
-//   if (name === "roomPrice" && nightDate) {
-//     // Update only specific night price
-//     setRoomDetails(prev => ({
-//       ...prev,
-//       roomPrice: {
-//         ...prev.roomPrice,
-//         [nightDate]: Number(value) || 0
-//       }
-//     }));
-//   } else {
-//     // Normal fields (awebPrice, cwebPrice, etc.)
-//     setRoomDetails(prev => ({
-//       ...prev,
-//       [name]: Number(value) || 0
-//     }));
-//   }
-// };
+ 
 
 
 const RoomHandler = (e, nightDate = null) => {
   const { name, value } = e.target;
   const numericValue = value === "" ? "" : Number(value);
 
-  /**
-   * 🔹 CASE 1: DATE-WISE PRICE INPUTS
-   * roomPrice / awebPrice / cwebPrice / cnbPrice
-   */
-  if (
-    nightDate &&
-    ["roomPrice", "awebPrice", "cwebPrice", "cnbPrice"].includes(name)
-  ) {
+
+
+  console.log("nights", nightDate);
+  
+
+  // ✅ DATE-WISE PRICE HANDLING (FIXED)
+  if (nightDate && ["room_price", "aweb", "cweb", "cnb"].includes(name)) {
     setRoomDetails(prev => {
       const prevDay = prev.price_by_date?.[nightDate] || {
-        room_price: "",
+        room_price: 0,
         aweb: 0,
         cweb: 0,
         cnb: 0
@@ -327,41 +132,22 @@ const RoomHandler = (e, nightDate = null) => {
           ...prev.price_by_date,
           [nightDate]: {
             ...prevDay,
-
-            ...(name === "roomPrice" && { room_price: numericValue }),
-            ...(name === "awebPrice" && { aweb: numericValue }),
-            ...(name === "cwebPrice" && { cweb: numericValue }),
-            ...(name === "cnbPrice" && { cnb: numericValue })
+            [name]: numericValue   // 🔥 THIS IS THE KEY LINE
           }
         }
       };
     });
-
     return;
   }
 
-  /**
-   * 🔹 CASE 2: NON-DATE FIELDS
-   * paxRoom, noOfRooms, adultWithExtraBed, etc.
-   */
+  // 🔹 NON-DATE FIELDS
   setRoomDetails(prev => ({
     ...prev,
     [name]: numericValue
   }));
 };
 
-
-
-// const handleCheckboxChange = (e) => {
-//   const { value, checked } = e.target;
-
-//   if (checked) {
-//     setSelectedNights([...selectedNights, value]);
-//   } else {
-//     setSelectedNights(selectedNights.filter((n) => n !== value));
-//   }
-// };
-
+ 
 
 const handleCheckboxChange = (item) => {
   setSelectedNights(prev => {
@@ -379,415 +165,43 @@ const handleCheckboxChange = (item) => {
 
 
 
-// const saveRoomDetails = async () => {
-//   console.log("done");
-
-//   const { data, error } = await supabase
-//     .from("hotel_pricing")
-//     .upsert(
-//       {
-//         form_no: roomDetails.form_no,
-//         pax_room: Number(roomDetails.paxRoom) || 0,
-//         no_of_rooms: Number(roomDetails.noOfRooms) || 0,
-//         adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
-//         child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
-//         child_no_bed: Number(roomDetails.childNoBed) || 0,
-//         room_price: Number(roomDetails.roomPrice) || 0,
-//         aweb_price: Number(roomDetails.awebPrice) || 0,
-//         cweb_price: Number(roomDetails.cwebPrice) || 0,
-//         cnb_price: Number(roomDetails.cnbPrice) || 0,
-
-
-//         hotel_name:inputValue,
-//         meal_plan:mealSearch,
-//         room_type:roomSearch
-//       },
-//       {
-//         onConflict: 'form_no'  // ← ye ensure kare ki same form_no update ho, insert na ho
-//       }
-//     )
-//     .select(); // inserted/updated row ka data return kare
-//     setShowPopup(false)
-
-//   if (error) {
-//     console.log("Save/Update Error:", error);
-//   } else {
-//     console.log("Saved/Updated Successfully:", data);
-//   }
-// };
-
-
-
-
-
-
-
-// const saveRoomDetails = () => {
-//   const total = grandTotal();
-
-//   setNightPrices((prev) => {
-//     const updated = { ...prev };
-
-//     if (keepSamePrice) {
-//       // ✅ sab selected nights
-//       selectedNights.forEach((night) => {
-//         updated[night.date] = total;
-//       });
-//     } else if (activeNight) {
-//       // ✅ sirf jis night ka popup khula
-//       updated[activeNight.date] = total;
-//     }
-
-//     return updated;
-//   });
-
-//   setKeepSamePrice(false); // reset
-//   setActiveNight(null);
-//   setShowPopup(false);
-// };
-
-
-//ye hai original 
-
-
-// const [nightPrices, setNightPrices] = useState({}); tick
-
+ 
 const [keepSamePrice, setKeepSamePrice] = useState(false);
 const [activeNight, setActiveNight] = useState(null);
 
-// const saveRoomDetails = async () => {
-//   const total = grandTotal();
-
-
-  
-
-
-
-
-// const saveRoomDetails = async () => {
-//   let updatedRoomPrices = { ...roomDetails.roomPrice };
-
-//   if (keepSamePrice) {
-//     stayNights.forEach(night => {
-//       updatedRoomPrices[night.date] =
-//         Number(roomDetails.roomPrice?.[activeNight.date] || 0);
-//     });
-//   } 
-//   else if (activeNight) {
-//     updatedRoomPrices[activeNight.date] =
-//       Number(roomDetails.roomPrice?.[activeNight.date] || 0);
-//   }
-
-//   setRoomDetails(prev => ({
-//     ...prev,
-//     roomPrice: updatedRoomPrices
-//   }));
-
-
-
-
-
-//   //   // 💾 Supabase save
-//   const { data, error } = await supabase
-//     .from("hotel_pricing")
-//     .upsert(
-//       {
-//         // form_no: roomDetails.form_no,
-//         form_no: formId,
-
-
-//         pax_room: Number(roomDetails.paxRoom) || 0,
-//         no_of_rooms: Number(roomDetails.noOfRooms) || 0,
-//         adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
-//         child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
-//         child_no_bed: Number(roomDetails.childNoBed) || 0,
-
-//         // room_price: Number(roomDetails.roomPrice) || 0,
-//         aweb_price: Number(roomDetails.awebPrice) || 0,
-//         cweb_price: Number(roomDetails.cwebPrice) || 0,
-//         cnb_price: Number(roomDetails.cnbPrice) || 0,
-
-//         hotel_name: inputValue,
-//         meal_plan: mealSearch,
-//         room_type: roomSearch,
-
-//         // ⭐ IMPORTANT
-//            night_prices: updatedRoomPrices
-//       },
-//       {
-//         onConflict: "form_no"
-//       }
-//     )
-//     .select().single()
- 
- 
-
-//   if (error) {
-//     console.log("Save Error:", error);
-//     return;
-//   }
-
-//   // ✅ update local state from DB
-//   setNightPrices(data.night_prices || {});
-//   setKeepSamePrice(false);
-//   setActiveNight(null);
-//   setShowPopup(false);
-//   console.log("Saved Successfully:", data);
-// };
-
-
-
-// const saveRoomDetails = async () => {
-//   if (!activeNight && !keepSamePrice) {
-//     alert("Please select a night");
-//     return;
-//   }
-
-//   let updatedPrices = { ...roomDetails.price_by_date };
-
-//   const dayPrice = {
-//     room_price: Number(roomDetails.roomPrice || 0),
-//     aweb: Number(roomDetails.awebPrice || 0),
-//     cweb: Number(roomDetails.cwebPrice || 0),
-//     cnb: Number(roomDetails.cnbPrice || 0),
-//   };
-
-//   // 🟢 SAME PRICE FOR ALL DAYS
-//   if (keepSamePrice) {
-//     stayNights.forEach(night => {
-//       updatedPrices[night.date] = dayPrice;
-//     });
-//   }
-//   // 🟢 ONLY ACTIVE DAY
-//   else if (activeNight?.date) {
-//     updatedPrices[activeNight.date] = dayPrice;
-//   }
-
-//   // 🔄 local state update
-//   setRoomDetails(prev => ({
-//     ...prev,
-//     price_by_date: updatedPrices
-//   }));
-
-//   // 💾 SUPABASE SAVE
-//   const { data, error } = await supabase
-//     .from("hotel_pricing")
-//     .upsert(
-//       {
-//         form_no: formId,                 // ✅ admin form id
-//         hotel_name: inputValue,          // ✅ selected hotel
-
-//         meal_plan: mealSearch,
-//         room_type: roomSearch,
-
-//         pax_per_room: Number(roomDetails.paxRoom) || 0,
-//         no_of_rooms: Number(roomDetails.noOfRooms) || 0,
-
-//         adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
-//         child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
-//         child_no_bed: Number(roomDetails.childNoBed) || 0,
-
-//         // ⭐ ONLY PRICE DATA HERE
-//         price_by_date: updatedPrices
-//       },
-//       { onConflict: "form_no" }
-//     )
-//     .select()
-//     .single();
-
-//   if (error) {
-//     console.error("Save Error:", error);
-//     return;
-//   }
-
-//   // ✅ SUCCESS
-//   setKeepSamePrice(false);
-//   setActiveNight(null);
-//   setShowPopup(false);
-
-//   console.log("Saved Successfully:", data);
-// };
-
-
-//  const saveRoomDetails = async () => {
-//   if (!activeNight && !keepSamePrice) {
-//     alert("Please select a night");
-//     return;
-//   }
-
-//   let updatedPrices = { ...roomDetails.price_by_date };
-
-//   const dayPrice = {
-//     room_price: Number(roomDetails.roomPrice || 0),
-//     aweb: Number(roomDetails.awebPrice || 0),
-//     cweb: Number(roomDetails.cwebPrice || 0),
-//     cnb: Number(roomDetails.cnbPrice || 0),
-//   };
-
-//   // 🟢 SAME PRICE FOR ALL DAYS
-//   if (keepSamePrice) {
-//     stayNights.forEach(night => {
-//       updatedPrices[night.date] = dayPrice;
-//     });
-//   }
-//   // 🟢 ONLY ACTIVE DAY
-//   else if (activeNight?.date) {
-//     updatedPrices[activeNight.date] = dayPrice;
-//   }
-
-//   // 🔄 local state update
-//   setRoomDetails(prev => ({
-//     ...prev,
-//     price_by_date: updatedPrices
-//   }));
-
-//   // 💾 SUPABASE SAVE
-//   const { data, error } = await supabase
-//     .from("hotel_pricing")
-//     .upsert(
-//       {
-//         form_no: formId,                 // ✅ admin form id
-//         hotel_name: inputValue,          // ✅ selected hotel
-
-//         meal_plan: mealSearch,
-//         room_type: roomSearch,
-
-//         pax_per_room: Number(roomDetails.paxRoom) || 0,
-//         no_of_rooms: Number(roomDetails.noOfRooms) || 0,
-
-//         adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
-//         child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
-//         child_no_bed: Number(roomDetails.childNoBed) || 0,
-
-//         // ⭐ ONLY PRICE DATA HERE
-//         price_by_date: updatedPrices
-//       },
-//       { onConflict: "form_no" }
-//     )
-//     .select()
-//     .single();
-
-//   if (error) {
-//     console.error("Save Error:", error);
-//     return;
-//   }
-
-//   // ✅ SUCCESS
-//   setKeepSamePrice(false);
-//   setActiveNight(null);
-//   setShowPopup(false);
-
-//   console.log("Saved Successfully:", data);
-// };
-
-
-
-
-
-
-// const saveRoomDetails = async () => {
-//   if (!activeNight?.date) {
-//     alert("Please select a night");
-//     return;
-//   }
-
-//   // if (!currentRoomPrice || currentRoomPrice <= 0) {
-//   //   alert("Room price is mandatory");
-//   //   return;
-//   // }
-
-
-//   const currentRoomPrice = roomDetails.price_by_date?.[activeNight?.date]?.room_price;
-// if (!currentRoomPrice || currentRoomPrice <= 0) {
-//   alert("Room price is mandatory");
-//   return;
-// }
-
-
-//   const dayPrice = {
-//     room_price: Number(currentRoomPrice), // 🔥 mandatory
-//     aweb: Number(roomDetails.awebPrice) || 0,
-//     cweb: Number(roomDetails.cwebPrice) || 0,
-//     cnb: Number(roomDetails.cnbPrice) || 0,
-//   };
-
-//   const updatedPrices = {
-//     ...roomDetails.price_by_date,
-//     [activeNight.date]: dayPrice
-//   };
-
-//   setRoomDetails(prev => ({
-//     ...prev,
-//     price_by_date: updatedPrices
-//   }));
-
-//   const { error } = await supabase
-//     .from("hotel_pricing")
-//     .upsert({
-//       form_no: formId,
-//       hotel_name: inputValue,
-//       meal_plan: mealSearch,
-//       room_type: roomSearch,
-//       pax_per_room: Number(roomDetails.paxRoom) || 0,
-//       no_of_rooms: Number(roomDetails.noOfRooms) || 0,
-//       adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
-//       child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
-//       child_no_bed: Number(roomDetails.childNoBed) || 0,
-//       price_by_date: updatedPrices
-//     }, { onConflict: "form_no" });
-
-//   if (error) {
-//     console.error(error);
-//     return;
-//   }
-
-//   console.log("✅ Saved with mandatory room price");
-// };
-
 
 const saveRoomDetails = async () => {
-  if (!activeNight?.date && !keepSamePrice) {
-    alert("Please select a night");
-    return;
-  }
+  try {
+    if (!activeNight) {
+      alert("Please select a date first!");
+      return;
+    }
 
-  // 🟢 CURRENT PRICE CHECK (MANDATORY)
-  const currentRoomPrice = roomDetails.price_by_date?.[activeNight?.date]?.room_price;
-  if (!currentRoomPrice || currentRoomPrice <= 0) {
-    alert("Room price is mandatory");
-    return;
-  }
+    // ✅ Current price values for activeNight
+    const currentValues = {
+      room_price: roomDetails.price_by_date[activeNight.date]?.room_price || 0,
+      aweb: roomDetails.price_by_date[activeNight.date]?.aweb || 0,
+      cweb: roomDetails.price_by_date[activeNight.date]?.cweb || 0,
+      cnb: roomDetails.price_by_date[activeNight.date]?.cnb || 0,
+    };
 
-  // 🟢 PREPARE DAY PRICE OBJECT
-  const dayPrice = {
-    room_price: Number(currentRoomPrice), // mandatory
-    aweb: Number(roomDetails.awebPrice) || 0,
-    cweb: Number(roomDetails.cwebPrice) || 0,
-    cnb: Number(roomDetails.cnbPrice) || 0,
-  };
+    // ✅ Updated price object
+    let updatedPrices = { ...roomDetails.price_by_date };
 
-  // 🟢 UPDATE PRICES FOR ALL DAYS OR ACTIVE NIGHT
-  let updatedPrices = { ...roomDetails.price_by_date };
+    if (keepSamePrice) {
+      // Keep same price for all selected nights
+      stayNights.forEach(night => {
+        updatedPrices[night.date] = { ...currentValues };
+      });
+    } else {
+      // Sirf activeNight ki date update
+      updatedPrices[activeNight.date] = { ...currentValues };
+    }
 
-  if (keepSamePrice) {
-    stayNights.forEach(night => {
-      updatedPrices[night.date] = { ...dayPrice }; // all nights same
-    });
-  } else if (activeNight?.date) {
-    updatedPrices[activeNight.date] = { ...dayPrice }; // only active night
-  }
-
-  // 🔄 UPDATE LOCAL STATE
-  setRoomDetails(prev => ({
-    ...prev,
-    price_by_date: updatedPrices
-  }));
-
-  // 💾 SUPABASE SAVE
-  const { data, error } = await supabase
-    .from("hotel_pricing")
-    .upsert(
-      {
+    // ✅ Supabase upsert
+    const { data, error } = await supabase
+      .from("hotel_pricing") // apna table name
+      .upsert([{
         form_no: formId,
         hotel_name: inputValue,
         meal_plan: mealSearch,
@@ -798,30 +212,30 @@ const saveRoomDetails = async () => {
         child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
         child_no_bed: Number(roomDetails.childNoBed) || 0,
         price_by_date: updatedPrices
-      },
-      { onConflict: "form_no" }
-    )
-    .select()
-    .single();
+      }],
+      { onConflict: ["form_no"] }).select();
+      
 
-  if (error) {
-    console.error("❌ Save Error:", error);
-    return;
+    if (error) {
+      console.error("Error saving room details:", error);
+      alert("Failed to save data!");
+      return;
+    }
+
+    console.log("Saved successfully:", data);
+
+    // ✅ Update local state
+    setRoomDetails(prev => ({ ...prev, price_by_date: updatedPrices }));
+    setShowPopup(false); // popup close
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong!");
   }
-
-  // ✅ SUCCESS
-  setKeepSamePrice(false);
-  setActiveNight(null);
-  setShowPopup(false);
-  console.log("✅ Saved Successfully:", data);
 };
 
 
 useEffect(()=>{
-
-console.log(roomDetails.roomPrice,"ok");
-
-
+ console.log(selectedNights,"ok");
 },[roomDetails.roomPrice])
 
 
@@ -895,9 +309,7 @@ const fetchRoomDetails = async () => {
     adultWithExtraBed: data.adult_with_extra_bed?.toString() || "",
     childWithExtraBed: data.child_with_extra_bed?.toString() || "",
     childNoBed: data.child_no_bed?.toString() || "",
-
     roomPrice: data.night_prices || {}, // ⭐ IMPORTANT
-
     awebPrice: data.aweb_price?.toString() || "",
     cwebPrice: data.cweb_price?.toString() || "",
     cnbPrice: data.cnb_price?.toString() || "",
@@ -916,13 +328,17 @@ const fetchRoomDetails = async () => {
 
  
 
+const openPricePopup = (night) => {
+  setActiveNight(night);   // 🔥 MOST IMPORTANT
+  setShowPopup(true);
+};
 
 
 
   return (
- <div className='   '>
-            <h2 className='font-bold text-black text-2xl'>Hotels</h2>
-            <p>Please add hotels details</p>
+ <div className=''>
+  <h2 className='font-bold text-black text-2xl'>Hotels</h2>
+   <p>Please add hotels details</p>
 
  
 <button className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-lg transition duration-300 ${hotelDisplay ? "hidden": "block"}`}
@@ -1355,27 +771,12 @@ value={mealSearch}
 
       <td className="text-center">
         {roomDetails.paxRoom ? (
-          // <input
-          //   type="number"
-          //   name="roomPrice"
-          //   value={roomDetails.roomPrice}
-          //   onChange={RoomHandler}
-          //   className="border px-2 w-24"
-          // />
-
-// {/* <input
-//   type="number"
-//   name="roomPrice"
-//   value={activeNight ? roomDetails.roomPrice[activeNight.date] || "" : ""}
-//   onChange={(e) => RoomHandler(e, activeNight.date)}
-//   className="border px-2 w-24"
-// /> */}
+    
 <input
   type="number"
-  name="roomPrice"
-  value={roomDetails.price_by_date?.[activeNight?.date]?.room_price || ""}
+  name="room_price"
+  value={roomDetails.price_by_date?.[activeNight?.date]?.room_price ?? ""}
   onChange={(e) => RoomHandler(e, activeNight.date)}
-  className="border px-2 w-24"
 />
 
 
@@ -1391,27 +792,7 @@ value={mealSearch}
           : "—"}
       </td>
 
-      {/* TOTAL */}
-      {/* <td>
-        {roomDetails.paxRoom && roomDetails.noOfRooms && roomDetails.roomPrice
-          ? roomDetails.noOfRooms * roomDetails.roomPrice
-          : "—"}
-      </td> */}
-
  
-{/* <td>
-  {activeNight
-    ? Number(roomDetails.roomPrice[activeNight.date] || 0) * Number(roomDetails.noOfRooms || 0)
-    : "—"}
-</td> */}
-
-{/* <td>
-  {activeNight
-    ? Number(roomDetails.price_by_date?.[activeNight.date]?.room_price || 0) 
-      * Number(roomDetails.noOfRooms || 0)
-    : "—"}
-</td> */}
-
 <td>
   {activeNight
     ? (
@@ -1433,31 +814,15 @@ value={mealSearch}
 
       <td className="text-center">
         {roomDetails.adultWithExtraBed ? (
-          // <input
-          //   type="number"
-          //   name="awebPrice"
-          //   value={roomDetails.awebPrice}
-          //   onChange={RoomHandler}
-          //   className="border px-2 w-24"
-          // />
-
-//           <input
-//   type="number"
-//   name="awebPrice"
-//   value={roomDetails.price_by_date?.[activeNight?.date]?.aweb || ""}
-//   onChange={(e) => RoomHandler(e, activeNight.date)}
-//   className="border px-2 w-24"
-// />
+    
 
 
 <input
   type="number"
-  name="awebPrice"
-  value={roomDetails.price_by_date?.[activeNight?.date]?.aweb || ""}
+  name="aweb"
+  value={roomDetails.price_by_date?.[activeNight?.date]?.aweb ?? ""}
   onChange={(e) => RoomHandler(e, activeNight.date)}
-  className="border px-2 w-24"
 />
-
 
         ) : "—"}
       </td>
@@ -1466,12 +831,12 @@ value={mealSearch}
       <td>{roomDetails.adultWithExtraBed
           ? roomDetails.adultWithExtraBed
           : "—"} </td>
-
-      <td>
-        {roomDetails.adultWithExtraBed && roomDetails.awebPrice
-          ? roomDetails.adultWithExtraBed * roomDetails.awebPrice
-          : "—"}
-      </td>
+          <td>
+    {roomDetails.adultWithExtraBed && activeNight
+      ? roomDetails.adultWithExtraBed *
+        (roomDetails.price_by_date?.[activeNight.date]?.aweb || 0)
+      : "—"}
+  </td>
     </tr>
 
     {/* CWEB */}
@@ -1480,20 +845,13 @@ value={mealSearch}
 
       <td className="text-center">
         {roomDetails.childWithExtraBed ? (
-          // <input
-          //   type="number"
-          //   name="cwebPrice"
-          //   value={roomDetails.cwebPrice}
-          //   onChange={RoomHandler}
-          //   className="border px-2 w-24"
-          // />
+    
 
-          <input
+<input
   type="number"
-  name="cwebPrice"
-  value={roomDetails.price_by_date?.[activeNight?.date]?.cweb || ""}
+  name="cweb"
+  value={roomDetails.price_by_date?.[activeNight?.date]?.cweb ?? ""}
   onChange={(e) => RoomHandler(e, activeNight.date)}
-  className="border px-2 w-24"
 />
 
         ) : "—"}
@@ -1504,12 +862,20 @@ value={mealSearch}
           ? roomDetails.childWithExtraBed
           : "—"}
       </td>
+ 
 
-      <td>
-        {roomDetails.childWithExtraBed && roomDetails.cwebPrice
-          ? roomDetails.childWithExtraBed * roomDetails.cwebPrice
-          : "—"}
-      </td>
+  
+
+
+
+
+  <td>
+  {roomDetails.childWithExtraBed && activeNight
+    ? roomDetails.childWithExtraBed *
+      (roomDetails.price_by_date?.[activeNight.date]?.cweb || 0)
+    : "—"}
+</td>
+
     </tr>
 
     {/* CNB */}
@@ -1518,20 +884,12 @@ value={mealSearch}
 
       <td className="text-center">
         {roomDetails.childNoBed ? (
-          // <input
-          //   type="number"
-          //   name="cnbPrice"
-          //   value={roomDetails.cnbPrice}
-          //   onChange={RoomHandler}
-          //   className="border px-2 w-24"
-          // />
-
-          <input
+   
+ <input
   type="number"
-  name="cnbPrice"
-  value={roomDetails.price_by_date?.[activeNight?.date]?.cnb || ""}
+  name="cnb"
+  value={roomDetails.price_by_date?.[activeNight?.date]?.cnb ?? ""}
   onChange={(e) => RoomHandler(e, activeNight.date)}
-  className="border px-2 w-24"
 />
 
         ) : "—"}
@@ -1543,11 +901,14 @@ value={mealSearch}
           : "—"}
       </td>
 
+     
       <td>
-        {roomDetails.childNoBed && roomDetails.cnbPrice
-          ? roomDetails.childNoBed * roomDetails.cnbPrice
-          : "—"}
-      </td>
+  {roomDetails.childNoBed && activeNight
+    ? roomDetails.childNoBed *
+      (roomDetails.price_by_date?.[activeNight.date]?.cnb || 0)
+    : "—"}
+</td>
+
     </tr>
 
     {/* GRAND TOTAL */}
@@ -1621,10 +982,8 @@ value={mealSearch}
 
       <td
         className="cursor-pointer"
-        onClick={() => {
-          setActiveNight(night);
-          setShowPopup(true);
-        }}
+        onClick={() => openPricePopup(night)}
+
       >
         {grandTotal(night.date)  // sirf is date ka total
           ? `INR ${grandTotal(night.date)}`
@@ -1647,6 +1006,9 @@ value={mealSearch}
     <button className="px-4 py-2 text-blue-600 border border-gray-500 rounded hover:bg-gray-100">Remove</button>
   </div>
 </div>
+
+
+
 {/* deepak */}
 
 
@@ -1669,3 +1031,7 @@ value={mealSearch}
 }
 
 export default Hotels
+
+
+
+

@@ -4,21 +4,60 @@ import {supabase} from  "../../../supabase-client"
 
  
 
-function ExtraServices({ services, setServices, duration}) {
+function ExtraServices({ services, setServices, duration,formId}) {
   
- 
+ const saveExtraServices = async () => {
+  try {
+    // 🔴 Empty rows filter (important)
+    const filteredServices = services.filter(
+      s => s.service && s.price && s.day
+    );
+
+    if (filteredServices.length === 0) {
+      alert("Please add at least one service");
+      return;
+    }
+
+    // ✅ Total calculate
+    const totalAmount = filteredServices.reduce(
+      (sum, item) => sum + Number(item.price || 0),
+      0
+    );
+
+    // ✅ Supabase insert / update
+    const { error } = await supabase
+      .from("other_activities")
+      .upsert({
+        form_no: formId,               // 👈 same form number
+        services: filteredServices,    // 👈 JSONB array
+        // total_amount: totalAmount
+      });
+
+    if (error) {
+      console.error(error);
+      alert("Failed to save extra services");
+      return;
+    }
+
+    alert("Extra services saved successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong!");
+  }
+};
+
     
       const addService = () => {
         setServices(prev => [
           ...prev,
-          { service: "", price: "", day: null, comment: "" }
+          { service: "",
+             price: "", 
+             day: null, 
+             comment: "" }
         ])
       }
 
-//       useEffect(()=>{
-// console.log(services,"ok");
-
-//       }, [services])
+ 
     
       const handleChange = (index, field, value) => {
         const updated = [...services];
@@ -94,9 +133,7 @@ function ExtraServices({ services, setServices, duration}) {
           onMouseDown={(e) => e.preventDefault()}  >
           {getService.map((val, i) => (
   <label  key={i}  className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100" >
-    <input
-      type="radio"
-      name={`service-${index}`}   // 👈 same row ke radios ek group
+    <input  type="radio" name={`service-${index}`}   // 👈 same row ke radios ek group
       checked={item.service === val}
 
       onChange={() => {
@@ -129,46 +166,23 @@ function ExtraServices({ services, setServices, duration}) {
            {/* ================= DAY / DURATION ================= */}
           <div className="flex flex-col relative">
             <label className="font-semibold mb-1">Day</label>
-
-            {/* <input
-              type="text"
-              className="border px-3 py-2 rounded w-48"
-              value={item.day?.date || ""}
-              placeholder="Select Day"
-       
-              onFocus={() => setOpenDayIndex(index)}
-                onBlur={() => setOpenDayIndex(null)}/> */}
-
-                <input
-  type="text"
-  className="border px-3 py-2 rounded w-48"
-  value={item.day || ""}
-  placeholder="Select Day"
-  onFocus={() => setOpenDayIndex(index)}
-  onBlur={() => setOpenDayIndex(null)}
-/>
+            
+              <input  type="text" className="border px-3 py-2 rounded w-48" value={item.day || ""} placeholder="Select Day"
+  onFocus={() => setOpenDayIndex(index)}  onBlur={() => setOpenDayIndex(null)}/>
 
 
             {/* DROPDOWN OPEN → duration data show */}
             {openDayIndex === index && (
-              <div
-                className="absolute top-full left-0 w-full bg-white border z-50 max-h-[15vh] overflow-y-auto shadow"
-                onMouseDown={(e) => e.preventDefault()}
-              >
+              <div   className="absolute top-full left-0 w-full bg-white border z-50 max-h-[15vh] overflow-y-auto shadow"
+                onMouseDown={(e) => e.preventDefault()}>
                 {duration.map((d, i) => (
                   <label
-                    key={i}
-                    className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                    <input
-                      type="radio"
-                      name={`day-${index}`}
-                      checked={item.day?.date === d.date}
-      
-
+                    key={i}  className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                    <input type="radio" name={`day-${index}`} checked={item.day?.date === d.date}
                       onChange={() => {
-  handleChange(index, "day", d.date); // 👈 sirf date
-  setOpenDayIndex(null)
-}}
+                        handleChange(index, "day", d.date); // 👈 sirf date
+                        setOpenDayIndex(null)
+                      }}
 
                     />
                     {d.date} ({d.day})
@@ -214,6 +228,8 @@ function ExtraServices({ services, setServices, duration}) {
 
 
     </div>
+
+    <button onClick={saveExtraServices}>save</button>
 
 
     </div>

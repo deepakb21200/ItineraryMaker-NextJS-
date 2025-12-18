@@ -106,8 +106,9 @@ const [showPreview, setShowPreview] = useState(false)
 
 
      {/* Edit Itinerary – NEW PAGE */}
-        <Route  path="/trips/:id/newQuote/edit-iternary"   element={<Edit/>}/>
-
+        {/* <Route  path="/trips/:id/newQuote/edit-iternary"   element={<Edit/>}/> */}
+         <Route
+          path="/trips/:tripId/quotes/:formNo/edit-iternary"  element={<Edit />} />
         
       </Routes>
     </div>
