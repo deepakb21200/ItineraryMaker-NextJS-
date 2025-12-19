@@ -168,7 +168,8 @@ function ExtraServices({ services, setServices, duration,formId}) {
             <label className="font-semibold mb-1">Day</label>
             
               <input  type="text" className="border px-3 py-2 rounded w-48" value={item.day || ""} placeholder="Select Day"
-  onFocus={() => setOpenDayIndex(index)}  onBlur={() => setOpenDayIndex(null)}/>
+  onFocus={() => setOpenDayIndex(index)}  onBlur={() => setOpenDayIndex(null)}
+  onChange={()=>{}}/>
 
 
             {/* DROPDOWN OPEN → duration data show */}
@@ -181,10 +182,7 @@ function ExtraServices({ services, setServices, duration,formId}) {
                     <input type="radio" name={`day-${index}`} checked={item.day?.date === d.date}
                       onChange={() => {
                         handleChange(index, "day", d.date); // 👈 sirf date
-                        setOpenDayIndex(null)
-                      }}
-
-                    />
+                        setOpenDayIndex(null)}}/>
                     {d.date} ({d.day})
                   </label>
                 ))}

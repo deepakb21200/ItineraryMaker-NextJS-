@@ -24,6 +24,7 @@ const {
 
 
  
+const [tempPrices, setTempPrices] = useState({ ...roomDetails.price_by_date });
 
 useEffect(()=>{
 console.log(roomDetails);
@@ -75,33 +76,96 @@ console.log(roomDetails);
 
 
 
-function grandTotal(date = null) {
-  const nights = Object.keys(roomDetails.price_by_date || {});
+// function grandTotal(date = null) {
+//   const nights = Object.keys(roomDetails.price_by_date || {});
 
-  // CASE 1: specific date
-  if (date) {
-    const day = roomDetails.price_by_date?.[date] || {};
-    return (
-      (parseFloat(day.room_price) || 0) * (parseInt(roomDetails.noOfRooms) || 0) +
-      (parseInt(roomDetails.adultWithExtraBed) || 0) * (parseFloat(day.aweb) || 0) +
-      (parseInt(roomDetails.childWithExtraBed) || 0) * (parseFloat(day.cweb) || 0) +
-      (parseInt(roomDetails.childNoBed) || 0) * (parseFloat(day.cnb) || 0)
-    );
-  }
+//   // CASE 1: specific date
+//   if (date) {
+//     const day = roomDetails.price_by_date?.[date] || {};
+//     return (
+//       (parseFloat(day.room_price) || 0) * (parseInt(roomDetails.noOfRooms) || 0) +
+//       (parseInt(roomDetails.adultWithExtraBed) || 0) * (parseFloat(day.aweb) || 0) +
+//       (parseInt(roomDetails.childWithExtraBed) || 0) * (parseFloat(day.cweb) || 0) +
+//       (parseInt(roomDetails.childNoBed) || 0) * (parseFloat(day.cnb) || 0)
+//     );
+//   }
 
-  // CASE 2: overall total
-  return nights.reduce((sum, nightDate) => {
-    const day = roomDetails.price_by_date[nightDate] || {};
-    return (
-      sum +
-      (parseFloat(day.room_price) || 0) * (parseInt(roomDetails.noOfRooms) || 0) +
-      (parseInt(roomDetails.adultWithExtraBed) || 0) * (parseFloat(day.aweb) || 0) +
-      (parseInt(roomDetails.childWithExtraBed) || 0) * (parseFloat(day.cweb) || 0) +
-      (parseInt(roomDetails.childNoBed) || 0) * (parseFloat(day.cnb) || 0)
-    );
-  }, 0);
-}
+//   // CASE 2: overall total
+//   return nights.reduce((sum, nightDate) => {
+//     const day = roomDetails.price_by_date[nightDate] || {};
+//     return (
+//       sum +
+//       (parseFloat(day.room_price) || 0) * (parseInt(roomDetails.noOfRooms) || 0) +
+//       (parseInt(roomDetails.adultWithExtraBed) || 0) * (parseFloat(day.aweb) || 0) +
+//       (parseInt(roomDetails.childWithExtraBed) || 0) * (parseFloat(day.cweb) || 0) +
+//       (parseInt(roomDetails.childNoBed) || 0) * (parseFloat(day.cnb) || 0)
+//     );
+//   }, 0);
+// }
 
+// const grandTotal = (date) => {
+//   if (!tempPrices[date]) return 0;
+
+//   const room = Number(tempPrices[date].room_price) || 0;
+//   const aweb = Number(tempPrices[date].aweb) || 0;
+//   const cweb = Number(tempPrices[date].cweb) || 0;
+//   const cnb = Number(tempPrices[date].cnb) || 0;
+
+//   const totalRoom = room * (roomDetails.noOfRooms || 0);
+//   const totalAweb = aweb * (roomDetails.adultWithExtraBed || 0);
+//   const totalCweb = cweb * (roomDetails.childWithExtraBed || 0);
+//   const totalCnb = cnb * (roomDetails.childNoBed || 0);
+
+//   return totalRoom + totalAweb + totalCweb + totalCnb;
+// };
+
+
+
+
+
+
+
+
+const openPricePopups = (night) => {
+  setActiveNight(night);
+
+  const savedPrice =
+    roomDetails.room_price_by_date?.[night.date] || {};
+
+  // 🔥 pre-fill inputs
+  setTempPrices(prev => ({
+    ...prev,
+    [night.date]: {
+      room_price: savedPrice.room_price ?? "",
+      aweb: savedPrice.aweb ?? "",
+      cweb: savedPrice.cweb ?? "",
+      cnb: savedPrice.cnb ?? "",
+    }
+  }));
+
+  setShowPopup(true);
+};
+
+
+
+
+
+const grandTotal = (date) => {
+  const price = roomDetails.room_price_by_date?.[date];
+  if (!price) return 0;
+
+  const room = Number(price.room_price) || 0;
+  const aweb = Number(price.aweb) || 0;
+  const cweb = Number(price.cweb) || 0;
+  const cnb = Number(price.cnb) || 0;
+
+  return (
+    room * (roomDetails.noOfRooms || 0) +
+    aweb * (roomDetails.adultWithExtraBed || 0) +
+    cweb * (roomDetails.childWithExtraBed || 0) +
+    cnb * (roomDetails.childNoBed || 0)
+  );
+};
 
 
  
@@ -170,73 +234,132 @@ const [keepSamePrice, setKeepSamePrice] = useState(false);
 const [activeNight, setActiveNight] = useState(null);
 
 
-const saveRoomDetails = async () => {
-  try {
-    if (!activeNight) {
-      alert("Please select a date first!");
-      return;
-    }
+// const saveRoomDetails = async () => {
+//   try {
+//     if (!activeNight) {
+//       alert("Please select a date first!");
+//       return;
+//     }
 
-    // ✅ Current price values for activeNight
-    const currentValues = {
-      room_price: roomDetails.price_by_date[activeNight.date]?.room_price || 0,
-      aweb: roomDetails.price_by_date[activeNight.date]?.aweb || 0,
-      cweb: roomDetails.price_by_date[activeNight.date]?.cweb || 0,
-      cnb: roomDetails.price_by_date[activeNight.date]?.cnb || 0,
+//     // ✅ Current price values for activeNight
+//     const currentValues = {
+//       room_price: roomDetails.price_by_date[activeNight.date]?.room_price || 0,
+//       aweb: roomDetails.room_price_by_date[activeNight.date]?.aweb || 0,
+//       cweb: roomDetails.room_price_by_date[activeNight.date]?.cweb || 0,
+//       cnb: roomDetails.room_price_by_date[activeNight.date]?.cnb || 0,
+//     };
+
+//     // ✅ Updated price object
+//     let updatedPrices = { ...roomDetails.price_by_date };
+
+//     if (keepSamePrice) {
+//       // Keep same price for all selected nights
+//       stayNights.forEach(night => {
+//         updatedPrices[night.date] = { ...currentValues };
+//       });
+//     } else {
+//       // Sirf activeNight ki date update
+//       updatedPrices[activeNight.date] = { ...currentValues };
+//     }
+
+ 
+//     // ✅ Update local state
+//     setRoomDetails(prev => ({ ...prev, price_by_date: updatedPrices }));
+//     setShowPopup(false); // popup close
+//   } catch (err) {
+//     console.error(err);
+//     alert("Something went wrong!");
+//   }
+
+// };
+
+
+
+// const saveRoomDetails = async () => {
+//   try {
+//     if (!activeNight) {
+//       alert("Please select a date first!");
+//       return;
+//     }
+
+//     // ✅ Current price values for activeNight from tempPrices
+//     const currentValues = {
+//       room_price: tempPrices[activeNight.date]?.room_price || 0,
+//       aweb: tempPrices[activeNight.date]?.aweb || 0,
+//       cweb: tempPrices[activeNight.date]?.cweb || 0,
+//       cnb: tempPrices[activeNight.date]?.cnb || 0,
+//     };
+
+//     // ✅ Updated price object
+//     let updatedPrices = { ...roomDetails.roomprice_by_date };
+
+//     if (keepSamePrice) {
+//       // Keep same price for all selected nights
+//       stayNights.forEach(night => {
+//         updatedPrices[night.date] = { ...currentValues };
+//       });
+//     } else {
+//       // Sirf activeNight ki date update
+//       updatedPrices[activeNight.date] = { ...currentValues };
+//     }
+
+//     // ✅ Update local state
+//     setRoomDetails(prev => ({ ...prev, room_price_by_date: updatedPrices }));
+//     setShowPopup(false); // popup close
+//   } catch (err) {
+//     console.error(err);
+//     alert("Something went wrong!");
+//   }
+// };
+
+
+const saveRoomDetails = () => {
+  if (!activeNight) return;
+
+  setRoomDetails(prev => {
+    const prevPrices = prev.room_price_by_date || {};
+
+    // 🟢 existing price (important!)
+    const existing = prevPrices[activeNight.date] || {};
+
+    // 🟢 sirf jo user ne input diya wahi update
+    const updatedActiveDate = {
+      room_price:
+        tempPrices[activeNight.date]?.room_price ?? existing.room_price ?? "",
+      aweb:
+        tempPrices[activeNight.date]?.aweb ?? existing.aweb ?? "",
+      cweb:
+        tempPrices[activeNight.date]?.cweb ?? existing.cweb ?? "",
+      cnb:
+        tempPrices[activeNight.date]?.cnb ?? existing.cnb ?? "",
     };
 
-    // ✅ Updated price object
-    let updatedPrices = { ...roomDetails.price_by_date };
+    let updatedPrices = { ...prevPrices };
 
     if (keepSamePrice) {
-      // Keep same price for all selected nights
+      // ✅ sab nights me same price
       stayNights.forEach(night => {
-        updatedPrices[night.date] = { ...currentValues };
+        updatedPrices[night.date] = { ...updatedActiveDate };
       });
     } else {
-      // Sirf activeNight ki date update
-      updatedPrices[activeNight.date] = { ...currentValues };
+      // ✅ sirf ek date update, baaki untouched
+      updatedPrices[activeNight.date] = updatedActiveDate;
     }
 
-    // ✅ Supabase upsert
-    const { data, error } = await supabase
-      .from("hotel_pricing") // apna table name
-      .upsert([{
-        form_no: formId,
-        hotel_name: inputValue,
-        meal_plan: mealSearch,
-        room_type: roomSearch,
-        pax_per_room: Number(roomDetails.paxRoom) || 0,
-        no_of_rooms: Number(roomDetails.noOfRooms) || 0,
-        adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
-        child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
-        child_no_bed: Number(roomDetails.childNoBed) || 0,
-        price_by_date: updatedPrices
-      }],
-      { onConflict: ["form_no"] }).select();
-      
+    return {
+      ...prev,
+      room_price_by_date: updatedPrices,
+    };
+  });
 
-    if (error) {
-      console.error("Error saving room details:", error);
-      alert("Failed to save data!");
-      return;
-    }
-
-    console.log("Saved successfully:", data);
-
-    // ✅ Update local state
-    setRoomDetails(prev => ({ ...prev, price_by_date: updatedPrices }));
-    setShowPopup(false); // popup close
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong!");
-  }
+  setShowPopup(false);
 };
 
 
+
 useEffect(()=>{
- console.log(selectedNights,"ok");
-},[roomDetails.roomPrice])
+ console.log(roomDetails,"ok");
+},[roomDetails])
 
 
 
@@ -324,6 +447,17 @@ const fetchRoomDetails = async () => {
 //   }
 // }, [formId]);
 
+const tempGrandTotal = (date) => {
+  const price = tempPrices[date];
+  if (!price) return 0;
+
+  return (
+    (Number(price.room_price) || 0) * (roomDetails.noOfRooms || 0) +
+    (Number(price.aweb) || 0) * (roomDetails.adultWithExtraBed || 0) +
+    (Number(price.cweb) || 0) * (roomDetails.childWithExtraBed || 0) +
+    (Number(price.cnb) || 0) * (roomDetails.childNoBed || 0)
+  );
+};
 
 
  
@@ -445,52 +579,10 @@ stayNights.length > 0 &&
 
     </div>
   )}
+  </div>
+  </div>
 
-    </div>
-
-
-
-
-   
-
-
-
-
-
- </div>
-
-   {/* Selected nights display */}
-{/* <div className="mt-2 border p-2">
-  {selectedNights.length > 0 && (
-    selectedNights.map((night, index) => (
-      <div key={index} className="flex items-center px-3 py-1 border-b border-gray-200">
-        <input type="checkbox" checked={true} readOnly className="mr-2" onClick={() => handleCheckboxChange()} />
-        <span>{night}</span>
-      </div>
-    ))
-  ) }
-</div> */}
  
-
-{/* {selectedNights.length >0 &&
-<div className="mt-2 border p-2">
-  {
-    selectedNights.map((night, index) => (
-      <div key={index} className="flex items-center px-3 py-1 border-b border-gray-200">
-
-        <input
-          type="checkbox"
-          value={night}
-          checked={true}
-          className="mr-2"
-          onChange={handleCheckboxChange}
-        />
-
-        <span>{night}</span>
-      </div>
-    ))
-  }
-  </div>} */}
 
 
 
@@ -735,10 +827,10 @@ value={mealSearch}
 
 
 <div className="p-4 bg-white rounded shadow-md   w-full">
-{/* //dk */}
+ 
 
-   {/* Static Popup Modal */}
-      {showPopup && (
+ 
+      {/* {showPopup && (
 
 
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -746,9 +838,9 @@ value={mealSearch}
           <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg relative">
             <h2 className="text-xl font-bold mb-4">Duplicate Table</h2>
 
-            {/* Table with static values */}
+ 
            <div>
-            {/* <h2>Given Price- {stayNights[0]}</h2> */}
+          
             <h2>
   Given Price – {stayNights[0]?.date} ({stayNights[0]?.day})
 </h2>
@@ -765,27 +857,38 @@ value={mealSearch}
 
   <tbody>
 
-    {/* ROOM */}
+ 
     <tr>
       <td>/Room ({roomDetails.paxRoom || 0}P)</td>
 
       <td className="text-center">
         {roomDetails.paxRoom ? (
     
+ 
+
 <input
   type="number"
-  name="room_price"
-  value={roomDetails.price_by_date?.[activeNight?.date]?.room_price ?? ""}
-  onChange={(e) => RoomHandler(e, activeNight.date)}
+  value={tempPrices[activeNight.date]?.room_price || 0}
+  onChange={(e) => {
+    const val = Number(e.target.value) || 0;
+    setTempPrices(prev => ({
+      ...prev,
+      [activeNight.date]: {
+        ...prev[activeNight.date],
+        room_price: val
+      }
+    }));
+  }}
 />
 
+ 
 
 
 
         ) : "—"}
       </td>
 
-      {/* QUANTITY */}
+   
       <td>
         {roomDetails.paxRoom 
           ? roomDetails.noOfRooms
@@ -808,7 +911,7 @@ value={mealSearch}
 
     </tr>
 
-    {/* AWEB */}
+ 
     <tr>
       <td>/AWEB</td>
 
@@ -816,45 +919,65 @@ value={mealSearch}
         {roomDetails.adultWithExtraBed ? (
     
 
+ 
 
 <input
   type="number"
-  name="aweb"
-  value={roomDetails.price_by_date?.[activeNight?.date]?.aweb ?? ""}
-  onChange={(e) => RoomHandler(e, activeNight.date)}
+  value={tempPrices[activeNight.date]?.aweb || 0}
+  onChange={(e) => {
+    const val = Number(e.target.value) || 0;
+    setTempPrices(prev => ({
+      ...prev,
+      [activeNight.date]: {
+        ...prev[activeNight.date],
+        aweb: val
+      }
+    }));
+  }}
 />
+
 
         ) : "—"}
       </td>
 
-      {/* QUANTITY = adultWithExtraBed */}
-      <td>{roomDetails.adultWithExtraBed
-          ? roomDetails.adultWithExtraBed
-          : "—"} </td>
-          <td>
-    {roomDetails.adultWithExtraBed && activeNight
-      ? roomDetails.adultWithExtraBed *
-        (roomDetails.price_by_date?.[activeNight.date]?.aweb || 0)
-      : "—"}
-  </td>
+ 
+ 
+
+
+
+  <td>{roomDetails.adultWithExtraBed ? roomDetails.adultWithExtraBed : "—"}</td>
+<td>
+  {roomDetails.adultWithExtraBed && activeNight
+    ? roomDetails.adultWithExtraBed * (tempPrices[activeNight.date]?.aweb || 0)
+    : "—"}
+</td>
+
     </tr>
 
-    {/* CWEB */}
+ 
     <tr>
       <td>/CWEB</td>
 
       <td className="text-center">
-        {roomDetails.childWithExtraBed ? (
-    
+  
 
-<input
-  type="number"
-  name="cweb"
-  value={roomDetails.price_by_date?.[activeNight?.date]?.cweb ?? ""}
-  onChange={(e) => RoomHandler(e, activeNight.date)}
-/>
 
-        ) : "—"}
+         {roomDetails.childWithExtraBed ? (
+    <input
+      type="number"
+      name="cweb"
+      value={tempPrices[activeNight.date]?.cweb ?? 0}
+      onChange={(e) =>
+        setTempPrices(prev => ({
+          ...prev,
+          [activeNight.date]: {
+            ...prev[activeNight.date],
+            cweb: Number(e.target.value) || 0
+          }
+        }))
+      }
+    />
+  ) : "—"}
       </td>
 
       <td>
@@ -869,28 +992,41 @@ value={mealSearch}
 
 
 
-  <td>
+ 
+
+<td>
   {roomDetails.childWithExtraBed && activeNight
     ? roomDetails.childWithExtraBed *
-      (roomDetails.price_by_date?.[activeNight.date]?.cweb || 0)
+      (tempPrices[activeNight.date]?.cweb || 0)
     : "—"}
 </td>
 
+
     </tr>
 
-    {/* CNB */}
+ 
     <tr>
       <td>/CNB</td>
 
       <td className="text-center">
         {roomDetails.childNoBed ? (
    
- <input
-  type="number"
-  name="cnb"
-  value={roomDetails.price_by_date?.[activeNight?.date]?.cnb ?? ""}
-  onChange={(e) => RoomHandler(e, activeNight.date)}
-/>
+ 
+
+<input
+        type="number"
+        name="cnb"
+        value={tempPrices[activeNight?.date]?.cnb ?? 0}
+        onChange={(e) => {
+          setTempPrices(prev => ({
+            ...prev,
+            [activeNight.date]: {
+              ...prev[activeNight.date],
+              cnb: Number(e.target.value) || 0
+            }
+          }));
+        }}
+      />
 
         ) : "—"}
       </td>
@@ -902,23 +1038,24 @@ value={mealSearch}
       </td>
 
      
-      <td>
-  {roomDetails.childNoBed && activeNight
-    ? roomDetails.childNoBed *
-      (roomDetails.price_by_date?.[activeNight.date]?.cnb || 0)
-    : "—"}
-</td>
+ 
+
+<td>
+    {roomDetails.childNoBed && activeNight
+      ? roomDetails.childNoBed * (tempPrices[activeNight.date]?.cnb || 0)
+      : "—"}
+  </td>
 
     </tr>
 
-    {/* GRAND TOTAL */}
+ 
     <tr className="bg-gray-100 font-semibold">
       <td>Total</td>
       <td><sup>INR</sup></td>
       <td></td>
         <td>
     {activeNight 
-      ? grandTotal(activeNight.date)   // ✅ sirf clicked date ka total
+      ? grandTotal(activeNight.date)   
       : "—"
     }
   </td>
@@ -931,8 +1068,8 @@ value={mealSearch}
 
 
             <div>
-              <div>
-                {/* <input type="checkbox" name="" id="" /> */}
+                  <div>
+             
                 <input type="checkbox"  checked={keepSamePrice}  onChange={(e) => setKeepSamePrice(e.target.checked)}/>
 <span className="font-bold text-lg"> Keep same prices for other nights</span>
 
@@ -943,14 +1080,388 @@ value={mealSearch}
             </div>
            </div>
 
-            {/* Close button */}
+  
             
             <button  onClick={() => setShowPopup(false)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg" >✕
 </button>
           </div>
         </div>
-      )}
+      )} */}
+
+
+      {/* {showPopup && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg relative">
+      <h2 className="text-xl font-bold mb-4">Duplicate Table</h2>
+
+      <h2>
+        Given Price – {stayNights[0]?.date} ({stayNights[0]?.day})
+      </h2>
+
+      <table className="border border-gray-300 text-left w-full">
+        <thead className="bg-gray-100">
+          <tr>
+            <th></th>
+            <th className="text-center">Price (INR)</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+ 
+          <tr>
+            <td>/Room ({roomDetails.paxRoom || 0}P)</td>
+            <td className="text-center">
+              {roomDetails.paxRoom ? (
+                <input
+                  type="number"
+                  value={tempPrices[activeNight.date]?.room_price ?? ""}
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? "" : Number(e.target.value);
+                    setTempPrices(prev => ({
+                      ...prev,
+                      [activeNight.date]: {
+                        ...prev[activeNight.date],
+                        room_price: val
+                      }
+                    }));
+                  }}
+                />
+              ) : "—"}
+            </td>
+            <td>{roomDetails.paxRoom ? roomDetails.noOfRooms : "—"}</td>
+            <td>
+              {(parseInt(roomDetails.noOfRooms || 0)) *
+                (parseFloat(tempPrices[activeNight.date]?.room_price || 0))}
+            </td>
+          </tr>
+
+        
+          <tr>
+            <td>/AWEB</td>
+            <td className="text-center">
+              {roomDetails.adultWithExtraBed ? (
+                <input
+                  type="number"
+                  value={tempPrices[activeNight.date]?.aweb ?? ""}
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? "" : Number(e.target.value);
+                    setTempPrices(prev => ({
+                      ...prev,
+                      [activeNight.date]: {
+                        ...prev[activeNight.date],
+                        aweb: val
+                      }
+                    }));
+                  }}
+                />
+              ) : "—"}
+            </td>
+            <td>{roomDetails.adultWithExtraBed || "—"}</td>
+            <td>
+              {(roomDetails.adultWithExtraBed || 0) *
+                (parseFloat(tempPrices[activeNight.date]?.aweb || 0))}
+            </td>
+          </tr>
+
+ 
+          <tr>
+            <td>/CWEB</td>
+            <td className="text-center">
+              {roomDetails.childWithExtraBed ? (
+                <input
+                  type="number"
+                  value={tempPrices[activeNight.date]?.cweb ?? ""}
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? "" : Number(e.target.value);
+                    setTempPrices(prev => ({
+                      ...prev,
+                      [activeNight.date]: {
+                        ...prev[activeNight.date],
+                        cweb: val
+                      }
+                    }));
+                  }}
+                />
+              ) : "—"}
+            </td>
+            <td>{roomDetails.childWithExtraBed || "—"}</td>
+            <td>
+              {(roomDetails.childWithExtraBed || 0) *
+                (parseFloat(tempPrices[activeNight.date]?.cweb || 0))}
+            </td>
+          </tr>
+
+    
+          <tr>
+            <td>/CNB</td>
+            <td className="text-center">
+              {roomDetails.childNoBed ? (
+                <input
+                  type="number"
+                  value={tempPrices[activeNight.date]?.cnb ?? ""}
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? "" : Number(e.target.value);
+                    setTempPrices(prev => ({
+                      ...prev,
+                      [activeNight.date]: {
+                        ...prev[activeNight.date],
+                        cnb: val
+                      }
+                    }));
+                  }}
+                />
+              ) : "—"}
+            </td>
+            <td>{roomDetails.childNoBed || "—"}</td>
+            <td>
+              {(roomDetails.childNoBed || 0) *
+                (parseFloat(tempPrices[activeNight.date]?.cnb || 0))}
+            </td>
+          </tr>
+
+    
+          <tr className="bg-gray-100 font-semibold">
+            <td>Total</td>
+            <td><sup>INR</sup></td>
+            <td></td>
+            <td>{activeNight ? grandTotal(activeNight.date) : "—"}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div className="mt-4">
+        <div className="flex items-center mb-2">
+          <input
+            type="checkbox"
+            checked={keepSamePrice}
+            onChange={(e) => setKeepSamePrice(e.target.checked)}
+          />
+          <span className="font-bold text-lg ml-2">Keep same prices for other nights</span>
+        </div>
+        <button className='p-3 text-white bg-blue-500 rounded-sm mr-3' onClick={saveRoomDetails}>Save</button>
+        <button className='p-3 text-white bg-red-500 rounded-sm' onClick={() => setShowPopup(false)}>Cancel</button>
+      </div>
+
+     
+      <button
+        onClick={() => setShowPopup(false)}
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+)} */}
+
+
+
+
+   {showPopup && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-6 w-11/12 max-w-lg relative">
+      <h2 className="text-xl font-bold mb-4">Duplicate Table</h2>
+
+      <div>
+        <h2>
+          Given Price – {stayNights[0]?.date} ({stayNights[0]?.day})
+        </h2>
+
+        <table className="border border-gray-300 text-left w-full">
+          <thead className="bg-gray-100">
+            <tr>
+              <th></th>
+              <th className="text-center">Price (INR)</th>
+              <th>Quantity</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {/* ROOM */}
+            <tr>
+              <td>/Room ({roomDetails.paxRoom || 0}P)</td>
+              <td className="text-center">
+                {roomDetails.paxRoom && activeNight ? (
+                  <input
+                    type="number"
+                    value={tempPrices[activeNight.date]?.room_price ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value ? Number(e.target.value) : "";
+                      setTempPrices((prev) => ({
+                        ...prev,
+                        [activeNight.date]: {
+                          ...prev[activeNight.date],
+                          room_price: val,
+                        },
+                      }));
+                    }}
+                  />
+                ) : "—"}
+              </td>
+              <td>{roomDetails.paxRoom || "—"}</td>
+              <td>
+                {activeNight
+                  ? (tempPrices[activeNight.date]?.room_price || 0) *
+                    (roomDetails.noOfRooms || 0)
+                  : "—"}
+              </td>
+            </tr>
+
+            {/* AWEB */}
+            <tr>
+              <td>/AWEB</td>
+              <td className="text-center">
+                {roomDetails.adultWithExtraBed && activeNight ? (
+                  <input
+                    type="number"
+                    value={tempPrices[activeNight.date]?.aweb ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value ? Number(e.target.value) : "";
+                      setTempPrices((prev) => ({
+                        ...prev,
+                        [activeNight.date]: {
+                          ...prev[activeNight.date],
+                          aweb: val,
+                        },
+                      }));
+                    }}
+                  />
+                ) : "—"}
+              </td>
+              <td>{roomDetails.adultWithExtraBed || "—"}</td>
+              <td>
+                {roomDetails.adultWithExtraBed && activeNight
+                  ? (tempPrices[activeNight.date]?.aweb || 0) *
+                    roomDetails.adultWithExtraBed
+                  : "—"}
+              </td>
+            </tr>
+
+            {/* CWEB */}
+            <tr>
+              <td>/CWEB</td>
+              <td className="text-center">
+                {roomDetails.childWithExtraBed && activeNight ? (
+                  <input
+                    type="number"
+                    value={tempPrices[activeNight.date]?.cweb ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value ? Number(e.target.value) : "";
+                      setTempPrices((prev) => ({
+                        ...prev,
+                        [activeNight.date]: {
+                          ...prev[activeNight.date],
+                          cweb: val,
+                        },
+                      }));
+                    }}
+                  />
+                ) : "—"}
+              </td>
+              <td>{roomDetails.childWithExtraBed || "—"}</td>
+              <td>
+                {roomDetails.childWithExtraBed && activeNight
+                  ? (tempPrices[activeNight.date]?.cweb || 0) *
+                    roomDetails.childWithExtraBed
+                  : "—"}
+              </td>
+            </tr>
+
+            {/* CNB */}
+            <tr>
+              <td>/CNB</td>
+              <td className="text-center">
+                {roomDetails.childNoBed && activeNight ? (
+                  <input
+                    type="number"
+                    value={tempPrices[activeNight.date]?.cnb ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value ? Number(e.target.value) : "";
+                      setTempPrices((prev) => ({
+                        ...prev,
+                        [activeNight.date]: {
+                          ...prev[activeNight.date],
+                          cnb: val,
+                        },
+                      }));
+                    }} />
+                ) : "—"}
+              </td>
+              <td>{roomDetails.childNoBed || "—"}</td>
+              <td>
+                {roomDetails.childNoBed && activeNight
+                  ? (tempPrices[activeNight.date]?.cnb || 0) *
+                    roomDetails.childNoBed
+                  : "—"}
+              </td>
+            </tr>
+
+            {/* GRAND TOTAL */}
+            {/* <tr className="bg-gray-100 font-semibold">
+              <td>Total</td>
+              <td></td>
+              <td></td>
+              <td>{activeNight ? grandTotal(activeNight.date) : "—"}</td>
+            </tr> */}
+
+            {/* GRAND TOTAL */}
+<tr className="bg-gray-100 font-semibold">
+  <td>Total</td>
+  <td></td>
+  <td></td>
+  <td>
+    {activeNight ? tempGrandTotal(activeNight.date) : "—"}
+  </td>
+</tr>
+
+          </tbody>
+        </table>
+
+        <div className="mt-4 flex items-center">
+          <input
+            type="checkbox"
+            checked={keepSamePrice}
+            onChange={(e) => setKeepSamePrice(e.target.checked)}
+          />
+          <span className="font-bold text-lg ml-2">
+            Keep same prices for other nights
+          </span>
+        </div>
+
+        <div className="mt-4">
+          <button
+            className="p-3 text-white bg-blue-500 rounded-sm mr-3"
+            onClick={saveRoomDetails}
+          >
+            Save
+          </button>
+          <button
+            className="p-3 text-white bg-red-500 rounded-sm"
+            onClick={() => setShowPopup(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      {/* Close button */}
+      <button
+        onClick={() => setShowPopup(false)}
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+)}
+
+
+
+ 
+
+
 
 
 
@@ -980,15 +1491,17 @@ value={mealSearch}
 
       <td>INR N/A</td>
 
-      <td
-        className="cursor-pointer"
-        onClick={() => openPricePopup(night)}
+     
+ 
 
-      >
-        {grandTotal(night.date)  // sirf is date ka total
-          ? `INR ${grandTotal(night.date)}`
-          : "INR 0"}
-      </td>
+ <td
+  className="cursor-pointer"
+  onClick={() => openPricePopups(night)}
+>
+  INR {grandTotal(night.date)}
+</td>
+
+
 
     </tr>
   ))}
@@ -1009,7 +1522,7 @@ value={mealSearch}
 
 
 
-{/* deepak */}
+ 
 
 
 
@@ -1035,3 +1548,99 @@ export default Hotels
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // try {
+  //   if (!activeNight) {
+  //     alert("Please select a date first!");
+  //     return;
+  //   }
+
+  //   // ✅ Current price values for activeNight
+  //   const currentValues = {
+  //     room_price: roomDetails.price_by_date[activeNight.date]?.room_price || 0,
+  //     aweb: roomDetails.price_by_date[activeNight.date]?.aweb || 0,
+  //     cweb: roomDetails.price_by_date[activeNight.date]?.cweb || 0,
+  //     cnb: roomDetails.price_by_date[activeNight.date]?.cnb || 0,
+  //   };
+
+  //   // ✅ Updated price object
+  //   let updatedPrices = { ...roomDetails.price_by_date };
+
+  //   if (keepSamePrice) {
+  //     // Keep same price for all selected nights
+  //     stayNights.forEach(night => {
+  //       updatedPrices[night.date] = { ...currentValues };
+  //     });
+  //   } else {
+  //     // Sirf activeNight ki date update
+  //     updatedPrices[activeNight.date] = { ...currentValues };
+  //   }
+
+  //   // ✅ Supabase upsert
+  //   const { data, error } = await supabase
+  //     .from("hotel_pricing") // apna table name
+  //     .upsert([{
+  //       form_no: formId,
+  //       hotel_name: inputValue,
+  //       meal_plan: mealSearch,
+  //       room_type: roomSearch,
+  //       pax_per_room: Number(roomDetails.paxRoom) || 0,
+  //       no_of_rooms: Number(roomDetails.noOfRooms) || 0,
+  //       adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
+  //       child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
+  //       child_no_bed: Number(roomDetails.childNoBed) || 0,
+  //       price_by_date: updatedPrices
+  //     }],
+  //     { onConflict: ["form_no"] }).select();
+      
+
+  //   if (error) {
+  //     console.error("Error saving room details:", error);
+  //     alert("Failed to save data!");
+  //     return;
+  //   }
+
+  //   console.log("Saved successfully:", data);
+
+  //   // ✅ Update local state
+  //   setRoomDetails(prev => ({ ...prev, price_by_date: updatedPrices }));
+  //   setShowPopup(false); // popup close
+  // } catch (err) {
+  //   console.error(err);
+  //   alert("Something went wrong!");
+  // }

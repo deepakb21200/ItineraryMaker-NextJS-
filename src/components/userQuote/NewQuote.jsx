@@ -7,7 +7,6 @@ import ExtraServices from './sections/ExtraServices';
 import Hotels from './sections/Hotels';
 import { context } from '../../context/LoginContext';
 
-
 function NewQuote() {
  
 let [userData, setUserData] = useState(null)
@@ -116,6 +115,9 @@ const [selectedServiceType, setSelectedServiceType] = useState([]);
 const [selectedServiceLocation, setSelectedServiceLocation] = useState([]);
 
 
+
+let [dropdown2, setDropdownOpen2]= useState([])
+const [typeValue, setTypeValue] = useState("");
 
 
 useEffect(()=>{
@@ -863,9 +865,8 @@ const openPricePopup = (night) => {
 
 
  
-      {/* Modal 76*/} {/* DROPDOWN 1/11/1111*/}
 
-      {showModal && (
+      {/* {showModal && (
         <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg w-1/2 p-6 relative">
    
@@ -961,11 +962,128 @@ const openPricePopup = (night) => {
         </td>
       </tr>
     ))}
-
-
-
-
   </tbody>
+
+ 
+
+  
+</table>
+
+                          
+ <button className={`px-3 py-2 mt-1 border rounded 
+    ${rows.length >= maxRows ? "bg-gray-200 cursor-not-allowed" : "bg-gray-100 hover:bg-gray-200"}`}
+  onClick={addRow}
+  disabled={rows.length >= maxRows}>Add More</button> 
+  
+ 
+
+
+
+        
+            <div className="mt-4 flex  gap-2">
+
+              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              //  onClick={saveCars}
+               
+               > Select Cab Types</button>
+
+
+             <button   className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              onClick={() => setShowModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )} */}
+
+
+
+
+        {showModal && (
+        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg w-1/2 p-6 relative">
+   
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              onClick={() => setShowModal(false)}
+            >
+              ✕
+            </button>
+
+            <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
+
+
+ 
+        <table className="w-full border border-gray-300">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
+      <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
+    </tr>
+  </thead>
+     
+
+
+  <tbody>
+ 
+       <tr >
+                <td className="border-b border-gray-300 px-4 py-2 relative">
+
+          <input    type="text" placeholder="Enter type" className="border-4  rounded px-2 py-1 w-full"
+ 
+            onFocus={async () => {
+              await CarsData();
+   
+            }}
+      
+            onBlur={(e) => { 
+        
+            }}
+
+            onChange={(e) => {
+ 
+            }}
+          />
+
+    
+          {dropdown2 && (
+            <div className="absolute mt-1 top-full left-0 
+             w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
+              onMouseDown={(e) => {
+                e.preventDefault()
+                 e.stopPropagation()}}>
+
+        
+                <label   className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer "
+                  onChange={() => {}}>
+
+                  <input type="radio" className="mr-2" /> 
+                </label>
+    
+            </div>
+          )}
+        </td>
+
+ 
+        <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
+
+          <input type="number" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full"  
+         min={1}
+          
+          onChange={(e) => {
+           
+       }}/>
+
+
+ 
+            <button  className="border-2 border-black text-black p-1"  > remove </button>
+         
+        </td>
+      </tr>
+    
+  </tbody>
+
+
+  
 
  
 
@@ -1518,31 +1636,16 @@ const openPricePopup = (night) => {
 
             </td>
 
-            {/* <td className="px-3 py-2 border text-right font-semibold text-gray-800">
-              INR {roomDetails?.roomPrice?.[data.date] || 0}
-            </td> */}
-
-
-            {/* <td className="px-3 py-2 border text-right font-semibold text-gray-800">
-  INR{" "}
-  {(
-    Number(roomDetails?.roomPrice?.[data.date] || 0) +
-    Number(roomDetails?.awebPrice || 0) +
-    Number(roomDetails?.cwebPrice || 0) +
-    Number(roomDetails?.cnbPrice || 0)
-  )}
-
-
-</td> */}
+ 
 
 
 <td className="px-3 py-2 border text-right font-semibold text-gray-800">
   INR{" "}
   {(
-    Number(roomDetails.price_by_date?.[data.date]?.room_price || 0) +
-    Number(roomDetails.price_by_date?.[data.date]?.aweb || 0) +
-    Number(roomDetails.price_by_date?.[data.date]?.cweb || 0) +
-    Number(roomDetails.price_by_date?.[data.date]?.cnb || 0)
+    Number(roomDetails.room_price_by_date?.[data.date]?.room_price || 0) +
+    Number(roomDetails.room_price_by_date?.[data.date]?.aweb || 0) +
+    Number(roomDetails.room_price_by_date?.[data.date]?.cweb || 0) +
+    Number(roomDetails.room_price_by_date?.[data.date]?.cnb || 0)
   )}
 </td>
 
@@ -1567,7 +1670,7 @@ const openPricePopup = (night) => {
   Total: <sup>INR</sup>{" "}
   {(
     // Room price total (date-wise × noOfRooms)
-    Object.values(roomDetails?.price_by_date || {}).reduce(
+    Object.values(roomDetails?.room_price_by_date || {}).reduce(
       (sum, day) =>
         sum + 
         Number(day.room_price || 0) * Number(roomDetails?.noOfRooms || 0) +
@@ -1762,6 +1865,7 @@ export default NewQuote
 
 
 
+      {/* Modal 76*/} {/* DROPDOWN 1/11/1111*/}
 
 
 

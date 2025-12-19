@@ -1,109 +1,101 @@
-  {/* Modal */}
+ // try {
+  //   if (!activeNight) {
+  //     alert("Please select a date first!");
+  //     return;
+  //   }
 
-      {showModal && (
-        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg w-1/2 p-6 relative">
-            {/* Close Button */}
-            <button
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-              onClick={() => setShowModal(false)}
-            >
-              ✕
-            </button>
+  //   // ✅ Current price values for activeNight
+  //   const currentValues = {
+  //     room_price: roomDetails.price_by_date[activeNight.date]?.room_price || 0,
+  //     aweb: roomDetails.price_by_date[activeNight.date]?.aweb || 0,
+  //     cweb: roomDetails.price_by_date[activeNight.date]?.cweb || 0,
+  //     cnb: roomDetails.price_by_date[activeNight.date]?.cnb || 0,
+  //   };
 
-            <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
+  //   // ✅ Updated price object
+  //   let updatedPrices = { ...roomDetails.price_by_date };
 
-            {/* Table */}
-            <table className="w-full border border-gray-300">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
-                  <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="border-b border-gray-300 px-4 py-2 relative">
-                    <input type="text" placeholder="Enter type" className="border border-gray-400 rounded px-2 py-1 w-full"  value={carSearch}
-                     onFocus={async() => {
-                     await CarsData()
-                     setShowDropdown5(true)
+  //   if (keepSamePrice) {
+  //     // Keep same price for all selected nights
+  //     stayNights.forEach(night => {
+  //       updatedPrices[night.date] = { ...currentValues };
+  //     });
+  //   } else {
+  //     // Sirf activeNight ki date update
+  //     updatedPrices[activeNight.date] = { ...currentValues };
+  //   }
+
+  //   // ✅ Supabase upsert
+  //   const { data, error } = await supabase
+  //     .from("hotel_pricing") // apna table name
+  //     .upsert([{
+  //       form_no: formId,
+  //       hotel_name: inputValue,
+  //       meal_plan: mealSearch,
+  //       room_type: roomSearch,
+  //       pax_per_room: Number(roomDetails.paxRoom) || 0,
+  //       no_of_rooms: Number(roomDetails.noOfRooms) || 0,
+  //       adult_with_extra_bed: Number(roomDetails.adultWithExtraBed) || 0,
+  //       child_with_extra_bed: Number(roomDetails.childWithExtraBed) || 0,
+  //       child_no_bed: Number(roomDetails.childNoBed) || 0,
+  //       price_by_date: updatedPrices
+  //     }],
+  //     { onConflict: ["form_no"] }).select();
+      
+
+  //   if (error) {
+  //     console.error("Error saving room details:", error);
+  //     alert("Failed to save data!");
+  //     return;
+  //   }
+
+  //   console.log("Saved successfully:", data);
+
+  //   // ✅ Update local state
+  //   setRoomDetails(prev => ({ ...prev, price_by_date: updatedPrices }));
+  //   setShowPopup(false); // popup close
+  // } catch (err) {
+  //   console.error(err);
+  //   alert("Something went wrong!");
+  // }
 
 
-                    }} 
-                    
-                    onBlur={() => setTimeout(() => setShowDropdown5(false), 150)} // small delay
-
-                     onChange={(e)=>setCarSearch(e.target.value)}
-                    />
 
 
 
-                    {
-                      showDropdown5 &&
-                      <div className='absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 animate-fadeIn bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]'
-      onMouseDown={(e) => e.preventDefault()}  >
 
-      {/* {inputValue === "" && <div className="px-3 py-2 text-gray-500">Type to search</div>} */}
 
-      { allCars.length > 0 &&
-        allCars.map((val, index) => (
 
-          <label
-            key={index}
-            className='flex items-center px-[12px] py-[8px] border-b border-gray-200 cursor-pointer' >
-            <input
-              type="radio"
-              name="selectedHotel"
-              className='mr-2 checked:bg-transparent appearance-none w-4 h-4 border border-gray-400 rounded-full focus:outline-none'
-              onClick={() => {
-                setCarSearch(val.car_name)
-                setShowDropdown5(false);
-              }}/>
-            {val.car_name}
-          </label>
-   
-        ))
-      }
-    </div>
-                    }
-  
-                  </td>
-                  <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
-                    <input type="number" placeholder="0" className="border border-gray-400 rounded px-2 py-1 w-full" />
-                        <button className='border-2 border-black text-black p-1 '  >remove</button>
-                  </td>
-                  
-                   
-                </tr>
-           
-              </tbody>
-            </table>
-                                        {/* Last me button */}
-  <button
-    className=' text-left px-[12px] py-[8px] mt-1 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded cursor-pointer'
-    onClick={() => {
-      console.log("Add more clicked");
-      // Yahan tum naya car add karne ka logic daal sakte ho
-    }}
-  >
-    Add More
-  </button>
 
-            {/* Save / Close buttons */}
-            <div className="mt-4 flex  gap-2">
 
-              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                Select Cab Types
-              </button>
 
-                            <button
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                onClick={() => setShowModal(false)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
+
+
+
+
+    // if (!activeNight) {
+  //   alert("Please select a date first!");
+  //   return;
+  // }
+
+  // const currentValues = {
+  //   room_price: roomDetails.room_price_by_date[activeNight.date]?.room_price || 0,
+  //   aweb: roomDetails.room_price_by_date[activeNight.date]?.aweb || 0,
+  //   cweb: roomDetails.room_price_by_date[activeNight.date]?.cweb || 0,
+  //   cnb: roomDetails.room_price_by_date[activeNight.date]?.cnb || 0,
+  // };
+
+  // let updatedPrices = { ...roomDetails.room_price_by_date };
+
+  // if (keepSamePrice) {
+  //   stayNights.forEach(night => {
+  //     updatedPrices[night.date] = { ...currentValues };
+  //   });
+  // } else {
+  //   updatedPrices[activeNight.date] = { ...currentValues };
+  // }
+
+  // // ✅ Update local state only (temporary)
+  // setRoomDetails(prev => ({ ...prev, room_price_by_date: updatedPrices }));
+  // setShowPopup(false); // close popup temporarily

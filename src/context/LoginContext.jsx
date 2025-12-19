@@ -23,11 +23,12 @@ function LoginContext(props) {
     childWithExtraBed: "",
     childNoBed: "",
  
-  price_by_date: {},
+  // price_by_date: {},
+   room_price_by_date: {}, // ✅ name changed
     awebPrice: "",
     cwebPrice: "",
     cnbPrice: "",
-
+  
     form_no: null
   });
 
