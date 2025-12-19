@@ -37,8 +37,15 @@ console.log(stayNights,"rocks");
 
 let [transportDisplay, setTransportDisplay] = useState(false)
 
+
+
+// let [dropdown2, setDropdownOpen2]= useState(false)
+
 let[ maxRows, setMaxRows] = useState(null)
 // let [showCars, setShowCars]= useState([])
+
+ 
+ 
 
       const fetchRows = async () => {
         
@@ -116,8 +123,9 @@ const [selectedServiceLocation, setSelectedServiceLocation] = useState([]);
 
 
 
-let [dropdown2, setDropdownOpen2]= useState([])
+let [dropdown2, setDropdownOpen2]= useState(false)
 const [typeValue, setTypeValue] = useState("");
+let [car_quantity, setCar_quantity] = useState([])
 
 
 useEffect(()=>{
@@ -747,6 +755,7 @@ const openPricePopup = (night) => {
 
 
 
+
  return (
     <>
       {userData ? (
@@ -1022,59 +1031,53 @@ const openPricePopup = (night) => {
   </thead>
      
 
+ 
 
-  <tbody>
+
+    <tbody>
  
        <tr >
                 <td className="border-b border-gray-300 px-4 py-2 relative">
+<input
+  type="text"
+  placeholder="Enter type"
+  className="border-4 rounded px-2 py-1 w-full"
+  value={typeValue}                 // ✅ ADD THIS
+  onFocus={async () => {
+    await CarsData();
+    setDropdownOpen2(true);
+  }}
+  onBlur={() => setDropdownOpen2(false)}
+  onChange={(e) => setTypeValue(e.target.value)}  // ✅
+/>
 
-          <input    type="text" placeholder="Enter type" className="border-4  rounded px-2 py-1 w-full"
- 
-            onFocus={async () => {
-              await CarsData();
-   
-            }}
-      
-            onBlur={(e) => { 
-        
-            }}
-
-            onChange={(e) => {
- 
-            }}
-          />
 
     
-          {dropdown2 && (
-            <div className="absolute mt-1 top-full left-0 
-             w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
-              onMouseDown={(e) => {
-                e.preventDefault()
-                 e.stopPropagation()}}>
+        {dropdown2 && (
+  <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh]
+                  overflow-y-auto text-black border z-50 bg-white shadow">
+                    
+                      {allCars.map((val, i) => (
+                          <label  key={i}
+       className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
 
-        
-                <label   className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer "
-                  onChange={() => {}}>
+        onMouseDown={() => {
+          setTypeValue(val.car_name)
+          setDropdownOpen2(false)}}>
+        <input type="radio" className="mr-2" checked={typeValue === val.car_name} readOnly/> {val.car_name} </label> ))}
+  </div>
+)}
 
-                  <input type="radio" className="mr-2" /> 
-                </label>
-    
-            </div>
-          )}
         </td>
 
  
         <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
 
-          <input type="number" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full"  
-         min={1}
-          
+          <input type="number" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" 
+          value={car_quantity}  min={1}
           onChange={(e) => {
-           
-       }}/>
+            setCar_quantity(e.target.value)}}/>
 
-
- 
             <button  className="border-2 border-black text-black p-1"  > remove </button>
          
         </td>
@@ -1094,19 +1097,14 @@ const openPricePopup = (night) => {
  <button className={`px-3 py-2 mt-1 border rounded 
     ${rows.length >= maxRows ? "bg-gray-200 cursor-not-allowed" : "bg-gray-100 hover:bg-gray-200"}`}
   onClick={addRow}
-  disabled={rows.length >= maxRows}>Add More</button> 
-  
- 
+  disabled={rows.length >= maxRows}>Add More</button>        
 
 
 
-        
             <div className="mt-4 flex  gap-2">
-
               <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               //  onClick={saveCars}
-               
-               > Select Cab Types</button>
+              > Select Cab Types</button>
 
 
              <button   className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
