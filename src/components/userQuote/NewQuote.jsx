@@ -9,12 +9,14 @@ import { context } from "../../context/LoginContext";
 
 function NewQuote() {
   let [userData, setUserData] = useState(null);
-
+let [dropdown2, setDropdownOpen2]= useState(false)
   // let [mealSearch, setMealSearch]= useState("")
-
+  const [typeValue, setTypeValue] = useState("");
+    let [car_quantity, setCar_quantity] = useState("");
   // let [roomSearch, setRoomSearch] = useState("")
   let [stayNights, setStayNights] = useState([]);
 const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+const [rowsData, setRowsData] = useState([]);
 
 
 const [selectedValues, setSelectedValues] = useState([]);
@@ -98,6 +100,10 @@ const [selectedValues, setSelectedValues] = useState([]);
     },
   ]);
 
+
+
+
+
  
 
   const handleAddRow = () => {
@@ -117,19 +123,50 @@ const [selectedValues, setSelectedValues] = useState([]);
  
  
 useEffect(()=>{
-console.log(selectedValues, "selected");
+// console.log(selectedValues, "selected");
+console.log(stayNights2, "stayNIghts");
 
-},[selectedValues])
+},[stayNights2])
  
 
-const handleRemoveRow = (rowIndex) => {
-  setSelectedValues(prev => {
-    const updated = [...prev];
-    updated.splice(rowIndex, 1); // remove specific row safely
-    return updated;
-  });
+// const handleRemoveRow = (rowIndex) => {
+//   setSelectedValues(prev => {
+//     const updated = [...prev];
+//     updated.splice(rowIndex, 1); // remove specific row safely
+//     return updated;
+//   });
 
-  // Optional: adjust activeDays if you are still using it
+//   // Optional: adjust activeDays if you are still using it
+//   setActiveDays(prev => Math.max(prev - 1, 0));
+// };
+
+
+// const handleRemoveRow = (index) => {
+//   setSelectedValues(prev => prev.filter((_, i) => i !== index));
+//   setRowsData(prev => prev.filter((_, i) => i !== index));
+//   // setActiveDays(prev => Math.max(prev - 1, 0));
+//   setActiveDays(prev => prev > 0 ? prev - 1 : 0);
+
+// };
+
+// const handleRemoveRow = (index) => {
+//   setSelectedValues(prev => prev.filter((_, i) => i !== index)); // remove
+//   setRowsData(prev => prev.filter((_, i) => i !== index)); // remove corresponding row
+//   setActiveDays(prev => prev > 0 ? prev - 1 : 0);
+// };
+
+
+
+// const handleRemoveRow = (index) => {
+//   setSelectedValues(prev => prev.filter((_, i) => i !== index)); // remove & compact
+//   setRowsData(prev => prev.filter((_, i) => i !== index));
+//   setActiveDays(prev => (prev > 0 ? prev - 1 : 0));
+// };
+
+
+const handleRemoveRow = (index) => {
+  setSelectedValues(prev => prev.filter((_, i) => i !== index));
+  setRowsData(prev => prev.filter((_, i) => i !== index));
   setActiveDays(prev => Math.max(prev - 1, 0));
 };
 
@@ -164,41 +201,361 @@ const handleRemoveRow = (rowIndex) => {
  
 
  
+// const handleNext = () => {
+//   // Find first stayNights2 date that is not yet selected
+//   const nextNight = stayNights2.find(night => 
+//     !selectedValues.some(selected => selected.date === night.date)
+//   );
+
+//   if (!nextNight) return; // agar sab selected ho gaye
+
+//   setSelectedValues(prev => [...prev, nextNight]);
+//   setActiveDays(prev => prev + 1); // optional
+// };
+
+// const handleNext = () => {
+//   // last row ka selected day
+//   const lastSelected = selectedValues[selectedValues.length - 1];
+
+//   // agar pehla hi Next click hai
+//   if (!lastSelected) {
+//     setSelectedValues([stayNights2[0]]);
+//     setRowsData([{
+//       day: stayNights2[0],
+//       car_name: typeValue || "",
+//       price: ""
+//     }]);
+//     setActiveDays(1);
+//     return;
+//   }
+
+//   const currentIndex = stayNights2.findIndex(
+//     n => n.date === lastSelected.date
+//   );
+
+//   const nextNight = stayNights2[currentIndex + 1];
+//   if (!nextNight) return;
+
+//   setSelectedValues(prev => [...prev, nextNight]);
+//   setRowsData(prev => [
+//     ...prev,
+//     {
+//       day: nextNight,
+//       car_name: typeValue || "",
+//       price: ""
+//     }
+//   ]);
+//   setActiveDays(prev => prev + 1);
+// };
+
+
+
+
+
+// const handleNext = () => {
+//   // activeDays bata raha hai kitni rows visible hain
+//   const currentIndex = activeDays - 1;
+
+//   // agar pehli baar Next dabaya
+//   if (currentIndex < 0) {
+//     setSelectedValues([stayNights2[0]]);
+//     setRowsData([{
+//       day: stayNights2[0],
+//       car_name: typeValue || "",
+//       price: ""
+//     }]);
+//     setActiveDays(1);
+//     return;
+//   }
+
+//   const currentDay = selectedValues[currentIndex];
+//   if (!currentDay) return;
+
+//   const stayIndex = stayNights2.findIndex(
+//     n => n.date === currentDay.date
+//   );
+
+//   const nextNight = stayNights2[stayIndex + 1];
+//   if (!nextNight) return;
+
+//   setSelectedValues(prev => {
+//     const updated = [...prev];
+//     updated[currentIndex + 1] = nextNight;
+//     return updated;
+//   });
+
+//   setRowsData(prev => {
+//     const updated = [...prev];
+//     updated[currentIndex + 1] = {
+//       day: nextNight,
+//       car_name: typeValue || "",
+//       price: ""
+//     };
+//     return updated;
+//   });
+
+//   setActiveDays(prev => prev + 1);
+// };
+
+
+
+
+// const handleNext = () => {
+//   // agar kuch bhi select nahi hua
+//   if (selectedValues.length === 0) {
+//     setSelectedValues([stayNights2[0]]);
+//     setRowsData([{
+//       day: stayNights2[0],
+//       car_name: typeValue || "",
+//       price: ""
+//     }]);
+//     setActiveDays(1);
+//     return;
+//   }
+
+//   // 🔥 hamesha last selected day lo
+//   const lastSelected = selectedValues[selectedValues.length - 1];
+
+//   const currentIndex = stayNights2.findIndex(
+//     n => n.date === lastSelected.date
+//   );
+
+//   const nextNight = stayNights2[currentIndex + 1];
+//   if (!nextNight) return;
+
+//   setSelectedValues(prev => [...prev, nextNight]);
+
+//   setRowsData(prev => [
+//     ...prev,
+//     {
+//       day: nextNight,
+//       car_name: typeValue || "",
+//       price: ""
+//     }
+//   ]);
+
+//   setActiveDays(prev => prev + 1);
+// };
+
+
+// const handleNext = () => {
+//   // agar selectedValues empty hai
+//   if (selectedValues.length === 0) {
+//     const firstNight = stayNights2[0];
+//     setSelectedValues([firstNight]);
+//     setRowsData([{
+//       day: firstNight,
+//       car_name: typeValue || "",
+//       price: ""
+//     }]);
+//     setActiveDays(1);
+//     return;
+//   }
+
+//   // last existing selected night
+//   const lastSelected = selectedValues[selectedValues.length - 1];
+//   const currentIndex = stayNights2.findIndex(n => n.date === lastSelected.date);
+
+//   const nextNight = stayNights2[currentIndex + 1];
+//   if (!nextNight) return; // agar last night already hai
+
+//   // add next night
+//   setSelectedValues(prev => [...prev, nextNight]);
+//   setRowsData(prev => [...prev, {
+//     day: nextNight,
+//     car_name: typeValue || "",
+//     price: ""
+//   }]);
+//   setActiveDays(prev => prev + 1);
+// };
+
+ 
+
+// const handleNext = () => {
+//   // agar selectedValues empty hai
+//   if (selectedValues.length === 0) {
+//     const firstNight = stayNights2[0];
+//     setSelectedValues([firstNight]);
+//     setRowsData([{
+//       day: firstNight,
+//       car_name: typeValue || "",
+//       price: ""
+//     }]);
+//     setActiveDays(1);
+//     return;
+//   }
+
+//   // 🔹 last selected night ke actual index ko stayNights2 me find karo
+//   const lastSelected = selectedValues[selectedValues.length - 1];
+//   const lastSelectedIndex = stayNights2.findIndex(
+//     n => n.date === lastSelected.date
+//   );
+
+//   // next night nikal
+//   const nextNight = stayNights2[lastSelectedIndex + 1];
+//   if (!nextNight) return; // last night already selected
+
+//   // update arrays
+//   setSelectedValues(prev => [...prev, nextNight]);
+//   setRowsData(prev => [...prev, {
+//     day: nextNight,
+//     car_name: typeValue || "",
+//     price: ""
+//   }]);
+//   setActiveDays(prev => prev + 1);
+// };
+
+
+// const handleNext = () => {
+//   // agar selectedValues empty hai → first night select karo
+//   if (selectedValues.length === 0) {
+//     const firstNight = stayNights2[0];
+//     setSelectedValues([firstNight]);
+//     setRowsData([{
+//       day: firstNight,
+//       car_name: typeValue || "",
+//       price: ""
+//     }]);
+//     setActiveDays(1);
+//     return;
+//   }
+
+//   // last selected night ka index nikal lo
+//   const lastSelected = selectedValues[selectedValues.length - 1];
+//   const lastIndex = stayNights2.findIndex(n => n.date === lastSelected.date);
+
+//   // next night
+//   const nextNight = stayNights2[lastIndex + 1];
+//   if (!nextNight) return; // last night already selected → stop
+
+//   // add next night
+//   setSelectedValues(prev => [...prev, nextNight]);
+//   setRowsData(prev => [...prev, {
+//     day: nextNight,
+//     car_name: typeValue || "",
+//     price: ""
+//   }]);
+//   setActiveDays(prev => prev + 1);
+// };
+
 const handleNext = () => {
-  // Find first stayNights2 date that is not yet selected
-  const nextNight = stayNights2.find(night => 
-    !selectedValues.some(selected => selected.date === night.date)
-  );
+  // next index calculate karo
+  const nextIndex = activeDays; // activeDays batata hai kitni rows visible hain
 
-  if (!nextNight) return; // agar sab selected ho gaye
+  // agar next index out of bounds hai → stop
+  if (nextIndex >= stayNights2.length) return;
 
-  setSelectedValues(prev => [...prev, nextNight]);
-  setActiveDays(prev => prev + 1); // optional
-};
+  const nextNight = stayNights2[nextIndex];
 
-
- 
-const [car , setCar] = useState("");
- 
-
-const handleCheckboxSelect = (rowIndex, night, nightDate) => {
-
-  for(carDetail of rows ){
-
-    if(carDetail.date === nightDate){
-      setCar(carDetail.type);
-    }
-  }
-
+  // add next night
   setSelectedValues(prev => {
     const updated = [...prev];
-    updated[rowIndex] = night; // assign selected night to specific row
+    updated[nextIndex] = nextNight; // index ke hisaab se assign
     return updated;
   });
 
+  setRowsData(prev => {
+    const updated = [...prev];
+    updated[nextIndex] = {
+      day: nextNight,
+      car_name: typeValue || "",
+      price: ""
+    };
+    return updated;
+  });
 
+  setActiveDays(prev => prev + 1);
 };
 
+
+
+// const [car , setCar] = useState("");
+ 
+// const handleCheckboxSelect = (rowIndex, night, nightDate) => {
+  // for(carDetail of rows ){
+
+  //   if(carDetail.date === nightDate){
+  //     setCar(carDetail.type);
+  //   }
+  // }  
+
+
+
+//   const handleCheckboxSelect = (rowIndex, night) => {
+
+  
+
+//   setSelectedValues(prev => {
+//     const updated = [...prev];
+//     updated[rowIndex] = night; // assign selected night to specific row
+//     return updated;
+//   });
+
+
+// };
+
+
+// const handleCheckboxSelect = (rowIndex, night) => {
+//   setSelectedValues(prev => {
+//     const updated = [...prev];
+
+//     // agar same date already selected hai → remove (toggle off)
+//     if (updated[rowIndex]?.date === night.date) {
+//       updated[rowIndex] = undefined; // ya null
+//     } else {
+//       // warna select karo
+//       updated[rowIndex] = night;
+//     }
+
+//     return updated;
+//   });
+// };
+
+
+
+const handleCheckboxSelect = (rowIndex, night) => {
+
+
+    setSelectedValues(prev => {
+    const updated = [...prev];
+
+    // agar same date already selected hai → remove (toggle off)
+    if (updated[rowIndex]?.date === night.date) {
+      updated[rowIndex] = undefined; // ya null
+    } else {
+      // warna select karo
+      updated[rowIndex] = night;
+    }
+
+    return updated;
+  });
+  setRowsData(prev => {
+    const updated = [...prev];
+
+    if (updated[rowIndex]?.day?.date === night.date) {
+      // toggle off
+      updated[rowIndex] = {
+        ...updated[rowIndex],
+        day: null
+      };
+    } else {
+      // select
+      updated[rowIndex] = {
+        ...updated[rowIndex],
+        day: night,
+        car_name: typeValue || "",
+        price: updated[rowIndex]?.price || ""
+      };
+    }
+
+    return updated;
+  });
+};
+
+useEffect(()=>{
+console.log(rowsData,"send");
+
+},[rowsData])
 
   const saveCars = async () => {
     try {
@@ -258,9 +615,9 @@ const handleCheckboxSelect = (rowIndex, night, nightDate) => {
 
   const [services, setServices] = useState([]);
 
-  useEffect(() => {
-  openDropdownIndex
-  }, [openDropdownIndex]);
+  // useEffect(() => {
+  // openDropdownIndex
+  // }, [openDropdownIndex]);
 
   useEffect(() => {
     async function userData() {
@@ -749,15 +1106,13 @@ console.log(dayDropdown);
                         <th className="px-4 py-2 border-b border-gray-300 text-left">
                           Type
                         </th>
-                        <th className="px-4 py-2 border-b border-gray-300 text-left">
-                          Quantity
-                        </th>
+                        <th className="px-4 py-2 border-b border-gray-300 text-left">   Quantity    </th>
                       </tr>
                     </thead>
 
                     <tbody>
                              {/* //992 */}
-                      {rows.map((row, index) => (
+                      {/* {rows.map((row, index) => (
                         <tr key={index}>
                           <td className="border-b border-gray-300 px-4 py-2 relative">
                             <input
@@ -816,18 +1171,67 @@ console.log(dayDropdown);
                               className="border-2 border-black text-black px-2">Remove </button>  )}
                           </td>
                         </tr>
-                         ))}
+                         ))} */}
+
+
+
+                         <tr >
+                <td className="border-b border-gray-300 px-4 py-2 relative">
+<input
+  type="text"
+  placeholder="Enter type"
+  className="border-4 rounded px-2 py-1 w-full"
+  value={typeValue}                 // ✅ ADD THIS
+  onFocus={async () => {
+    await CarsData();
+    setDropdownOpen2(true);
+  }}
+  onBlur={() => setDropdownOpen2(false)}
+  onChange={(e) => setTypeValue(e.target.value)}  // ✅
+/>
+
+
+    
+        {dropdown2 && (
+  <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh]
+                  overflow-y-auto text-black border z-50 bg-white shadow">
+                    
+                      {allCars.map((val, i) => (
+                          <label  key={i}
+       className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+
+        onMouseDown={() => {
+          setTypeValue(val.car_name)
+          setDropdownOpen2(false)}}>
+        <input type="radio" className="mr-2" checked={typeValue === val.car_name} readOnly/> {val.car_name} </label> ))}
+  </div>
+)}
+
+        </td>
+
+ 
+        <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
+
+          <input type="number" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" 
+          value={car_quantity}  min={1}
+          onChange={(e) => {
+            setCar_quantity(e.target.value)}}/>
+
+            {/* <button  className="border-2 border-black text-black p-1"  > remove </button> */}
+         
+        </td>
+      </tr>
                     </tbody>
                   </table>
 
        
-                  <button
+                  {/* <button
                     onClick={handleAddRow}
                     disabled={rows.length >= maxRows}
                     className="mt-3 border px-3 py-1 disabled:opacity-50"
                   >
                     Add More
-                  </button>
+                  </button> */}
 
                   <div className="mt-4 flex  gap-2">
                     <button
@@ -884,12 +1288,11 @@ console.log(dayDropdown);
               onMouseDown={(e) => e.preventDefault()} >
               {stayNights2.map((night, i) => (
                 <div key={i} className="flex items-center px-3 py-2 cursor-pointer border-b">
-                  <input
-                    type="checkbox"
-                    checked={selectedValues[index]?.date === night.date}
-                    onChange={() => handleCheckboxSelect(index, night, night.date)}
-                    className="mr-2"
-                  />
+                  <input type="checkbox" 
+                  // checked={selectedValues[index]?.date === night.date}
+                    checked={selectedValues.some(val => val?.date === night.date)}
+                    // onChange={() => handleCheckboxSelect(index, night, night.date)}  className="mr-2"  />
+                        onChange={() => handleCheckboxSelect(index, night)}  className="mr-2"  />
                   <div>{night.date} ({night.day})</div>
                 </div>
               ))}
@@ -916,10 +1319,21 @@ console.log(dayDropdown);
         </thead>
         <tbody>
           <tr>
-            <td className="border px-4 py-2">Innova</td>
+            <td className="border px-4 py-2">{typeValue && typeValue}</td>
             <td className="border px-4 py-2"><sup>INR</sup> NA</td>
             <td className="border px-4 py-2">
-              <input type="number" className="border rounded px-2 py-1 w-full" />
+              <input type="number" className="border rounded px-2 py-1 w-full"
+                value={rowsData[index]?.price || ""}
+                  onChange={(e) => {
+                     const value = e.target.value;
+                     setRowsData(prev => {
+                       const updated = [...prev];
+                        updated[index] = {
+                           ...updated[index],
+                           price: value};
+                       return updated
+                       });
+                       }}/>
             </td>
           </tr>
         </tbody>
@@ -950,6 +1364,29 @@ console.log(dayDropdown);
 )} */}
 
 {/* Next button */}
+{/* {selectedValues.length < stayNights2.length && transportDisplay && (
+  <div className="text-right">
+    <button
+      className="bg-green-600 text-white px-4 py-2 rounded"
+      onClick={handleNext}
+    >
+      Next
+    </button>
+  </div>
+)} */}
+
+{/* {selectedValues.length < stayNights2.length && transportDisplay && (
+  <div className="text-right">
+    <button
+      className="bg-green-600 text-white px-4 py-2 rounded"
+      onClick={handleNext}
+    >
+      Next
+    </button>
+  </div>
+)} */}
+
+
 {selectedValues.length < stayNights2.length && transportDisplay && (
   <div className="text-right">
     <button
@@ -960,6 +1397,8 @@ console.log(dayDropdown);
     </button>
   </div>
 )}
+
+
 
            
           
