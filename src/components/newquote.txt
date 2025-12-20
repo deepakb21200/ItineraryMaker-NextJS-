@@ -1,0 +1,378 @@
+   {/* //Read */}
+
+                      {/* <label className="flex flex-col">
+              <span className="font-semibold mb-1">Service Location</span>
+          <div className='relative'> 
+            
+   <input className="border px-3 py-2 rounded"  type="text" value={selectedServiceLocation[index] || ""} 
+          onChange={(e) => {
+             const selected = [...selectedServiceLocation];
+              selected[index] = e.target.value; 
+             setSelectedServiceLocation(selected);
+              }}
+
+          onFocus={() => {
+              const arr = [...serviceDropdown];
+              arr[index] = true;
+               setServiceDropdown(arr);
+              getData3();
+            }}
+
+            onBlur={() => {
+              const arr = [...serviceDropdown];
+              arr[index] = false;
+             setServiceDropdown(arr);
+            }}/>
+
+ 
+  {serviceDropdown[index] && (
+    <div  className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow" onMouseDown={(e) => e.preventDefault()}>
+      {serviceLocation.map((val, i) => (
+        <label  key={i} className="flex items-center px-3 py-2 border-b cursor-pointer">
+          <input type="radio"name={`serviceLocation-${index}`}   className="mr-2"
+               onClick={() => {
+ e
+             const arr = [...serviceDropdown];
+            arr[index] = false;
+             setServiceDropdown(arr);
+
+         
+             const selected = [...selectedServiceLocation];
+            selected[index] = val.service_locations;  
+            setSelectedServiceLocation(selected);
+
+    
+           setserviceName(val.service_type);
+
+    
+            const selectedType = [...selectedServiceType];
+            selectedType[index] = val.service_type[0];
+           setSelectedServiceType(selectedType);
+             }}  />
+          {val.service_locations}
+        </label>
+      ))}
+    </div>
+  )}
+     
+     
+     </div>   
+
+
+
+            </label>
+
+            <label className="flex flex-col">
+              <span className="font-semibold mb-1">Service Type</span>
+        <div className='relative'>
+            <input  className="border px-3 py-2 rounded" 
+             type="text"
+  value={selectedServiceType[index] || ""}  
+  onChange={(e) => {
+    const updated = [...selectedServiceType];
+    updated[index] = e.target.value;  
+    setSelectedServiceType(updated);
+  }}
+ 
+        onFocus={() => {
+        const arr = [...serviceTypeDropdown];
+         arr[index] = true;   
+           setServiceTypeDropdown(arr)}}
+           
+           
+             onBlur={() => {
+      const arr = [...serviceTypeDropdown];
+      arr[index] = false;  
+      setServiceTypeDropdown(arr);
+  }}/>
+ 
+
+  {serviceTypeDropdown[index] && (
+  <div
+    className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow"
+    onMouseDown={e => e.preventDefault()}>
+
+    {serviceName.map((type, i) => (
+      <label
+        key={i} className="flex items-center px-3 py-2 border-b cursor-pointer">
+        <input
+          type="radio"
+          name={`serviceType-${index}`}
+          className="mr-2"
+          onClick={() => {
+            const selected = [...selectedServiceType];
+            selected[index] = type; 
+            setSelectedServiceType(selected);
+
+            const arr = [...serviceTypeDropdown];
+            arr[index] = false;  
+            setServiceTypeDropdown(arr);
+          }}
+        />
+        {type}
+      </label>
+    ))}
+  </div>
+)}
+
+        </div>
+            </label> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {/* {activeDays < stayNights2.length && transportDisplay && (
+              <div className="text-right">
+                <button
+                  className="bg-green-600 text-white px-4 py-2 rounded"
+                  onClick={() => {
+                    setActiveDays((prev) => {
+                      const nextDay = prev + 1;
+
+                      // Update rows for the new day
+                      setRows((prevRows) => {
+                        const copy = [...prevRows];
+
+                        // Ensure nextDay exists
+                        if (!copy[nextDay - 1]) copy[nextDay - 1] = {};
+
+                        // Find last filled row to propagate
+                        const lastFilled = copy[prev - 1] || {};
+
+                        // Propagate flag, car_name, quantity, and price
+                        if (lastFilled.flag) {
+                          copy[nextDay - 1] = {
+                            ...copy[nextDay - 1],
+                            flag: true,
+                            car_name: lastFilled.car_name || "",
+                            quantity: lastFilled.quantity || 1,
+                            price: lastFilled.price || "",
+                          };
+                        }
+
+                        return copy;
+                      });
+
+                      // Update dayDropdown
+                      setDayDropdown((prevDropdown) => [
+                        ...prevDropdown,
+                        false,
+                      ]);
+
+                      return nextDay;
+                    });
+                  }}
+                >
+                  Next
+                </button>
+              </div>
+            )} */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const [openDropdownIndex, setOpenDropdownIndex] = useState(null);

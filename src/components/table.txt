@@ -67,6 +67,7 @@
 
 
 
+                          
 
 
 
@@ -99,3 +100,226 @@
   // // ✅ Update local state only (temporary)
   // setRoomDetails(prev => ({ ...prev, room_price_by_date: updatedPrices }));
   // setShowPopup(false); // close popup temporarily
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* {
+  rows.length > 0 &&
+    rows.map((value, index) => (
+      <button key={index} className='text-black p-2 border bg-red-200'>
+        {value.car_name}
+      </button>
+    ))
+} */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      {/* {showModal && (
+        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg w-1/2 p-6 relative">
+   
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              onClick={() => setShowModal(false)}
+            >
+              ✕
+            </button>
+
+            <h3 className="font-bold text-xl mb-4">Add Transport / Activity</h3>
+
+
+ 
+        <table className="w-full border border-gray-300">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="px-4 py-2 border-b border-gray-300 text-left">Type</th>
+      <th className="px-4 py-2 border-b border-gray-300 text-left">Quantity</th>
+    </tr>
+  </thead>
+     
+
+
+  <tbody>
+    {rows.map((row, index) => (
+       <tr key={index}>
+                <td className="border-b border-gray-300 px-4 py-2 relative">
+
+          <input    type="text" placeholder="Enter type" className="border-4  rounded px-2 py-1 w-full"
+
+            value={row.car_name}
+            onFocus={async () => {
+              await CarsData();
+              const updated = [...rows];
+              updated[index].showDropdown = true;
+              setRows(updated);
+            }}
+      
+            onBlur={(e) => { 
+              const updated = [...rows];
+              updated[index].showDropdown = false;
+              setRows(updated);
+            }}
+
+            onChange={(e) => {
+              const updated = [...rows];
+              updated[index].car_name = e.target.value;
+              setRows(updated);
+            }}
+          />
+
+    
+          {row.showDropdown && (
+            <div className="absolute mt-1 top-full left-0 
+             w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow-[0_2px_8px_0_rgba(99,99,99,0.2)]"
+              onMouseDown={(e) => {
+                e.preventDefault()
+                      e.stopPropagation()}}>
+
+              {allCars.map((val, i) => (
+                <label key={i} className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer "
+                  onChange={() => {
+                    const updated = [...rows];
+                    updated[index].car_name = val.car_name;
+                    updated[index].showDropdown = false;
+                    setRows(updated);
+                  }}>
+
+                  <input type="radio" className="mr-2" /> {val.car_name}
+                </label>
+              ))}
+            </div>
+          )}
+        </td>
+
+ 
+        <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
+
+          <input type="number" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" value={row.quantity ?? ""}
+         min={1}
+          
+          onChange={(e) => {
+            const updated = [...rows];
+            updated[index].quantity = Number(e.target.value) || 1;
+            setRows(updated);}}/>
+
+
+          {rows.length >= 1 && (
+            <button  className="border-2 border-black text-black p-1"  onClick={() => removeRow(index)} >
+              remove </button>
+            )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+
+ 
+
+  
+</table>
+
+                          
+ <button className={`px-3 py-2 mt-1 border rounded 
+    ${rows.length >= maxRows ? "bg-gray-200 cursor-not-allowed" : "bg-gray-100 hover:bg-gray-200"}`}
+  onClick={addRow}
+  disabled={rows.length >= maxRows}>Add More</button> 
+  
+ 
+
+
+
+        
+            <div className="mt-4 flex  gap-2">
+
+              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              //  onClick={saveCars}
+               
+               > Select Cab Types</button>
+
+
+             <button   className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              onClick={() => setShowModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )} */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
