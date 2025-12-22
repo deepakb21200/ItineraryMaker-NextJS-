@@ -13,7 +13,7 @@ function LoginContext(props) {
   const [roomSearch, setRoomSearch] = useState("");
   const [nightPrices, setNightPrices] = useState({});
   
-
+const [tempPrices, setTempPrices] = useState(null);
   // 
 
     const [roomDetails, setRoomDetails] = useState({
@@ -25,6 +25,7 @@ function LoginContext(props) {
  
   // price_by_date: {},
    room_price_by_date: {}, // ✅ name changed
+   
     awebPrice: "",
     cwebPrice: "",
     cnbPrice: "",

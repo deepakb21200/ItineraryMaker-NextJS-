@@ -227,7 +227,9 @@ const handleCheckboxChange = (item) => {
   });
 };
 
+useEffect(()=>{
 
+},[roomDetails])
 
  
 const [keepSamePrice, setKeepSamePrice] = useState(false);
