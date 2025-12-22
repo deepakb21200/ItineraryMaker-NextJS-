@@ -27,10 +27,10 @@ const {
 const [tempPrices, setTempPrices] = useState({ ...roomDetails.price_by_date });
 
 useEffect(()=>{
-console.log(roomDetails);
+console.log(tempPrices, "sdd");
 
 
-},[roomDetails.roomPrice])
+},[tempPrices])
 
 
  

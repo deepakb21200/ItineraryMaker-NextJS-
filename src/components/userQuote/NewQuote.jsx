@@ -8,15 +8,45 @@ import Hotels from "./sections/Hotels";
 import { context } from "../../context/LoginContext";
 
 function NewQuote() {
+    let [stayNights2, setStayNights2] = useState([]);
   let [userData, setUserData] = useState(null);
 let [dropdown2, setDropdownOpen2]= useState(false)
   // let [mealSearch, setMealSearch]= useState("")
-  const [typeValue, setTypeValue] = useState("");
-    let [car_quantity, setCar_quantity] = useState("");
+  const [carName, setCarName] = useState("");
+    let [carQuantity, setCarQuantity] = useState("");
   // let [roomSearch, setRoomSearch] = useState("")
   let [stayNights, setStayNights] = useState([]);
 const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
-const [rowsData, setRowsData] = useState([]);
+// const [rowsData, setRowsData] = useState([]);
+// const [rowsData, setRowsData] = useState([
+//   {
+//     car_name: carName,    // agar carName initially khali hai to "" bhi chal jaayega
+//     day: stayNights2[0],  // first night by default
+//     price: ""
+//   }
+// ]);
+
+
+
+let [gstValue, setGstValue]= useState(5)
+
+
+
+
+
+
+
+const [rowsData, setRowsData] = useState([
+  {
+    car_name: carName || "",
+    day: stayNights2[0] || null,
+    price: "",
+    service_location: "",
+    service_type: ""
+  }
+]);
+
+
 
 
 const [selectedValues, setSelectedValues] = useState([]);
@@ -28,17 +58,19 @@ const [selectedValues, setSelectedValues] = useState([]);
 
   let navigate = useNavigate();
 
-  let [stayNights2, setStayNights2] = useState([]);
+
+
 
   useEffect(() => {
-    console.log(stayNights, "rocks");
-  }, [stayNights]);
+    console.log(stayNights2, "tttttttttttt")
+  }, [stayNights2]);
 
   let [transportDisplay, setTransportDisplay] = useState(false);
 
   // let [dropdown2, setDropdownOpen2]= useState(false)
 
   let [maxRows, setMaxRows] = useState(null);
+
   // let [showCars, setShowCars]= useState([])
 
   const fetchRows = async () => {
@@ -128,389 +160,143 @@ console.log(stayNights2, "stayNIghts");
 
 },[stayNights2])
  
-
-// const handleRemoveRow = (rowIndex) => {
-//   setSelectedValues(prev => {
-//     const updated = [...prev];
-//     updated.splice(rowIndex, 1); // remove specific row safely
-//     return updated;
-//   });
-
-//   // Optional: adjust activeDays if you are still using it
-//   setActiveDays(prev => Math.max(prev - 1, 0));
-// };
-
-
+ 
 // const handleRemoveRow = (index) => {
+//   setRowsData(prev => prev.filter((_, i) => i !== index));
 //   setSelectedValues(prev => prev.filter((_, i) => i !== index));
-//   setRowsData(prev => prev.filter((_, i) => i !== index));
-//   // setActiveDays(prev => Math.max(prev - 1, 0));
-//   setActiveDays(prev => prev > 0 ? prev - 1 : 0);
+//   setActiveDays(prev => Math.max(prev - 1, 1));
+//   // setActiveDays(prev => prev > 1 ? prev - 1 : 1);
 
-// };
-
-// const handleRemoveRow = (index) => {
-//   setSelectedValues(prev => prev.filter((_, i) => i !== index)); // remove
-//   setRowsData(prev => prev.filter((_, i) => i !== index)); // remove corresponding row
-//   setActiveDays(prev => prev > 0 ? prev - 1 : 0);
 // };
 
 
 
 // const handleRemoveRow = (index) => {
-//   setSelectedValues(prev => prev.filter((_, i) => i !== index)); // remove & compact
-//   setRowsData(prev => prev.filter((_, i) => i !== index));
-//   setActiveDays(prev => (prev > 0 ? prev - 1 : 0));
-// };
-
-
-const handleRemoveRow = (index) => {
-  setSelectedValues(prev => prev.filter((_, i) => i !== index));
-  setRowsData(prev => prev.filter((_, i) => i !== index));
-  setActiveDays(prev => Math.max(prev - 1, 0));
-};
-
-
-  const handleTypeChange = (index, value) => {
-  setRows(prev =>
-    prev.map((row, i) =>
-      i === index ? { ...row, type: value } : row
-    )
-  );
-};
- 
-  const toggleDropdown = (index, value) => {
-  setRows(prev =>
-    prev.map((row, i) =>
-      i === index ? { ...row, dropdownOpen: value } : row
-    )
-  );
-};
-
- 
-
-  const handleQuantityChange = (index, value) => {
-  setRows(prev =>
-    prev.map((row, i) =>
-      i === index ? { ...row, quantity: value } : row
-    )
-  );
-};
-
-
- 
-
- 
-// const handleNext = () => {
-//   // Find first stayNights2 date that is not yet selected
-//   const nextNight = stayNights2.find(night => 
-//     !selectedValues.some(selected => selected.date === night.date)
-//   );
-
-//   if (!nextNight) return; // agar sab selected ho gaye
-
-//   setSelectedValues(prev => [...prev, nextNight]);
-//   setActiveDays(prev => prev + 1); // optional
-// };
-
-// const handleNext = () => {
-//   // last row ka selected day
-//   const lastSelected = selectedValues[selectedValues.length - 1];
-
-//   // agar pehla hi Next click hai
-//   if (!lastSelected) {
-//     setSelectedValues([stayNights2[0]]);
-//     setRowsData([{
-//       day: stayNights2[0],
-//       car_name: typeValue || "",
-//       price: ""
-//     }]);
-//     setActiveDays(1);
-//     return;
-//   }
-
-//   const currentIndex = stayNights2.findIndex(
-//     n => n.date === lastSelected.date
-//   );
-
-//   const nextNight = stayNights2[currentIndex + 1];
-//   if (!nextNight) return;
-
-//   setSelectedValues(prev => [...prev, nextNight]);
-//   setRowsData(prev => [
-//     ...prev,
-//     {
-//       day: nextNight,
-//       car_name: typeValue || "",
-//       price: ""
-//     }
-//   ]);
-//   setActiveDays(prev => prev + 1);
-// };
-
-
-
-
-
-// const handleNext = () => {
-//   // activeDays bata raha hai kitni rows visible hain
-//   const currentIndex = activeDays - 1;
-
-//   // agar pehli baar Next dabaya
-//   if (currentIndex < 0) {
-//     setSelectedValues([stayNights2[0]]);
-//     setRowsData([{
-//       day: stayNights2[0],
-//       car_name: typeValue || "",
-//       price: ""
-//     }]);
-//     setActiveDays(1);
-//     return;
-//   }
-
-//   const currentDay = selectedValues[currentIndex];
-//   if (!currentDay) return;
-
-//   const stayIndex = stayNights2.findIndex(
-//     n => n.date === currentDay.date
-//   );
-
-//   const nextNight = stayNights2[stayIndex + 1];
-//   if (!nextNight) return;
-
 //   setSelectedValues(prev => {
 //     const updated = [...prev];
-//     updated[currentIndex + 1] = nextNight;
+//     updated.splice(index, 1); // remove exact index
 //     return updated;
 //   });
 
 //   setRowsData(prev => {
 //     const updated = [...prev];
-//     updated[currentIndex + 1] = {
-//       day: nextNight,
-//       car_name: typeValue || "",
-//       price: ""
+//     updated.splice(index, 1); // remove exact index
+//     return updated;
+//   });
+
+//   // activeDays ko adjust karo
+//   setActiveDays(prev => {
+//     if (prev > 1) return prev - 1;
+//     return 1; // minimum 1 row
+//   });
+
+
+
+//   console.log(selectedValues);
+//   console.log(rowsData);
+  
+  
+// };
+
+
+
+// const handleRemoveRow = (index) => {
+//   // Remove selected value for that row
+//   setSelectedValues(prev => prev.filter((_, i) => i !== index));
+
+//   // Remove row from rowsData
+//   setRowsData(prev => prev.filter((_, i) => i !== index));
+
+//   // Adjust activeDays (minimum 1)
+//   setActiveDays(prev => Math.max(prev - 1, 1));
+// };
+
+
+// const handleRemoveRow = (index) => {
+//   setRowsData(prev => prev.filter((_, i) => i !== index));
+//   setSelectedValues(prev => prev.filter((_, i) => i !== index));
+
+//   setActiveDays(prev => Math.max(prev - 1, 1));
+// };
+
+const handleRemoveRow = (index) => {
+  setRowsData(prev => prev.filter((_, i) => i !== index));
+  setSelectedValues(prev => prev.filter((_, i) => i !== index));
+
+  setActiveDays(prev => Math.max(prev - 1, 1));
+};
+
+ 
+// const handleNext = () => {
+//   // ❌ tour days se zyada mat jao
+//   if (activeDays >= stayNights2.length) return;
+
+//   const nextIndex = activeDays;
+
+//   // 👉 agar is index ka data exist nahi karta
+//   setRowsData(prev => {
+//     if (prev[nextIndex]) return prev;
+
+//     const updated = [...prev];
+//     updated[nextIndex] = {
+//       car_name: carName,
+//       day: selectedValues[nextIndex], // auto selected date
+//       price: "",
+//       quantity: carQuantity
 //     };
 //     return updated;
 //   });
 
+//   // ✅ ek nayi row dikhao
 //   setActiveDays(prev => prev + 1);
 // };
 
-
-
-
-// const handleNext = () => {
-//   // agar kuch bhi select nahi hua
-//   if (selectedValues.length === 0) {
-//     setSelectedValues([stayNights2[0]]);
-//     setRowsData([{
-//       day: stayNights2[0],
-//       car_name: typeValue || "",
-//       price: ""
-//     }]);
-//     setActiveDays(1);
-//     return;
-//   }
-
-//   // 🔥 hamesha last selected day lo
-//   const lastSelected = selectedValues[selectedValues.length - 1];
-
-//   const currentIndex = stayNights2.findIndex(
-//     n => n.date === lastSelected.date
-//   );
-
-//   const nextNight = stayNights2[currentIndex + 1];
-//   if (!nextNight) return;
-
-//   setSelectedValues(prev => [...prev, nextNight]);
-
-//   setRowsData(prev => [
-//     ...prev,
-//     {
-//       day: nextNight,
-//       car_name: typeValue || "",
-//       price: ""
-//     }
-//   ]);
-
-//   setActiveDays(prev => prev + 1);
-// };
-
-
-// const handleNext = () => {
-//   // agar selectedValues empty hai
-//   if (selectedValues.length === 0) {
-//     const firstNight = stayNights2[0];
-//     setSelectedValues([firstNight]);
-//     setRowsData([{
-//       day: firstNight,
-//       car_name: typeValue || "",
-//       price: ""
-//     }]);
-//     setActiveDays(1);
-//     return;
-//   }
-
-//   // last existing selected night
-//   const lastSelected = selectedValues[selectedValues.length - 1];
-//   const currentIndex = stayNights2.findIndex(n => n.date === lastSelected.date);
-
-//   const nextNight = stayNights2[currentIndex + 1];
-//   if (!nextNight) return; // agar last night already hai
-
-//   // add next night
-//   setSelectedValues(prev => [...prev, nextNight]);
-//   setRowsData(prev => [...prev, {
-//     day: nextNight,
-//     car_name: typeValue || "",
-//     price: ""
-//   }]);
-//   setActiveDays(prev => prev + 1);
-// };
-
- 
-
-// const handleNext = () => {
-//   // agar selectedValues empty hai
-//   if (selectedValues.length === 0) {
-//     const firstNight = stayNights2[0];
-//     setSelectedValues([firstNight]);
-//     setRowsData([{
-//       day: firstNight,
-//       car_name: typeValue || "",
-//       price: ""
-//     }]);
-//     setActiveDays(1);
-//     return;
-//   }
-
-//   // 🔹 last selected night ke actual index ko stayNights2 me find karo
-//   const lastSelected = selectedValues[selectedValues.length - 1];
-//   const lastSelectedIndex = stayNights2.findIndex(
-//     n => n.date === lastSelected.date
-//   );
-
-//   // next night nikal
-//   const nextNight = stayNights2[lastSelectedIndex + 1];
-//   if (!nextNight) return; // last night already selected
-
-//   // update arrays
-//   setSelectedValues(prev => [...prev, nextNight]);
-//   setRowsData(prev => [...prev, {
-//     day: nextNight,
-//     car_name: typeValue || "",
-//     price: ""
-//   }]);
-//   setActiveDays(prev => prev + 1);
-// };
-
-
-// const handleNext = () => {
-//   // agar selectedValues empty hai → first night select karo
-//   if (selectedValues.length === 0) {
-//     const firstNight = stayNights2[0];
-//     setSelectedValues([firstNight]);
-//     setRowsData([{
-//       day: firstNight,
-//       car_name: typeValue || "",
-//       price: ""
-//     }]);
-//     setActiveDays(1);
-//     return;
-//   }
-
-//   // last selected night ka index nikal lo
-//   const lastSelected = selectedValues[selectedValues.length - 1];
-//   const lastIndex = stayNights2.findIndex(n => n.date === lastSelected.date);
-
-//   // next night
-//   const nextNight = stayNights2[lastIndex + 1];
-//   if (!nextNight) return; // last night already selected → stop
-
-//   // add next night
-//   setSelectedValues(prev => [...prev, nextNight]);
-//   setRowsData(prev => [...prev, {
-//     day: nextNight,
-//     car_name: typeValue || "",
-//     price: ""
-//   }]);
-//   setActiveDays(prev => prev + 1);
-// };
 
 const handleNext = () => {
-  // next index calculate karo
-  const nextIndex = activeDays; // activeDays batata hai kitni rows visible hain
+  if (activeDays >= stayNights2.length) return;
 
-  // agar next index out of bounds hai → stop
-  if (nextIndex >= stayNights2.length) return;
-
-  const nextNight = stayNights2[nextIndex];
-
-  // add next night
-  setSelectedValues(prev => {
-    const updated = [...prev];
-    updated[nextIndex] = nextNight; // index ke hisaab se assign
-    return updated;
-  });
+  const nextIndex = activeDays;
 
   setRowsData(prev => {
     const updated = [...prev];
-    updated[nextIndex] = {
-      day: nextNight,
-      car_name: typeValue || "",
-      price: ""
-    };
+
+    if (!updated[nextIndex]) {
+      updated[nextIndex] = {
+        car_name: carName,
+        day: selectedValues[nextIndex] || stayNights2[nextIndex],
+        price: "",
+        quantity: carQuantity
+      };
+    }
+
+    return updated;
+  });
+
+  setSelectedValues(prev => {
+    const updated = [...prev];
+    if (!updated[nextIndex]) {
+      updated[nextIndex] = stayNights2[nextIndex];
+    }
     return updated;
   });
 
   setActiveDays(prev => prev + 1);
 };
 
-
-
-// const [car , setCar] = useState("");
  
-// const handleCheckboxSelect = (rowIndex, night, nightDate) => {
-  // for(carDetail of rows ){
 
-  //   if(carDetail.date === nightDate){
-  //     setCar(carDetail.type);
-  //   }
-  // }  
+ 
+ 
+ 
 
 
 
-//   const handleCheckboxSelect = (rowIndex, night) => {
+useEffect(()=>{
+console.log(rowsData,"de");
 
-  
+},[rowsData])
 
-//   setSelectedValues(prev => {
-//     const updated = [...prev];
-//     updated[rowIndex] = night; // assign selected night to specific row
-//     return updated;
-//   });
-
-
-// };
-
-
-// const handleCheckboxSelect = (rowIndex, night) => {
-//   setSelectedValues(prev => {
-//     const updated = [...prev];
-
-//     // agar same date already selected hai → remove (toggle off)
-//     if (updated[rowIndex]?.date === night.date) {
-//       updated[rowIndex] = undefined; // ya null
-//     } else {
-//       // warna select karo
-//       updated[rowIndex] = night;
-//     }
-
-//     return updated;
-//   });
-// };
-
+ 
 
 
 const handleCheckboxSelect = (rowIndex, night) => {
@@ -543,7 +329,7 @@ const handleCheckboxSelect = (rowIndex, night) => {
       updated[rowIndex] = {
         ...updated[rowIndex],
         day: night,
-        car_name: typeValue || "",
+        car_name: carName || "",
         price: updated[rowIndex]?.price || ""
       };
     }
@@ -556,6 +342,8 @@ useEffect(()=>{
 console.log(rowsData,"send");
 
 },[rowsData])
+
+
 
   const saveCars = async () => {
     try {
@@ -614,10 +402,7 @@ console.log(rowsData,"send");
   // }, [showModal]);
 
   const [services, setServices] = useState([]);
-
-  // useEffect(() => {
-  // openDropdownIndex
-  // }, [openDropdownIndex]);
+ 
 
   useEffect(() => {
     async function userData() {
@@ -710,20 +495,41 @@ console.log(rowsData,"send");
 
   // 🏨 Hotels total
 
-  const hotelsTotal = rows.reduce((sum, row) => {
-    if (!row.flag) return sum;
-    return sum + Number(row.price || 0) * Number(row.quantity || 0);
-  }, 0);
+  // const hotelsTotal = rows.reduce((sum, row) => {
+  //   if (!row.flag) return sum;
+  //   return sum + Number(row.price || 0) * Number(row.quantity || 0);
+  // }, 0);
+
+
+
+const hotelsTotal = rowsData.reduce((total, row) => {
+  const price = Number(row.price || 0);
+  const qty = Number(row.quantity || 0);
+  return total + price * qty;
+}, 0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // ➕ Extras / Services total
   const extrasTotal = services.reduce((sum, item) => {
     return sum + Number(item.price || 0);
   }, 0);
 
-  // 🔢 Grand Total
-  const grandTotal2 = hotelsTotal + extrasTotal;
 
-  //HOtells carpet
+
+  //Hotells carpet
   const {
     inputValue,
     setInputValue,
@@ -736,6 +542,18 @@ console.log(rowsData,"send");
     roomDetails,
     setRoomDetails,
   } = useContext(context);
+
+
+  const totalPrice = ['paxRoom', 'awebPrice', 'cwebPrice', 'cnbPrice'].reduce(
+  (sum, key) => sum + Number(roomDetails[key] || 0),
+  0
+);
+
+
+  // 🔢 Grand Total
+  const grandTotal2 = hotelsTotal + extrasTotal + totalPrice;
+console.log(grandTotal2);
+
 
   let [hotelDisplay, setHotelDisplay] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -836,19 +654,7 @@ console.log(rowsData,"send");
     }));
   };
 
-  const handleCheckboxChange = (item) => {
-    setSelectedNights((prev) => {
-      const exists = prev.some((n) => n.date === item.date);
 
-      if (exists) {
-        // ❌ remove
-        return prev.filter((n) => n.date !== item.date);
-      } else {
-        // ✅ add
-        return [...prev, item];
-      }
-    });
-  };
 
   const [keepSamePrice, setKeepSamePrice] = useState(false);
   const [activeNight, setActiveNight] = useState(null);
@@ -1004,7 +810,101 @@ console.log(dayDropdown);
   //   }
   // }, [formId]);
 
+
+
  
+const getRotatedNights = (startDate) => {
+  const startIndex = stayNights2.findIndex(
+    n => n.date === startDate
+  );
+
+  return [
+    ...stayNights2.slice(startIndex),
+    ...stayNights2.slice(0, startIndex)
+  ];
+};
+
+
+
+const [gstChecked, setGstChecked] = useState(true); // checkbox default ticked
+// const [gstValue, setGstValue] = useState(5);       // default 5%
+// const [grandTotal2, setGrandTotal2] = useState(10000); // example total
+const [gstAmount, setGstAmount] = useState(0);
+const [finalTotal, setFinalTotal] = useState(grandTotal2);
+
+// Effect to calculate GST whenever total, gstValue, or checkbox changes
+useEffect(() => {
+  if (gstChecked) {
+    const amount = (grandTotal2 * gstValue) / 100;
+    setGstAmount(amount);
+    setFinalTotal(grandTotal2 + amount);
+  } else {
+    setGstAmount(0);
+    setFinalTotal(grandTotal2);
+  }
+}, [grandTotal2, gstValue, gstChecked]);
+
+
+
+// const handleDateSelect = (night) => {
+//   const orderedNights = getRotatedNights(night.date);
+
+
+//   console.log(orderedNights,"as");
+  
+//   setSelectedValues(orderedNights);
+
+//   setRowsData(
+//     orderedNights.map(n => ({
+//       car_name: carName,
+//       day: n,
+//       price: "",
+//       quantity:carQuantity
+//     }))
+//   );
+
+//   setActiveDays(1); // start from first row
+// };
+
+//  const handleDateSelect = (night, index) => {
+//   // selectedValues update
+//   setSelectedValues(prev => {
+//     const updated = [...prev];
+//     updated[index] = night;
+//     return updated;
+//   });
+
+//   // rowsData ke sirf us index ko update karo
+//   setRowsData(prev => {
+//     const updated = [...prev];
+//     updated[index] = {
+//       ...updated[index],
+//       day: night
+//     };
+//     return updated;
+//   });
+// };
+
+
+const handleDateSelect = (night) => {
+  const orderedNights = getRotatedNights(night.date);
+
+
+  console.log(orderedNights,"as");
+  
+  setSelectedValues(orderedNights);
+
+  setRowsData(
+    orderedNights.map(n => ({
+      car_name: carName,
+      day: n,
+      price: "",
+      quantity:carQuantity
+    }))
+  );
+
+  setActiveDays(1); // start from first row
+};
 
   return (
     <>
@@ -1085,7 +985,7 @@ console.log(dayDropdown);
                 <span>Same Cab Type for All</span>
               </div>
             </div>
-
+{/* 992 */}
             {showModal && (
               <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
                 <div className="bg-white rounded-lg w-1/2 p-6 relative">
@@ -1111,84 +1011,19 @@ console.log(dayDropdown);
                     </thead>
 
                     <tbody>
-                             {/* //992 */}
-                      {/* {rows.map((row, index) => (
-                        <tr key={index}>
-                          <td className="border-b border-gray-300 px-4 py-2 relative">
-                            <input
-                              type="text"
-                              placeholder="Enter type"
-                              className="border-4 rounded px-2 py-1 w-full"
-                              value={row.type}
-                              onFocus={async () => {
-                                await CarsData();
-                                toggleDropdown(index, true);
-                              }}
-                              onBlur={() => toggleDropdown(index, false)}
-                              onChange={(e) =>
-                                handleTypeChange(index, e.target.value)
-                              }
-                            />
 
-                            {row.dropdownOpen && (
-                              <div
-                                className="absolute mt-1 top-full left-0 w-full max-h-[15vh]
-                        overflow-y-auto text-black border z-50 bg-white shadow"
-                              >
-                                {allCars.map((val, i) => (
-                                  <label
-                                    key={i}
-                                    className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
-                                    onMouseDown={() => {
-                                      handleTypeChange(index, val.car_name);
-                                      toggleDropdown(index, false);
-                                    }} >
-                                    <input type="radio"
-                                      className="mr-2"
-                                      checked={row.type === val.car_name}
-                                      readOnly
-                                    />
-                                    {val.car_name}
-                                  </label>
-                                ))}
-                              </div>
-                            )}
-                          </td>
-
-                          <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
-                            <input
-                              type="number"
-                              min={1}
-                              className="border border-gray-400 rounded px-2 py-1 w-full"
-                              value={row.quantity}
-                              onChange={(e) =>
-                                handleQuantityChange(index, e.target.value)
-                              }
-                            />
-
-                            {rows.length >= 1 && (
-                              <button onClick={() => handleRemoveRow(index)}
-                              className="border-2 border-black text-black px-2">Remove </button>  )}
-                          </td>
-                        </tr>
-                         ))} */}
 
 
 
                          <tr >
                 <td className="border-b border-gray-300 px-4 py-2 relative">
-<input
-  type="text"
-  placeholder="Enter type"
-  className="border-4 rounded px-2 py-1 w-full"
-  value={typeValue}                 // ✅ ADD THIS
-  onFocus={async () => {
+<input type="text" placeholder="Enter type" className="border-4 rounded px-2 py-1 w-full" value={carName}                 // ✅ ADD THIS
+      onFocus={async () => {
     await CarsData();
     setDropdownOpen2(true);
-  }}
-  onBlur={() => setDropdownOpen2(false)}
-  onChange={(e) => setTypeValue(e.target.value)}  // ✅
-/>
+      }}
+         onBlur={() => setDropdownOpen2(false)}
+      onChange={(e) => setCarName(e.target.value)}  />
 
 
     
@@ -1201,9 +1036,9 @@ console.log(dayDropdown);
        className="flex items-center px-3 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
 
         onMouseDown={() => {
-          setTypeValue(val.car_name)
+          setCarName(val.car_name)
           setDropdownOpen2(false)}}>
-        <input type="radio" className="mr-2" checked={typeValue === val.car_name} readOnly/> {val.car_name} </label> ))}
+        <input type="radio" className="mr-2" checked={carName === val.car_name} readOnly/> {val.car_name} </label> ))}
   </div>
 )}
 
@@ -1213,25 +1048,18 @@ console.log(dayDropdown);
         <td className="border-b border-gray-300 px-4 py-2 flex gap-3">
 
           <input type="number" placeholder="type here!" className="border border-gray-400 rounded px-2 py-1 w-full" 
-          value={car_quantity}  min={1}
+          value={carQuantity}  min={1}
           onChange={(e) => {
-            setCar_quantity(e.target.value)}}/>
+            setCarQuantity(e.target.value)}}/>
 
-            {/* <button  className="border-2 border-black text-black p-1"  > remove </button> */}
+ 
          
         </td>
       </tr>
                     </tbody>
                   </table>
 
-       
-                  {/* <button
-                    onClick={handleAddRow}
-                    disabled={rows.length >= maxRows}
-                    className="mt-3 border px-3 py-1 disabled:opacity-50"
-                  >
-                    Add More
-                  </button> */}
+
 
                   <div className="mt-4 flex  gap-2">
                     <button
@@ -1267,15 +1095,19 @@ console.log(dayDropdown);
             ) : (
               <>
  {/* 993 */}
-                {stayNights2.slice(0, activeDays).map((day, index) => (
+ 
+                           {/* {stayNights2.slice(0, activeDays).map((day, index) => (  */}
+                           {rowsData.slice(0, activeDays).map((row, index) => (
+
   <div key={index} className="flex flex-col md:flex-row gap-8 p-4 border-4 border-blue-500 rounded">
     <div className="flex-1 flex gap-4">
       <label className="flex flex-col border-4 border-black">
         <span className="font-semibold mb-1"> Days</span>
         <div className="relative">
+            {/* // value={selectedValues[index]?.date ? `${selectedValues[index].date} (${selectedValues[index].day})` : ""} */}
+
           <input
             type="text"
-            // value={selectedValues[index]?.date ? `${selectedValues[index].date} (${selectedValues[index].day})` : ""}
             onFocus={() => setOpenDropdownIndex(index)}
             onBlur={() => setOpenDropdownIndex(null)}
             readOnly
@@ -1283,16 +1115,15 @@ console.log(dayDropdown);
           />
 
           {openDropdownIndex === index && (
-            <div
-              className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto bg-white border z-50 shadow"
-              onMouseDown={(e) => e.preventDefault()} >
+            <div className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto bg-white border z-50
+             shadow"  onMouseDown={(e) => e.preventDefault()} >
               {stayNights2.map((night, i) => (
                 <div key={i} className="flex items-center px-3 py-2 cursor-pointer border-b">
                   <input type="checkbox" 
-                  // checked={selectedValues[index]?.date === night.date}
-                    checked={selectedValues.some(val => val?.date === night.date)}
-                    // onChange={() => handleCheckboxSelect(index, night, night.date)}  className="mr-2"  />
-                        onChange={() => handleCheckboxSelect(index, night)}  className="mr-2"  />
+ 
+                        checked={selectedValues[index]?.date === night.date}
+  onChange={() => handleDateSelect(night, index)}
+                    />
                   <div>{night.date} ({night.day})</div>
                 </div>
               ))}
@@ -1306,6 +1137,331 @@ console.log(dayDropdown);
           )}
         </div>
       </label>
+
+
+
+
+{/* 800 */}
+{/* <label className="flex flex-col">
+              <span className="font-semibold mb-1">Service Location</span>
+          <div className='relative'> 
+            
+   <input className="border px-3 py-2 rounded"  type="text" value={selectedServiceLocation[index] || ""} 
+          onChange={(e) => {
+             const selected = [...selectedServiceLocation];
+              selected[index] = e.target.value; 
+             setSelectedServiceLocation(selected);
+              }}
+
+          onFocus={() => {
+              const arr = [...serviceDropdown];
+              arr[index] = true;
+               setServiceDropdown(arr);
+              getData3();
+            }}
+
+            onBlur={() => {
+              const arr = [...serviceDropdown];
+              arr[index] = false;
+             setServiceDropdown(arr);
+            }}/>
+
+ 
+  {serviceDropdown[index] && (
+    <div  className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow" onMouseDown={(e) => e.preventDefault()}>
+      {serviceLocation.map((val, i) => (
+        <label  key={i} className="flex items-center px-3 py-2 border-b cursor-pointer">
+          <input type="radio"name={`serviceLocation-${index}`}   className="mr-2"
+               onClick={() => {
+ e
+             const arr = [...serviceDropdown];
+            arr[index] = false;
+             setServiceDropdown(arr);
+
+         
+             const selected = [...selectedServiceLocation];
+            selected[index] = val.service_locations;  
+            setSelectedServiceLocation(selected);
+
+    
+           setserviceName(val.service_type);
+
+    
+            const selectedType = [...selectedServiceType];
+            selectedType[index] = val.service_type[0];
+           setSelectedServiceType(selectedType);
+             }}  />
+          {val.service_locations}
+        </label>
+      ))}
+    </div>
+  )}
+     
+     
+     </div>   
+
+
+
+            </label>
+
+            <label className="flex flex-col">
+              <span className="font-semibold mb-1">Service Type</span>
+        <div className='relative'>
+            <input  className="border px-3 py-2 rounded" 
+             type="text"
+  value={selectedServiceType[index] || ""}  
+  onChange={(e) => {
+    const updated = [...selectedServiceType];
+    updated[index] = e.target.value;  
+    setSelectedServiceType(updated);
+  }}
+ 
+        onFocus={() => {
+        const arr = [...serviceTypeDropdown];
+         arr[index] = true;   
+           setServiceTypeDropdown(arr)}}
+           
+           
+             onBlur={() => {
+      const arr = [...serviceTypeDropdown];
+      arr[index] = false;  
+      setServiceTypeDropdown(arr);
+  }}/>
+ 
+
+  {serviceTypeDropdown[index] && (
+  <div
+    className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow"
+    onMouseDown={e => e.preventDefault()}>
+
+    {serviceName.map((type, i) => (
+      <label
+        key={i} className="flex items-center px-3 py-2 border-b cursor-pointer">
+        <input
+          type="radio"
+          name={`serviceType-${index}`}
+          className="mr-2"
+          onClick={() => {
+            const selected = [...selectedServiceType];
+            selected[index] = type; 
+            setSelectedServiceType(selected);
+
+            const arr = [...serviceTypeDropdown];
+            arr[index] = false;  
+            setServiceTypeDropdown(arr);
+          }}
+        />
+        {type}
+      </label>
+    ))}
+  </div>
+)}
+
+        </div>
+            </label> */}
+
+      <label className="flex flex-col">
+              <span className="font-semibold mb-1">Service Location</span>
+          <div className='relative'> 
+            
+   {/* <input className="border px-3 py-2 rounded"  type="text" value={selectedServiceLocation[index] || ""} 
+          onChange={(e) => {
+             const selected = [...selectedServiceLocation];
+              selected[index] = e.target.value; 
+             setSelectedServiceLocation(selected);
+              }}
+
+          onFocus={() => {
+              const arr = [...serviceDropdown];
+              arr[index] = true;
+               setServiceDropdown(arr);
+              getData3();
+            }}
+
+            onBlur={() => {
+              const arr = [...serviceDropdown];
+              arr[index] = false;
+             setServiceDropdown(arr);
+            }}/> */}
+
+            <input
+  className="border px-3 py-2 rounded"
+  type="text"
+  value={rowsData[index]?.service_location || ""}
+  onChange={(e) => {
+    const updated = [...rowsData];
+    updated[index] = {
+      ...updated[index],
+      service_location: e.target.value
+    };
+    setRowsData(updated);
+  }}
+  onFocus={() => {
+    const arr = [...serviceDropdown];
+    arr[index] = true;
+    setServiceDropdown(arr);
+    getData3();
+  }}
+  onBlur={() => {
+    const arr = [...serviceDropdown];
+    arr[index] = false;
+    setServiceDropdown(arr);
+  }}
+/>
+
+
+
+ 
+  {serviceDropdown[index] && (
+    <div  className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow" onMouseDown={(e) => e.preventDefault()}>
+      {serviceLocation.map((val, i) => (
+        <label  key={i} className="flex items-center px-3 py-2 border-b cursor-pointer">
+          <input type="radio"name={`serviceLocation-${index}`}   className="mr-2"
+          //      onClick={() => {
+  
+          //    const arr = [...serviceDropdown];
+          //   arr[index] = false;
+          //    setServiceDropdown(arr);
+
+         
+          //    const selected = [...selectedServiceLocation];
+          //   selected[index] = val.service_locations;  
+          //   setSelectedServiceLocation(selected);
+
+    
+          //  setserviceName(val.service_type);
+
+    
+          //   const selectedType = [...selectedServiceType];
+          //   selectedType[index] = val.service_type[0];
+          //  setSelectedServiceType(selectedType);
+          //    }} 
+
+          onClick={() => {
+  const updated = [...rowsData];
+  updated[index] = {
+    ...updated[index],
+    service_location: val.service_locations,
+    service_type: val.service_type[0] // default first type
+  };
+  setRowsData(updated);
+
+  const arr = [...serviceDropdown];
+  arr[index] = false;
+  setServiceDropdown(arr);
+
+  setserviceName(val.service_type);
+}}
+
+             
+             />
+          {val.service_locations}
+        </label>
+      ))}
+    </div>
+  )}
+     
+     
+     </div>   
+
+
+
+            </label>
+
+            <label className="flex flex-col">
+              <span className="font-semibold mb-1">Service Type</span>
+        <div className='relative'>
+            {/* <input  className="border px-3 py-2 rounded" 
+             type="text"
+  value={selectedServiceType[index] || ""}  
+  onChange={(e) => {
+    const updated = [...selectedServiceType];
+    updated[index] = e.target.value;  
+    setSelectedServiceType(updated);
+  }}
+ 
+        onFocus={() => {
+        const arr = [...serviceTypeDropdown];
+         arr[index] = true;   
+           setServiceTypeDropdown(arr)}}
+           
+           
+             onBlur={() => {
+      const arr = [...serviceTypeDropdown];
+      arr[index] = false;  
+      setServiceTypeDropdown(arr);
+  }}/> */}
+
+  <input
+  className="border px-3 py-2 rounded"
+  type="text"
+  value={rowsData[index]?.service_type || ""}
+  onChange={(e) => {
+    const updated = [...rowsData];
+    updated[index] = {
+      ...updated[index],
+      service_type: e.target.value
+    };
+    setRowsData(updated);
+  }}
+  onFocus={() => {
+    const arr = [...serviceTypeDropdown];
+    arr[index] = true;
+    setServiceTypeDropdown(arr);
+  }}
+  onBlur={() => {
+    const arr = [...serviceTypeDropdown];
+    arr[index] = false;
+    setServiceTypeDropdown(arr);
+  }}
+/>
+
+ 
+
+  {serviceTypeDropdown[index] && (
+  <div
+    className="absolute mt-1 top-full left-0 w-full max-h-[15vh] overflow-y-auto text-black border z-50 bg-white shadow"
+    onMouseDown={e => e.preventDefault()}>
+
+    {serviceName.map((type, i) => (
+      <label
+        key={i} className="flex items-center px-3 py-2 border-b cursor-pointer">
+        <input
+          type="radio"
+          name={`serviceType-${index}`}
+          className="mr-2"
+          // onClick={() => {
+          //   const selected = [...selectedServiceType];
+          //   selected[index] = type; 
+          //   setSelectedServiceType(selected);
+
+          //   const arr = [...serviceTypeDropdown];
+          //   arr[index] = false;  
+          //   setServiceTypeDropdown(arr);
+          // }}
+
+          onClick={() => {
+  const updated = [...rowsData];
+  updated[index] = {
+    ...updated[index],
+    service_type: type
+  };
+  setRowsData(updated);
+
+  const arr = [...serviceTypeDropdown];
+  arr[index] = false;
+  setServiceTypeDropdown(arr);
+}}
+
+        />
+        {type}
+      </label>
+    ))}
+  </div>
+)}
+
+        </div>
+            </label>
     </div>
 
     <div className="flex-1 overflow-x-auto text-right">
@@ -1319,30 +1475,28 @@ console.log(dayDropdown);
         </thead>
         <tbody>
           <tr>
-            <td className="border px-4 py-2">{typeValue && typeValue}</td>
+            <td className="border px-4 py-2">
+  {rowsData[index]?.car_name || ""}
+</td>
+
             <td className="border px-4 py-2"><sup>INR</sup> NA</td>
             <td className="border px-4 py-2">
               <input type="number" className="border rounded px-2 py-1 w-full"
                 value={rowsData[index]?.price || ""}
-                  onChange={(e) => {
-                     const value = e.target.value;
-                     setRowsData(prev => {
-                       const updated = [...prev];
-                        updated[index] = {
-                           ...updated[index],
-                           price: value};
-                       return updated
-                       });
-                       }}/>
+                onChange={(e)=>{
+                  let a = [...rowsData]
+                  a[index].price = e.target.value
+                  setRowsData(a)
+
+                }}
+              />
             </td>
           </tr>
         </tbody>
       </table>
 
-      <button
-        className="ml-2 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-        onClick={() => handleRemoveRow(index)}
-      >
+      <button className="ml-2 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+      onClick={()=>handleRemoveRow(index)}>
         Remove
       </button>
     </div>
@@ -1352,52 +1506,31 @@ console.log(dayDropdown);
             )}
 
 
-            {/* {activeDays < stayNights2.length && transportDisplay &&(
-              <div className="text-right">
-  <button
-    className="bg-green-600 text-white px-4 py-2 rounded"
-    onClick={handleNext}
-  >
-    Next
-  </button>
-     </div>
-)} */}
+ 
 
-{/* Next button */}
-{/* {selectedValues.length < stayNights2.length && transportDisplay && (
+ 
   <div className="text-right">
+    {/* <button className="bg-green-600 text-white px-4 py-2 rounded" 
+    onClick={()=>{
+
+  if (activeDays >= selectedValues.length) return;
+
+  setActiveDays(prev => prev + 1);}}
+    
+    >  Next</button> */}
+
     <button
-      className="bg-green-600 text-white px-4 py-2 rounded"
-      onClick={handleNext}
-    >
-      Next
-    </button>
+  className="bg-green-600 text-white px-4 py-2 rounded"
+onClick={handleNext}
+
+
+
+  
+>
+  Next
+</button>
   </div>
-)} */}
-
-{/* {selectedValues.length < stayNights2.length && transportDisplay && (
-  <div className="text-right">
-    <button
-      className="bg-green-600 text-white px-4 py-2 rounded"
-      onClick={handleNext}
-    >
-      Next
-    </button>
-  </div>
-)} */}
-
-
-{selectedValues.length < stayNights2.length && transportDisplay && (
-  <div className="text-right">
-    <button
-      className="bg-green-600 text-white px-4 py-2 rounded"
-      onClick={handleNext}
-    >
-      Next
-    </button>
-  </div>
-)}
-
+ 
 
 
            
@@ -1469,8 +1602,7 @@ console.log(dayDropdown);
 
                       <tbody>
                         {stayNights.map((data, index) => (
-                          <tr
-                            key={index}
+                          <tr   key={index}
                             // className="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition"
                             className="bg-white   hover:bg-gray-100 transition"
                           >
@@ -1560,71 +1692,35 @@ console.log(dayDropdown);
                   <h3 className="font-bold text-xl my-3">
                     Transport and Activities
                   </h3>
-                  <table className="w-full border border-gray-200 text-sm">
+                  {/* <table className="w-full border border-gray-200 text-sm"> */}
+                             <table className="w-full text-sm rder border-gray-200 ">
                     <tbody>
-                      {stayNights.map((night, index) => (
-                        <tr
-                          key={index}
-                          className="bg-white   hover:bg-gray-100 transition"
-                        >
-                          {/* DAY */}
-                          <td className=" border-b px-4 py-2">
-                            {night.date} ({night.day})
-                          </td>
+                  {rowsData.map((row, index) => (
+  <tr key={index} className="bg-white   hover:bg-gray-100 transition">
+    <td className=" border-b px-4 py-2">{row.day?.date} ({row.day?.day})</td>
 
-                          {/* SERVICE LOCATION */}
-                          {/* <td className="border px-3 py-2">
-        {selectedServiceLocation[index] || "—"}<br/>
-          {selectedServiceType[index] || "—"}
-      </td> */}
+    <td className="border px-3 py-2">
+      {row.service_location || row.service_type ? (
+        <>
+          {row.service_location && <strong>{row.service_location}</strong>}
+          <br />
+          {row.service_type}
+        </>
+      ) : "—"}
+    </td>
 
-                          <td className="border-b px-4 py-2">
-                            {selectedServiceLocation[index] ||
-                            selectedServiceType[index] ? (
-                              <>
-                                {selectedServiceLocation[index] && (
-                                  <>
-                                    <strong>
-                                      {selectedServiceLocation[index]}
-                                    </strong>
-                                    <br />
-                                  </>
-                                )}
-                                {selectedServiceType[index] &&
-                                  selectedServiceType[index]}
-                              </>
-                            ) : (
-                              "—"
-                            )}
-                          </td>
+    <td className="border-b px-4 py-2">{row.car_name || "—"}</td>
 
-                          {/* SERVICE TYPE */}
+    <td className=" px-4 py-2 border-b text-right font-semibold">
+      {row.price ? <><sup>INR</sup> {row.price}</> : "NA"}
+    </td>
+  </tr>
+))}
 
-                          {/* TRANSPORT */}
-                          <td className=" px-4 py-2 border-b">
-                            {rows[index]?.flag ? rows[index].car_name : "—"}
-                          </td>
-
-                          {/* PRICE INPUT */}
-                          <td className=" px-4 py-2 border-b text-right">
-                            {rows[index]?.flag ? (
-                              rows[index]?.price ? (
-                                <>
-                                  <sup>INR</sup> {rows[index].price}
-                                </>
-                              ) : (
-                                "NA"
-                              )
-                            ) : (
-                              "—"
-                            )}
-                          </td>
-                        </tr>
-                      ))}
                     </tbody>
                   </table>
                 </div>
-                <div className="p-2 text-right font-bold  border-black">
+                <div className="p-2 text-right font-bold border-2 border-red-400 ">
                   Total: <sup>INR</sup> {hotelsTotal}
                   {/* Total: <sup>INR</sup> {totalAmount} */}
                 </div>
@@ -1634,14 +1730,7 @@ console.log(dayDropdown);
                     <>
                       <table className="w-full border border-gray-200 text-sm mb-2">
                         <tbody>
-                          {/* <tr>
-          <th className="px-4 py-2  text-left" colSpan={1}>
-            Service
-          </th>
-          <th className="px-4 py-2   k text-right" colSpan={2}>
-            Price (INR)
-          </th>
-        </tr> */}
+      
                           {services.map((item, index) => (
                             <tr
                               key={index}
@@ -1692,6 +1781,39 @@ console.log(dayDropdown);
                   </div>
                 </div>
 
+
+
+
+<div>
+  <h2 className="font-bold  text-2xl">set markup, tax and rounding</h2>
+
+
+ <div>
+    <div>Cost Price: {grandTotal2}</div>
+
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        checked={gstChecked}
+        onChange={() => setGstChecked(prev => !prev)}
+      />
+      <span>
+        GST:{" "}
+        <input
+          type="number"
+          value={gstValue}
+          min={0}
+          onChange={(e) => setGstValue(Number(e.target.value))}
+        />
+        %
+      </span>
+    </div>
+
+    <div>GST Amount: {gstAmount.toFixed(2)}</div>
+    <div>Final Total: {finalTotal.toFixed(2)}</div>
+  </div>
+
+</div>
                 <button
                   className="p-2 border-2 border-red-400 bg-orange-500"
                   onClick={async () => {

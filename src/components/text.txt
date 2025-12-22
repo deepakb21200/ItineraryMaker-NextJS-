@@ -484,3 +484,189 @@ const { data, error } = await supabase
            
               </tbody>
             </table>
+            
+            
+         22 december 2025
+
+
+
+           const [carName, setCarName] = useState("");
+    let [carQuantity, setCarQuantity] = useState("");
+      let [stayNights2, setStayNights2] = useState([]);
+      const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+      const [selectedValues, setSelectedValues] = useState([]);
+      console.log(selectedValues) array of objects
+      0: {day: 'Sunday', date: '14 Dec 2025'}
+      const [rowsData, setRowsData] = useState([]);
+      console.log(rowsData) array of objects 
+      0: car_name: "Innova Crysta"
+      day: {day: 'Sunday', date: '14 Dec 2025'}
+      price: ""
+
+
+
+      handleDateSelect
+
+       getRotatedNights(night.date);
+
+
+
+
+       const handleRemoveRow = (index) => {
+  setSelectedValues(prev => {
+    const updated = [...prev];
+    updated.splice(index, 1); // remove exact index
+    return updated;
+  });
+
+  setRowsData(prev => {
+    const updated = [...prev];
+    updated.splice(index, 1); // remove exact index
+    return updated;
+  });
+
+  // activeDays ko adjust karo
+  setActiveDays(prev => {
+    if (prev > 1) return prev - 1;
+    return 1; // minimum 1 row
+  });
+};
+
+
+
+const handleDateSelect = (night) => {
+  const orderedNights = getRotatedNights(night.date);
+
+
+  console.log(orderedNights,"as");
+  
+  setSelectedValues(orderedNights);
+
+  setRowsData(
+    orderedNights.map(n => ({
+      car_name: carName,
+      day: n,
+      price: ""
+    }))
+  );
+
+  setActiveDays(1); // start from first row
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h3 className="font-bold text-xl my-3">
+                    Transport and Activities
+                  </h3>
+                  {/* <table className="w-full border border-gray-200 text-sm"> */}
+                             <table className="w-full border-4 border-red-500 text-sm">
+                    <tbody>
+                      {stayNights.map((night, index) => (
+                        <tr
+                          key={index}
+                          className="bg-white   hover:bg-gray-100 transition"
+                        >
+                          {/* DAY */}
+                          <td className=" border-b px-4 py-2">
+                            {night.date} ({night.day})
+                          </td>
+
+                          {/* SERVICE LOCATION */}
+                          {/* <td className="border px-3 py-2">
+        {selectedServiceLocation[index] || "—"}<br/>
+          {selectedServiceType[index] || "—"}
+      </td> */}
+
+                          <td className="border-b px-4 py-2">
+                            {selectedServiceLocation[index] ||
+                            selectedServiceType[index] ? (
+                              <>
+                                {selectedServiceLocation[index] && (
+                                  <>
+                                    <strong>
+                                      {selectedServiceLocation[index]}
+                                    </strong>
+                                    <br />
+                                  </>
+                                )}
+                                {selectedServiceType[index] &&
+                                  selectedServiceType[index]}
+                              </>
+                            ) : (
+                              "—"
+                            )}
+                          </td>
+
+                          {/* SERVICE TYPE */}
+
+                          {/* TRANSPORT */}
+                          <td className=" px-4 py-2 border-b">
+                            {rows[index]?.flag ? rows[index].car_name : "—"}
+                          </td>
+
+                          {/* PRICE INPUT */}
+                          <td className=" px-4 py-2 border-b text-right">
+                            {rows[index]?.flag ? (
+                              rows[index]?.price ? (
+                                <>
+                                  <sup>INR</sup> {rows[index].price}
+                                </>
+                              ) : (
+                                "NA"
+                              )
+                            ) : (
+                              "—"
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+
+
+
+
+
+17 dec 2025
+delhi
+transfer mathura sightseeings 3000
+
+
+
+15000 -3000
+12000
